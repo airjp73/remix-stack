@@ -1,20 +1,32 @@
-# Remix Blues Stack
+# airjp73 Remix Stack
 
-![The Remix Blues Stack](https://repository-images.githubusercontent.com/461012689/37d5bd8b-fa9c-4ab0-893c-f0a199d5012d)
-
-Learn more about [Remix Stacks](https://remix.run/stacks).
+Customized version of the [Blues Stack](https://github.com/remix-run/blues-stack).
 
 ```
-npx create-remix@latest --template remix-run/blues-stack
+npx create-remix@latest --template airjp73/remix-stack
 ```
 
-## What's in the stack
+# WIP
+
+This is still a work in progress and not ready for use.
+
+## Changes intended
+
+[] Prepopulated with components from tailwind ui.
+[] Authentication with Auth0 and remix-auth
+[] Example app replaced with something using tailwind ui.
+[] remix-validated-form & zod pre-installed
+
+## What's being removed
+
+- Email/Password Authentication
+
+## What's kept from the orignal
 
 - [Multi-region Fly app deployment](https://fly.io/docs/reference/scaling/) with [Docker](https://www.docker.com/)
 - [Multi-region Fly PostgreSQL Cluster](https://fly.io/docs/getting-started/multi-region-databases/)
 - Healthcheck endpoint for [Fly backups region fallbacks](https://fly.io/docs/reference/configuration/#services-http_checks)
 - [GitHub Actions](https://github.com/features/actions) for deploy on merge to production and staging environments
-- Email/Password Authentication with [cookie-based sessions](https://remix.run/docs/en/v1/api/remix#createcookiesessionstorage)
 - Database ORM with [Prisma](https://prisma.io)
 - Styling with [Tailwind](https://tailwindcss.com/)
 - End-to-end testing with [Cypress](https://cypress.io)
@@ -23,8 +35,6 @@ npx create-remix@latest --template remix-run/blues-stack
 - Code formatting with [Prettier](https://prettier.io)
 - Linting with [ESLint](https://eslint.org)
 - Static Types with [TypeScript](https://typescriptlang.org)
-
-Not a fan of bits of the stack? Fork it, change it, and use `npx create-remix --template your/repo`! Make it your own.
 
 ## Quickstart
 
