@@ -1,9 +1,9 @@
 import { useActionData } from "@remix-run/react";
 import type { ActionArgs } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
-import { Alert } from "~/design-system/components/Alert";
-import { Button } from "~/design-system/components/Button";
-import { Input } from "~/design-system/components/controls/Input";
+import { Alert } from "~/design-system/Alert";
+import { Button } from "~/design-system/Button";
+import { Input } from "~/design-system/controls/Input";
 
 export const action = ({ request }: ActionArgs) => {
   return json({ message: "Hello world!" }, { status: 200 });

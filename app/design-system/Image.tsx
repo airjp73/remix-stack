@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from "react";
 import { type FC, cloneElement, useState } from "react";
-import { mapChildrenSafe } from "../util/mapChildrenSafe";
+import { mapChildrenSafe } from "./util/mapChildrenSafe";
 
 export type SourceElementProps = {
   erroredSrcs?: string[];

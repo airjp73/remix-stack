@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import type { FC, PropsWithChildren } from "react";
 import { cloneElement } from "react";
-import { mapChildrenSafe } from "../util/mapChildrenSafe";
+import { mapChildrenSafe } from "./util/mapChildrenSafe";
 
 export type ButtonGroupType = FC<
   PropsWithChildren<{

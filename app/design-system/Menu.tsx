@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import type { FC, PropsWithChildren, ReactNode } from "react";
 import { cloneElement, useState } from "react";
 import { usePopper } from "react-popper";
-import { mapChildrenSafe } from "../util/mapChildrenSafe";
+import { mapChildrenSafe } from "./util/mapChildrenSafe";
 import { Link } from "./internal/Link";
 import { Portal } from "./internal/Portal";
 
