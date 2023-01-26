@@ -18,4 +18,8 @@ module.exports = {
       version: 28,
     },
   },
+  rules: {
+    // userEvent events are all async now
+    "testing-library/no-await-sync-events": "off",
+  },
 };

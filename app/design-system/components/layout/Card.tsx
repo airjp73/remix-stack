@@ -1,11 +1,13 @@
 import classNames from "classnames";
-import type { FC } from "react";
+import type { FC, PropsWithChildren } from "react";
 
 export type CardProps = {
   className?: string;
 };
 
-export type CardType = FC<CardProps> & { Content: FC<{ className?: string }> };
+export type CardType = FC<PropsWithChildren<CardProps>> & {
+  Content: FC<PropsWithChildren<{ className?: string }>>;
+};
 
 export const Card: CardType = ({ children, className }) => {
   return (

@@ -1,20 +1,24 @@
 import classNames from "classnames";
-import type { FC } from "react";
+import type { FC, PropsWithChildren } from "react";
 import { cloneElement } from "react";
 import { mapChildrenSafe } from "../util/mapChildrenSafe";
 
-export type ButtonGroupType = FC<{
-  onChange: (value: string) => void;
-  value: string;
-  vertical?: boolean;
-  className?: string;
-}> & {
-  Button: FC<{
-    selectedValue?: string;
-    onClick?: (value: string) => void;
+export type ButtonGroupType = FC<
+  PropsWithChildren<{
+    onChange: (value: string) => void;
     value: string;
+    vertical?: boolean;
     className?: string;
-  }>;
+  }>
+> & {
+  Button: FC<
+    PropsWithChildren<{
+      selectedValue?: string;
+      onClick?: (value: string) => void;
+      value: string;
+      className?: string;
+    }>
+  >;
 };
 
 export const ButtonGroup: ButtonGroupType = ({

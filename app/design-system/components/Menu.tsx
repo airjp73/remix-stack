@@ -5,7 +5,7 @@ import {
 } from "@heroicons/react/20/solid";
 import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
-import type { FC, ReactNode } from "react";
+import type { FC, PropsWithChildren, ReactNode } from "react";
 import { cloneElement, useState } from "react";
 import { usePopper } from "react-popper";
 import { mapChildrenSafe } from "../util/mapChildrenSafe";
@@ -47,11 +47,11 @@ export type MenuChildProps = {
 export type MenuType = FC<{ children?: ReactNode }> & {
   ItemButton: FC<MenuItemButtonProps>;
   ItemLink: FC<MenuItemLinkProps>;
-  Button: FC<MenuChildProps>;
+  Button: FC<PropsWithChildren<MenuChildProps>>;
   RawButton: typeof HeadlessMenu.Button;
-  Section: FC;
-  Items: FC<MenuChildProps>;
-  OverflowButton: FC<MenuChildProps>;
+  Section: FC<PropsWithChildren>;
+  Items: FC<PropsWithChildren<MenuChildProps>>;
+  OverflowButton: FC<PropsWithChildren<MenuChildProps>>;
 };
 
 export const Menu: MenuType = ({ children }) => {
@@ -65,16 +65,17 @@ export const Menu: MenuType = ({ children }) => {
 
   return (
     <HeadlessMenu as="div" className="relative ml-3">
-      {({ open }) =>
-        mapChildrenSafe(children, (child) =>
+      {({ open }) => {
+        const res = mapChildrenSafe(children, (child) =>
           cloneElement(child, {
             open,
             setShowMoreElement,
             setPopupElement,
             popper,
           })
-        )
-      }
+        );
+        return res;
+      }}
     </HeadlessMenu>
   );
 };
@@ -106,11 +107,11 @@ const ItemButton: MenuType["ItemButton"] = ({
 };
 Menu.ItemButton = ItemButton;
 
-const RawLink: FC<{ to: string; className: string }> = ({
+const RawLink = ({
   to,
   children,
   className,
-}) => (
+}: PropsWithChildren<{ to: string; className: string }>) => (
   <a href={to} className={className}>
     {children}
   </a>

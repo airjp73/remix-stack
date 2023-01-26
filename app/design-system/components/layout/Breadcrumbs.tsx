@@ -1,17 +1,17 @@
 import { ChevronRightIcon, HomeIcon } from "@heroicons/react/20/solid";
 import classNames from "classnames";
-import type { FC } from "react";
+import type { FC, PropsWithChildren } from "react";
 import { Link } from "react-router-dom";
 
-export type CrumbProps = {
+export type CrumbProps = PropsWithChildren<{
   to: string;
   current?: boolean;
   root?: boolean;
-};
+}>;
 
-export type BreadcrumbsProps = {
+export type BreadcrumbsProps = PropsWithChildren<{
   className?: string;
-};
+}>;
 
 export type BreadcrumbsType = FC<BreadcrumbsProps> & {
   Crumb: FC<CrumbProps>;

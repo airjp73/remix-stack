@@ -1,9 +1,9 @@
 import classNames from "classnames";
-import type { FC } from "react";
+import type { FC, PropsWithChildren } from "react";
 
-export type TableProps = {
+export type TableProps = PropsWithChildren<{
   className?: string;
-};
+}>;
 
 export type TableCellProps = {
   primaryColumn?: boolean;
@@ -15,7 +15,7 @@ export type ActionHeaderCellProps = {
 };
 
 export type TableType = FC<TableProps> & {
-  Header: FC;
+  Header: FC<PropsWithChildren>;
   Body: FC<JSX.IntrinsicElements["tbody"]>;
   Row: FC<JSX.IntrinsicElements["tr"]>;
   HeaderCell: FC<JSX.IntrinsicElements["th"]>;

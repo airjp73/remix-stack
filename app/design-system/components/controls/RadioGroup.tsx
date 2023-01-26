@@ -1,17 +1,17 @@
 import { RadioGroup as BaseRadioGroup } from "@headlessui/react";
 import classNames from "classnames";
-import type { FC } from "react";
+import type { FC, PropsWithChildren } from "react";
 import { useState } from "react";
 import { Children, cloneElement, isValidElement } from "react";
 
-export type RadioGroupProps = {
+export type RadioGroupProps = PropsWithChildren<{
   srOnlyLabel: string;
   value?: string;
   onChange?: (value: string | undefined) => void;
   className?: string;
   name: string;
   defaultValue?: string;
-};
+}>;
 
 export type RadioGroupType = FC<RadioGroupProps> & {
   Option: FC<{

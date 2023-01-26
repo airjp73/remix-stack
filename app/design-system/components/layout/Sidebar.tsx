@@ -2,7 +2,12 @@ import { Dialog } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
-import type { ComponentProps, FC, ReactElement } from "react";
+import type {
+  ComponentProps,
+  FC,
+  PropsWithChildren,
+  ReactElement,
+} from "react";
 import { cloneElement } from "react";
 import { NavLink } from "react-router-dom";
 
@@ -28,10 +33,10 @@ export type SlideOutProps = {
 };
 
 export type SidebarType = FC<
-  SidebarProps & ComponentProps<typeof motion.div>
+  PropsWithChildren<SidebarProps & ComponentProps<typeof motion.div>>
 > & {
   NavItem: FC<SidebarNavItemProps>;
-  SlideOut: FC<SlideOutProps>;
+  SlideOut: FC<PropsWithChildren<SlideOutProps>>;
 };
 
 export const Sidebar: SidebarType = ({

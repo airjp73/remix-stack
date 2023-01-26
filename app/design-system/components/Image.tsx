@@ -1,4 +1,5 @@
-import { type FC, cloneElement, isValidElement, useState } from "react";
+import type { PropsWithChildren } from "react";
+import { type FC, cloneElement, useState } from "react";
 import { mapChildrenSafe } from "../util/mapChildrenSafe";
 
 export type SourceElementProps = {
@@ -10,7 +11,7 @@ export type ImageType = FC<{
   alt: string;
   className?: string;
 }> & {
-  Picture: FC;
+  Picture: FC<PropsWithChildren>;
   Src: FC<{ srcSet: string } & SourceElementProps>;
   Img: FC<
     { src: string; alt: string; className?: string } & SourceElementProps

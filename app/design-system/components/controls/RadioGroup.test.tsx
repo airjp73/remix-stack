@@ -15,7 +15,9 @@ describe("RadioGroup", () => {
       </form>
     );
 
-    const data = new FormData(screen.getByTestId("test-form"));
+    const data = new FormData(
+      screen.getByTestId("test-form") as HTMLFormElement
+    );
     expect(data.get("testRadioGroup")).toBe("hello");
     expect(screen.getByLabelText("Hello")).toBeChecked();
     expect(screen.getByLabelText("Goodbye")).not.toBeChecked();
@@ -35,7 +37,8 @@ describe("RadioGroup", () => {
       </form>
     );
 
-    const getData = () => new FormData(screen.getByTestId("test-form"));
+    const getData = () =>
+      new FormData(screen.getByTestId("test-form") as HTMLFormElement);
 
     expect(getData().get("testRadioGroup")).toBe("hello");
     expect(screen.getByLabelText("Hello")).toBeChecked();
@@ -53,10 +56,15 @@ describe("RadioGroup", () => {
   });
 
   it("should be controlable", async () => {
-    const UseState = ({ children }: any) => {
-      const [state, setState] = useState("hello");
+    type State = string | undefined;
+    function UseState({
+      children,
+    }: {
+      children: (args: [State, (value: State) => void]) => JSX.Element;
+    }) {
+      const [state, setState] = useState<State>("hello");
       return children([state, setState]);
-    };
+    }
 
     render(
       <form data-testid="test-form">
@@ -77,7 +85,8 @@ describe("RadioGroup", () => {
       </form>
     );
 
-    const getData = () => new FormData(screen.getByTestId("test-form"));
+    const getData = () =>
+      new FormData(screen.getByTestId("test-form") as HTMLFormElement);
 
     expect(getData().get("testRadioGroup")).toBe("hello");
     expect(screen.getByText("Value is: hello")).toBeInTheDocument();

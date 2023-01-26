@@ -1,4 +1,4 @@
-import { ExclamationCircleIcon } from "@heroicons/react/solid";
+import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
 import classNames from "classnames";
 import type { FC, ReactElement } from "react";
 

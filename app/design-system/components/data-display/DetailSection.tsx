@@ -1,20 +1,20 @@
 import classNames from "classnames";
-import type { FC } from "react";
+import type { FC, PropsWithChildren } from "react";
 import { cloneElement } from "react";
 import { mapChildrenSafe } from "../../util/mapChildrenSafe";
 
 type Variant = "default" | "compact";
 type VariantStyles<T extends string> = { [key in T]: string };
 
-export type DetailSectionProps = {
+export type DetailSectionProps = PropsWithChildren<{
   className?: string;
   variant?: Variant;
-};
+}>;
 
-export type DetailSectionRowProps = {
+export type DetailSectionRowProps = PropsWithChildren<{
   label: string;
   variant?: Variant;
-};
+}>;
 
 export type DetailSectionType = FC<DetailSectionProps> & {
   Row: FC<DetailSectionRowProps>;

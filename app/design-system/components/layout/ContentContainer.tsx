@@ -1,14 +1,14 @@
 import classNames from "classnames";
-import type { FC } from "react";
+import type { PropsWithChildren } from "react";
 
 export type ContentContainerProps = {
   className?: string;
 };
 
-export const ContentContainer: FC<ContentContainerProps> = ({
+export const ContentContainer = ({
   children,
   className,
-}) => {
+}: PropsWithChildren<ContentContainerProps>) => {
   return (
     <div
       className={classNames(
