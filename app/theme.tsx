@@ -14,10 +14,8 @@ export const updateTheme = (theme: Theme) => {
   window.localStorage.theme = theme;
 
   if (theme === "dark") {
-    // document.documentElement.classList.add("dark");
     document.documentElement.dataset.theme = "dark";
   } else {
-    // document.documentElement.classList.remove("dark");
     document.documentElement.dataset.theme = "light";
   }
 };

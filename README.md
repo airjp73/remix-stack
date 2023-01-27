@@ -12,9 +12,10 @@ This is still a work in progress and not ready for use.
 
 ## Changes intended
 
-[X] Prepopulated with components from tailwind ui.
+[X] Prepopulated with components some components
 [X] remix-validated-form & zod pre-installed
-[X] Example app replaced with something using tailwind ui.
+[X] Example app replaced
+[X] Dark mode implemented
 [] Authentication with Auth0 and remix-auth
 
 ## What's being removed
