@@ -13,7 +13,13 @@ import { getUser } from "./session.server";
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
+  return [
+    { rel: "stylesheet", href: tailwindStylesheetUrl },
+    {
+      rel: "stylesheet",
+      href: "https://fonts.googleapis.com/css?family=Inter",
+    },
+  ];
 };
 
 export const meta: MetaFunction = () => ({
@@ -35,7 +41,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="h-full">
+      <body className="h-full font-sans">
         <Outlet />
         <ScrollRestoration />
         <Scripts />
