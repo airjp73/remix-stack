@@ -45,7 +45,11 @@ export default function Example() {
                   method="post"
                   className="space-y-6"
                 >
-                  <Field name="name" label="Name">
+                  <Field
+                    name="name"
+                    label="Name"
+                    description="Should say your name"
+                  >
                     <FieldInput />
                   </Field>
                   <Field name="email" label="Email">

@@ -46,7 +46,22 @@ const Field = ({ name, description, children, label }: FieldProps) => {
       <div>
         <Label htmlFor={id}>{label}</Label>
         {children}
-        {error && <p id={idForError}>{error}</p>}
+        {description && (
+          <p
+            id={descriptionId}
+            className="mt-1 text-sm text-slate-500 dark:text-slate-400"
+          >
+            {description}
+          </p>
+        )}
+        {error && (
+          <p
+            id={errorId}
+            className="mt-1 text-sm font-medium leading-none text-red-600 dark:text-red-400"
+          >
+            {error}
+          </p>
+        )}
       </div>
     </FieldContext.Provider>
   );
