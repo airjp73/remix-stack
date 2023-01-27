@@ -18,6 +18,7 @@ This is still a work in progress and not ready for use.
 [X] Dark mode implemented
 [X] I18n support
 [] Authentication with Auth0 and remix-auth
+[] Test deployment with fly
 
 ## What's being removed
 
