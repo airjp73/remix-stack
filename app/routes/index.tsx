@@ -10,6 +10,7 @@ import { SubmitButton } from "~/ui/form/SubmitButton";
 import { Alert } from "~/ui/Alert";
 import { ThemeToggle } from "~/theme";
 import { useTranslation } from "react-i18next";
+import i18next from "~/i18n.server";
 
 const validator = withZod(
   z.object({
@@ -22,10 +23,12 @@ export const action = async ({ request }: ActionArgs) => {
   const data = await validator.validate(await request.formData());
   if (data.error) return validationError(data.error);
 
+  const t = await i18next.getFixedT(request);
+
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
   return json({
-    message: `Hello ${data.data.name}! Your email is: ${data.data.email}`,
+    message: t("success", { replace: data.data }),
   });
 };
 

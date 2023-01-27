@@ -2,5 +2,6 @@
   "name": "Name",
   "email": "Email",
   "submit": "Submit",
-  "submitting": "Submitting..."
+  "submitting": "Submitting...",
+  "success": "Hello {{name}}! Your email is {{email}}"
 }

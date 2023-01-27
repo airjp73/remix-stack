@@ -5,11 +5,12 @@ module.exports = {
     "@remix-run/eslint-config/node",
     "@remix-run/eslint-config/jest-testing-library",
     "prettier",
+    "plugin:i18next/recommended",
   ],
   env: {
     "cypress/globals": true,
   },
-  plugins: ["cypress"],
+  plugins: ["cypress", "i18next"],
   // We're using vitest which has a very similar API to jest
   // (so the linting plugins work nicely), but we have to
   // set the jest version explicitly.

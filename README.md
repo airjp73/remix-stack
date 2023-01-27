@@ -16,6 +16,7 @@ This is still a work in progress and not ready for use.
 [X] remix-validated-form & zod pre-installed
 [X] Example app replaced
 [X] Dark mode implemented
+[X] I18n support
 [] Authentication with Auth0 and remix-auth
 
 ## What's being removed
