@@ -16,6 +16,7 @@ This is still a work in progress and not ready for use.
 [X] remix-validated-form & zod pre-installed
 [X] Example app replaced with something using tailwind ui.
 [] Authentication with Auth0 and remix-auth
+[] I18n support
 
 ## What's being removed
 

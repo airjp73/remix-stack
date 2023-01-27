@@ -4,9 +4,14 @@ import { json } from "@remix-run/server-runtime";
 import { withZod } from "@remix-validated-form/with-zod";
 import { z } from "zod";
 import { ValidatedForm, validationError } from "remix-validated-form";
-import { Alert } from "~/design-system/Alert";
 import { zfd } from "zod-form-data";
-import { FormInput } from "~/form/FormInput";
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  Container,
+} from "@chakra-ui/react";
+import { Input } from "~/form/Input";
 import { SubmitButton } from "~/form/SubmitButton";
 
 const validator = withZod(
@@ -32,9 +37,12 @@ export default function Example() {
       <div className="flex min-h-full">
         <div className="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-sm lg:w-96">
-            <div className="mt-8">
+            <Container>
               {data && "message" in data && (
-                <Alert variant="info" details={data.message} />
+                <Alert status="success">
+                  <AlertIcon />
+                  <AlertDescription>{data.message}</AlertDescription>
+                </Alert>
               )}
               <div className="mt-6">
                 <ValidatedForm
@@ -43,16 +51,12 @@ export default function Example() {
                   method="post"
                   className="space-y-6"
                 >
-                  <FormInput label="Name" name="name" />
-                  <FormInput label="Email" name="email" />
-                  <SubmitButton
-                    label="Submit"
-                    className="w-full"
-                    loadingLabel="Submitting..."
-                  />
+                  <Input label="Name" name="name" />
+                  <Input label="Email" name="email" />
+                  <SubmitButton>Submit</SubmitButton>
                 </ValidatedForm>
               </div>
-            </div>
+            </Container>
           </div>
         </div>
       </div>

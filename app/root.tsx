@@ -1,3 +1,4 @@
+import { ChakraProvider } from "@chakra-ui/react";
 import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
@@ -36,7 +37,9 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
-        <Outlet />
+        <ChakraProvider>
+          <Outlet />
+        </ChakraProvider>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
