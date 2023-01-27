@@ -9,6 +9,7 @@ import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
 import { Alert } from "~/ui/Alert";
 import { ThemeToggle } from "~/theme";
+import { useTranslation } from "react-i18next";
 
 const validator = withZod(
   z.object({
@@ -30,6 +31,7 @@ export const action = async ({ request }: ActionArgs) => {
 
 export default function Example() {
   const data = useActionData<typeof action>();
+  const { t } = useTranslation();
   return (
     <>
       <div className="absolute top-4 right-4">
@@ -50,18 +52,18 @@ export default function Example() {
               >
                 <Field
                   name="name"
-                  label="Name"
+                  label={t("name")}
                   description="Should say your name"
                 >
                   <FieldInput />
                 </Field>
-                <Field name="email" label="Email">
+                <Field name="email" label={t("email")}>
                   <FieldInput />
                 </Field>
                 <SubmitButton
                   variant="default"
-                  label="Submit"
-                  loadingLabel="Submitting..."
+                  label={t("submit")}
+                  loadingLabel={t("submitting")!}
                   className="w-full"
                 />
               </ValidatedForm>
