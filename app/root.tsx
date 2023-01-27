@@ -1,5 +1,5 @@
-import { ChakraProvider } from "@chakra-ui/react";
-import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
+import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
+import type { LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
   Links,
@@ -9,17 +9,12 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-
 import { getUser } from "./session.server";
-import tailwindStylesheetUrl from "./styles/tailwind.css";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
-};
+import { theme } from "./theme";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
-  title: "Remix Notes",
+  title: "airjp73 Remix Stack Example",
   viewport: "width=device-width,initial-scale=1",
 });
 
@@ -31,13 +26,14 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function App() {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" style={{ height: "100%" }}>
       <head>
         <Meta />
         <Links />
       </head>
-      <body className="h-full">
-        <ChakraProvider>
+      <body style={{ height: "100%" }}>
+        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+        <ChakraProvider theme={theme}>
           <Outlet />
         </ChakraProvider>
         <ScrollRestoration />

@@ -11,6 +11,7 @@ import {
   AlertIcon,
   Card,
   Center,
+  Stack,
 } from "@chakra-ui/react";
 import { Input } from "~/form/Input";
 import { SubmitButton } from "~/form/SubmitButton";
@@ -38,7 +39,7 @@ export default function Example() {
       <Center height="full" bg="gray.50">
         <Card py={8} px={4} w="sm">
           {data && "message" in data && (
-            <Alert status="success">
+            <Alert status="success" mb={8}>
               <AlertIcon />
               <AlertDescription>{data.message}</AlertDescription>
             </Alert>
@@ -49,9 +50,11 @@ export default function Example() {
             method="post"
             className="space-y-6"
           >
-            <Input label="Name" name="name" />
-            <Input label="Email" name="email" />
-            <SubmitButton colorScheme="pink">Submit</SubmitButton>
+            <Stack spacing={8}>
+              <Input label="Name" name="name" />
+              <Input label="Email" name="email" />
+              <SubmitButton colorScheme="pink">Submit</SubmitButton>
+            </Stack>
           </ValidatedForm>
         </Card>
       </Center>
