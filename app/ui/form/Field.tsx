@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useField } from "remix-validated-form";
 import { Input } from "../Input";
-import type { LabelRefType } from "../Label";
 import { Label } from "../Label";
 import invariant from "tiny-invariant";
 
@@ -47,6 +46,7 @@ const Field = ({ name, description, children, label }: FieldProps) => {
       <div>
         <Label htmlFor={id}>{label}</Label>
         {children}
+        {error && <p id={idForError}>{error}</p>}
       </div>
     </FieldContext.Provider>
   );
@@ -67,12 +67,14 @@ export type FieldInputProps = Omit<
 const FieldInput = React.forwardRef<HTMLInputElement, FieldInputProps>(
   ({ ...props }, ref) => {
     const { name, id, errorId, descriptionId } = useFieldContext();
-    const { getInputProps } = useField(name);
+    const { getInputProps, error } = useField(name);
+
     return (
       <Input
         ref={ref}
         {...getInputProps({
           ...props,
+          invalid: !!error,
           id,
           "aria-describedby":
             [errorId, descriptionId].filter(Boolean).join(" ") || undefined,
