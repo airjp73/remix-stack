@@ -9,7 +9,8 @@ import {
   Alert,
   AlertDescription,
   AlertIcon,
-  Container,
+  Card,
+  Center,
 } from "@chakra-ui/react";
 import { Input } from "~/form/Input";
 import { SubmitButton } from "~/form/SubmitButton";
@@ -34,32 +35,26 @@ export default function Example() {
   const data = useActionData<typeof action>();
   return (
     <>
-      <div className="flex min-h-full">
-        <div className="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-          <div className="mx-auto w-full max-w-sm lg:w-96">
-            <Container>
-              {data && "message" in data && (
-                <Alert status="success">
-                  <AlertIcon />
-                  <AlertDescription>{data.message}</AlertDescription>
-                </Alert>
-              )}
-              <div className="mt-6">
-                <ValidatedForm
-                  validator={validator}
-                  action="?index"
-                  method="post"
-                  className="space-y-6"
-                >
-                  <Input label="Name" name="name" />
-                  <Input label="Email" name="email" />
-                  <SubmitButton>Submit</SubmitButton>
-                </ValidatedForm>
-              </div>
-            </Container>
-          </div>
-        </div>
-      </div>
+      <Center height="full" bg="gray.50">
+        <Card py={8} px={4} w="sm">
+          {data && "message" in data && (
+            <Alert status="success">
+              <AlertIcon />
+              <AlertDescription>{data.message}</AlertDescription>
+            </Alert>
+          )}
+          <ValidatedForm
+            validator={validator}
+            action="?index"
+            method="post"
+            className="space-y-6"
+          >
+            <Input label="Name" name="name" />
+            <Input label="Email" name="email" />
+            <SubmitButton colorScheme="pink">Submit</SubmitButton>
+          </ValidatedForm>
+        </Card>
+      </Center>
     </>
   );
 }

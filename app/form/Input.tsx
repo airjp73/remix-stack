@@ -5,6 +5,7 @@ import {
   FormLabel,
   Input as ChakraInput,
 } from "@chakra-ui/react";
+import type { ComponentProps } from "react";
 import { useField } from "remix-validated-form";
 
 export type InputProps = {
@@ -12,12 +13,18 @@ export type InputProps = {
   name: string;
   type?: string;
   description?: string;
-};
+} & ComponentProps<typeof FormControl>;
 
-export const Input = ({ label, name, type, description }: InputProps) => {
+export const Input = ({
+  label,
+  name,
+  type,
+  description,
+  ...rest
+}: InputProps) => {
   const { getInputProps, error } = useField(name);
   return (
-    <FormControl isInvalid={!!error}>
+    <FormControl isInvalid={!!error} {...rest}>
       <FormLabel>{label}</FormLabel>
       <ChakraInput {...getInputProps({ type })} />
       {description && <FormHelperText>description</FormHelperText>}
