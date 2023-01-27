@@ -8,6 +8,7 @@ import { zfd } from "zod-form-data";
 import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
 import { Alert } from "~/ui/Alert";
+import { ThemeToggle } from "~/theme";
 
 const validator = withZod(
   z.object({
@@ -31,7 +32,10 @@ export default function Example() {
   const data = useActionData<typeof action>();
   return (
     <>
-      <div className="flex min-h-full flex-col justify-center bg-gray-50 py-12 sm:px-6 lg:px-8">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+      <div className="flex min-h-full flex-col justify-center bg-gray-50 py-12 dark:bg-gray-800 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <div className="mt-8">
             {data && "message" in data && (

@@ -40,6 +40,13 @@ export default function App() {
       <head>
         <Meta />
         <Links />
+        {/* Ensure dark mode is always correctly set without a flash of light mode */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "if (localStorage.theme === 'dark') document.documentElement.dataset.theme = 'dark';",
+          }}
+        />
       </head>
       <body className="h-full font-sans">
         <Outlet />

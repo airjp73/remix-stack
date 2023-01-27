@@ -36,6 +36,7 @@
   "dependencies": {
     "@prisma/client": "^4.9.0",
     "@radix-ui/react-label": "^2.0.0",
+    "@radix-ui/react-switch": "^1.0.1",
     "@remix-run/express": "*",
     "@remix-run/node": "*",
     "@remix-run/react": "*",
@@ -55,6 +56,7 @@
     "prom-client": "^14.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "remix-utils": "^6.0.0",
     "remix-validated-form": "^4.6.7",
     "tailwind-merge": "^1.8.1",
     "tailwindcss-animate": "^1.0.5",
