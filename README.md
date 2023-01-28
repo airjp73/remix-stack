@@ -18,8 +18,8 @@ This is still a work in progress and not ready for use.
 [X] Dark mode implemented
 [X] I18n support
 [X] Authentication with Firebase and remix-auth
-  [] Add example of page requiring a session
-  [] Add user info somewhere on the page
+  [X] Add example of page requiring a session
+  [X] Add user info somewhere on the page
 [] Clean up how inputs look in dark mode
 [] I18n for form validation errors errors
 [] Test deployment with fly

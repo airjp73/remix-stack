@@ -1,4 +1,6 @@
+import type { Session } from "@remix-run/node";
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
+import type { DecodedIdToken } from "firebase-admin/auth";
 import { serverAuth } from "./firebase/firebase.server";
 import { env } from "./server/env.server";
 
@@ -42,24 +44,29 @@ export async function createUserSession({
   });
 }
 
+type User = {
+  idToken: DecodedIdToken;
+};
+
 export async function requireAuthentication(
   request: Request,
   redirectTo: string = new URL(request.url).pathname
-) {
-  const reject = () => {
-    const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
-    throw redirect(`/login?${searchParams}`);
-  };
+): Promise<User> {
+  const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
+  const redirectUrl = `/login?${searchParams}`;
 
   const session = await getSession(request);
   const idToken = session.get(ID_TOKEN_KEY);
 
-  if (!idToken) reject();
+  if (!idToken) {
+    throw redirect(redirectUrl);
+  }
 
   try {
-    await serverAuth.verifyIdToken(idToken);
+    const decoded = await serverAuth.verifyIdToken(idToken);
+    return { idToken: decoded };
   } catch (err) {
-    reject();
+    throw redirect(redirectUrl);
   }
 }
 

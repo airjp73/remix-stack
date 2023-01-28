@@ -1,4 +1,4 @@
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData, useSearchParams } from "@remix-run/react";
 import type { ActionArgs } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { withZod } from "@remix-validated-form/with-zod";
@@ -30,13 +30,18 @@ export const loader = async () => {
 
 const actionBody = zfd.formData({
   idToken: z.string(),
+  redirectTo: z.string().optional(),
 });
 
 export const action = async ({ request }: ActionArgs) => {
-  const { idToken } = actionBody.parse(await request.formData());
+  const { idToken, redirectTo } = actionBody.parse(await request.formData());
 
   await serverAuth.verifyIdToken(idToken);
-  return createUserSession({ request, idToken, redirectTo: "/" });
+  return createUserSession({
+    request,
+    idToken,
+    redirectTo: redirectTo ?? "/dashboard",
+  });
 };
 
 const formValidator = withZod(
@@ -52,6 +57,8 @@ export default function Login() {
   const auth = useFirebaseAuth(firebaseOptions);
   const fetcher = useFetcher();
   const [error, setError] = useState(false);
+  const [params] = useSearchParams();
+  const redirectTo = params.get("redirectTo") ?? undefined;
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -61,6 +68,9 @@ export default function Login() {
         password
       );
       const idToken = await credential.user.getIdToken();
+
+      const body: Record<string, string> = { idToken };
+      if (redirectTo) body.redirectTo = redirectTo;
       fetcher.submit({ idToken }, { method: "post" });
     } catch (err) {
       setError(true);

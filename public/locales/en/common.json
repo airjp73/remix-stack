@@ -1,5 +1,9 @@
 {
   "greeting": "Welcome!",
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome, {{name}}!"
+  },
   "login": {
     "emailLabel": "Email",
     "passwordLabel": "Password",
