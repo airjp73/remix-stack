@@ -21,6 +21,7 @@ This is still a work in progress and not ready for use.
   [X] Add example of page requiring a session
   [X] Add user info somewhere on the page
   [X] Add "login with google"
+  [] Update signup page to match login
   [] Add user record to DB
 [X] Clean up how inputs look in dark mode
 [] I18n for form validation errors errors
