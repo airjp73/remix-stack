@@ -1,7 +1,15 @@
 {
-  "name": "Name",
-  "email": "Email",
-  "submit": "Submit",
-  "submitting": "Submitting...",
-  "success": "Hello {{name}}! Your email is {{email}}"
+  "greeting": "Welcome!",
+  "login": {
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "loginButton": {
+      "label": "Login",
+      "loadingLabel": "Logging in..."
+    },
+    "signupButton": {
+      "label": "Sign up",
+      "loadingLabel": "Creating your account..."
+    }
+  }
 }

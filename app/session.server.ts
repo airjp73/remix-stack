@@ -1,10 +1,6 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
-import invariant from "tiny-invariant";
-
-import type { User } from "~/models/user.server";
-import { getUserById } from "~/models/user.server";
-
-invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
+import { serverAuth } from "./firebase/firebase.server";
+import { env } from "./server/env.server";
 
 export const sessionStorage = createCookieSessionStorage({
   cookie: {
@@ -12,79 +8,59 @@ export const sessionStorage = createCookieSessionStorage({
     httpOnly: true,
     path: "/",
     sameSite: "lax",
-    secrets: [process.env.SESSION_SECRET],
+    secrets: [env.SESSION_SECRET],
     secure: process.env.NODE_ENV === "production",
   },
 });
-
-const USER_SESSION_KEY = "userId";
 
 export async function getSession(request: Request) {
   const cookie = request.headers.get("Cookie");
   return sessionStorage.getSession(cookie);
 }
 
-export async function getUserId(
-  request: Request
-): Promise<User["id"] | undefined> {
-  const session = await getSession(request);
-  const userId = session.get(USER_SESSION_KEY);
-  return userId;
-}
-
-export async function getUser(request: Request) {
-  const userId = await getUserId(request);
-  if (userId === undefined) return null;
-
-  const user = await getUserById(userId);
-  if (user) return user;
-
-  throw await logout(request);
-}
-
-export async function requireUserId(
-  request: Request,
-  redirectTo: string = new URL(request.url).pathname
-) {
-  const userId = await getUserId(request);
-  if (!userId) {
-    const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
-    throw redirect(`/login?${searchParams}`);
-  }
-  return userId;
-}
-
-export async function requireUser(request: Request) {
-  const userId = await requireUserId(request);
-
-  const user = await getUserById(userId);
-  if (user) return user;
-
-  throw await logout(request);
-}
+// 7 days
+export const SESSION_EXPIRY_SECONDS = 60 * 60 * 24 * 7;
+const ID_TOKEN_KEY = "idToken";
 
 export async function createUserSession({
   request,
-  userId,
-  remember,
+  idToken,
   redirectTo,
 }: {
   request: Request;
-  userId: string;
-  remember: boolean;
+  idToken: string;
   redirectTo: string;
 }) {
   const session = await getSession(request);
-  session.set(USER_SESSION_KEY, userId);
+  session.set(ID_TOKEN_KEY, idToken);
   return redirect(redirectTo, {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session, {
-        maxAge: remember
-          ? 60 * 60 * 24 * 7 // 7 days
-          : undefined,
+        maxAge: SESSION_EXPIRY_SECONDS,
       }),
     },
   });
+}
+
+export async function requireAuthentication(
+  request: Request,
+  redirectTo: string = new URL(request.url).pathname
+) {
+  const reject = () => {
+    const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
+    throw redirect(`/login?${searchParams}`);
+  };
+
+  const session = await getSession(request);
+  const idToken = session.get(ID_TOKEN_KEY);
+
+  if (!idToken) reject();
+
+  try {
+    await serverAuth.verifyIdToken(idToken);
+  } catch (err) {
+    reject();
+  }
 }
 
 export async function logout(request: Request) {
