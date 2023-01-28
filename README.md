@@ -17,9 +17,10 @@ This is still a work in progress and not ready for use.
 [X] Example app replaced
 [X] Dark mode implemented
 [X] I18n support
-[] Authentication with Firebase and remix-auth
-[] Sentry error monitoring
+[X] Authentication with Firebase and remix-auth
+[] I18n for form validation errors errors
 [] Test deployment with fly
+[] Sentry error monitoring
 
 ## What's being removed
 
