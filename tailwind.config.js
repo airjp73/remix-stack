@@ -1,4 +1,12 @@
 const { fontFamily } = require("tailwindcss/defaultTheme");
+const {
+  lightBlue,
+  warmGray,
+  trueGray,
+  coolGray,
+  blueGray,
+  ...colors
+} = require("tailwindcss/colors");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -22,6 +30,10 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      colors: {
+        brand: colors.pink,
+        ...colors,
       },
     },
   },

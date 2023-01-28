@@ -9,7 +9,6 @@ let auth: Auth;
 
 if (getApps().length === 0) {
   const j = JSON.parse(env.FIREBASE_SERVICE_KEY);
-  console.log("HELLO");
   app = initializeApp({
     credential: cert(j),
   });

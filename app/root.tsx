@@ -58,7 +58,7 @@ export default function App() {
           }}
         />
       </head>
-      <body className="h-full font-sans">
+      <body className="h-full bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-900 dark:text-slate-50">
         <Outlet />
         <ScrollRestoration />
         <Scripts />

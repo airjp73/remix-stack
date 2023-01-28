@@ -20,6 +20,7 @@ This is still a work in progress and not ready for use.
 [X] Authentication with Firebase and remix-auth
   [X] Add example of page requiring a session
   [X] Add user info somewhere on the page
+  [] Add "login with google"
 [] Clean up how inputs look in dark mode
 [] I18n for form validation errors errors
 [] Test deployment with fly

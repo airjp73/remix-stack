@@ -8,7 +8,7 @@ const variants = cva(
     variants: {
       validity: {
         valid:
-          "border-slate-300 dark:border-slate-700 focus:ring-slate-400 dark:focus:ring-slate-400 ",
+          "border-slate-300 dark:border-slate-600 focus:ring-slate-400 dark:focus:ring-slate-400 ",
         invalid:
           "border-red-300 dark:border-red-700 focus:ring-red-400 dark:focus:ring-red-400",
       },
