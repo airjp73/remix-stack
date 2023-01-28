@@ -5,6 +5,12 @@
     "welcome": "Welcome, {{name}}!"
   },
   "login": {
+    "header": "Sign in to your account",
+    "socialLogin": {
+      "label": "Sign in with",
+      "google": "Google",
+      "orPasswordLogin": "Or continue with"
+    },
     "emailLabel": "Email",
     "passwordLabel": "Password",
     "loginButton": {
@@ -16,6 +22,8 @@
       "loadingLabel": "Creating your account..."
     },
     "loginFailed": "Email or password is incorrect.",
-    "signupFailed": "An unexpected error occurred while creating your account. Please try again in a few seconds."
+    "signupFailed": "An unexpected error occurred while creating your account. Please try again in a few seconds.",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot your password?"
   }
 }

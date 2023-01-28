@@ -2,7 +2,11 @@ import { useFetcher, useLoaderData, useSearchParams } from "@remix-run/react";
 import type { ActionArgs } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { withZod } from "@remix-validated-form/with-zod";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ValidatedForm } from "remix-validated-form";
@@ -105,6 +109,20 @@ export default function Login() {
     }
   };
 
+  const signInWithGoogle = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth(), provider);
+      const idToken = await result.user.getIdToken();
+
+      const body: Record<string, string> = { idToken };
+      if (redirectTo) body.redirectTo = redirectTo;
+      fetcher.submit({ idToken }, { method: "post" });
+    } catch (err) {
+      setError(true);
+    }
+  };
+
   return (
     <div className="h-full">
       <div className="absolute top-4 right-4">
@@ -113,7 +131,7 @@ export default function Login() {
       <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight">
-            Sign in to your account
+            {t("login.header")}
           </h2>
         </div>
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -127,11 +145,15 @@ export default function Login() {
             )}
             <div>
               <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                Sign in with
+                {t("login.socialLogin.label")}
               </p>
-              <Button variant="google" className="w-full space-x-4">
+              <Button
+                variant="google"
+                className="w-full space-x-4"
+                onClick={signInWithGoogle}
+              >
                 <GoogleIcon />
-                <span>Google</span>
+                <span>{t("login.socialLogin.google")}</span>
               </Button>
             </div>
             <div className="relative">
@@ -140,7 +162,7 @@ export default function Login() {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="bg-white px-2 text-slate-500 dark:bg-slate-800 dark:text-slate-300">
-                  Or continue with
+                  {t("login.socialLogin.orPasswordLogin")}
                 </span>
               </div>
             </div>
@@ -169,7 +191,7 @@ export default function Login() {
                     className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                   />
                   <label htmlFor="remember-me" className="ml-2 block text-sm">
-                    Remember me
+                    {t("login.rememberMe")}
                   </label>
                 </div>
 
@@ -178,7 +200,7 @@ export default function Login() {
                     href="#"
                     className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-500"
                   >
-                    Forgot your password?
+                    {t("login.forgotPassword")}
                   </a>
                 </div>
               </div>
