@@ -10,6 +10,8 @@
     "signupButton": {
       "label": "Sign up",
       "loadingLabel": "Creating your account..."
-    }
+    },
+    "loginFailed": "Email or password is incorrect.",
+    "signupFailed": "An unexpected error occurred while creating your account. Please try again in a few seconds."
   }
 }

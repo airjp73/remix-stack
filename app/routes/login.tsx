@@ -3,6 +3,7 @@ import type { ActionArgs } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { withZod } from "@remix-validated-form/with-zod";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ValidatedForm } from "remix-validated-form";
 import { z } from "zod";
@@ -41,8 +42,7 @@ export const action = async ({ request }: ActionArgs) => {
 const formValidator = withZod(
   z.object({
     email: zfd.text(z.string().email()),
-    // TODO: Improve requirements
-    password: zfd.text(z.string().min(8)),
+    password: zfd.text(),
   })
 );
 
@@ -51,6 +51,7 @@ export default function Login() {
   const { t } = useTranslation();
   const auth = useFirebaseAuth(firebaseOptions);
   const fetcher = useFetcher();
+  const [error, setError] = useState(false);
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -62,7 +63,7 @@ export default function Login() {
       const idToken = await credential.user.getIdToken();
       fetcher.submit({ idToken }, { method: "post" });
     } catch (err) {
-      // TODO
+      setError(true);
     }
   };
 
@@ -73,32 +74,36 @@ export default function Login() {
       </div>
       <div className="flex min-h-full flex-col justify-center bg-gray-50 py-12 dark:bg-gray-800 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="mt-8">
-            <div className="mt-6">
-              <ValidatedForm
-                fetcher={fetcher}
-                className="space-y-6"
-                validator={formValidator}
-                onSubmit={async ({ email, password }, event) => {
-                  event.preventDefault();
-                  await signIn(email, password);
-                }}
-              >
-                <Field name="email" label={t("login.emailLabel")}>
-                  <FieldInput />
-                </Field>
-                <Field name="password" label={t("login.passwordLabel")}>
-                  <FieldInput type="password" />
-                </Field>
-                <SubmitButton
-                  variant="default"
-                  label={t("login.loginButton.label")}
-                  loadingLabel={t("login.loginButton.loadingLabel")!}
-                  className="w-full"
-                />
-              </ValidatedForm>
-            </div>
-          </div>
+          {error && (
+            <Alert
+              className="mb-6"
+              variant="error"
+              details={t("login.loginFailed")}
+            />
+          )}
+          <ValidatedForm
+            fetcher={fetcher}
+            className="space-y-6"
+            validator={formValidator}
+            onSubmit={async ({ email, password }, event) => {
+              setError(false);
+              event.preventDefault();
+              await signIn(email, password);
+            }}
+          >
+            <Field name="email" label={t("login.emailLabel")}>
+              <FieldInput />
+            </Field>
+            <Field name="password" label={t("login.passwordLabel")}>
+              <FieldInput type="password" />
+            </Field>
+            <SubmitButton
+              variant="default"
+              label={t("login.loginButton.label")}
+              loadingLabel={t("login.loginButton.loadingLabel")!}
+              className="w-full"
+            />
+          </ValidatedForm>
         </div>
       </div>
     </>

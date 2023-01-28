@@ -12,7 +12,6 @@ import {
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import i18next from "./i18n.server";
-import { env } from "./server/env.server";
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 
 export const links: LinksFunction = () => {
