@@ -2,10 +2,13 @@ import { useFetcher, useLoaderData, useOutletContext } from "@remix-run/react";
 import type { ActionArgs } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { withZod } from "@remix-validated-form/with-zod";
+import { useMachine } from "@xstate/react";
 import type { FirebaseOptions } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   sendEmailVerification,
+  signInWithPopup,
 } from "firebase/auth";
 import type { TFunction } from "i18next";
 import { useState } from "react";
@@ -13,10 +16,13 @@ import { useTranslation } from "react-i18next";
 import { ValidatedForm } from "remix-validated-form";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
+import { GoogleIcon } from "~/auth/GoogleIcon";
+import { loginMachine } from "~/auth/loginMachine";
 import { useFirebaseAuth } from "~/firebase/firebase";
 import { serverAuth } from "~/firebase/firebase.server";
 import { createUserSession } from "~/session.server";
 import { Alert } from "~/ui/Alert";
+import { Button } from "~/ui/Button";
 import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
 
@@ -50,39 +56,70 @@ export default function Signup() {
   }>();
   const auth = useFirebaseAuth(firebaseOptions);
   const fetcher = useFetcher();
-  const [error, setError] = useState(false);
 
-  const signIn = async (email: string, password: string) => {
-    try {
-      const credential = await createUserWithEmailAndPassword(
-        auth(),
-        email,
-        password
-      );
-      const idToken = await credential.user.getIdToken();
-      sendEmailVerification(credential.user);
-      fetcher.submit({ idToken }, { method: "post" });
-    } catch (err) {
-      setError(true);
-    }
-  };
+  const [state, send] = useMachine(loginMachine, {
+    services: {
+      "log in with google": async () => {
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth(), provider);
+        return await result.user.getIdToken();
+      },
+      "log in with password": async (
+        _ctx,
+        { payload: { email, password } }
+      ) => {
+        const credential = await createUserWithEmailAndPassword(
+          auth(),
+          email,
+          password
+        );
+        return await credential.user.getIdToken();
+      },
+      "verify id token": async (_ctx, { data: idToken }) => {
+        fetcher.submit({ idToken }, { method: "post" });
+      },
+    },
+  });
 
   return (
     <>
-      {error && (
+      {state.matches("error") && (
         <Alert
           className="mb-6"
           variant="error"
           details={t("login.signupFailed")}
         />
       )}
+      <div>
+        <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+          {t("login.socialLogin.signupLabel")}
+        </p>
+        <Button
+          variant="google"
+          className="w-full space-x-4"
+          onClick={() => send("log in with google")}
+        >
+          <GoogleIcon />
+          <span>{t("login.socialLogin.google")}</span>
+        </Button>
+      </div>
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-300 dark:border-gray-600" />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="bg-white px-2 text-slate-500 dark:bg-slate-800 dark:text-slate-300">
+            {t("login.socialLogin.orPasswordLogin")}
+          </span>
+        </div>
+      </div>
       <ValidatedForm
         fetcher={fetcher}
         className="space-y-6"
         validator={formValidator}
         onSubmit={async ({ email, password }, event) => {
           event.preventDefault();
-          await signIn(email, password);
+          send({ type: "log in with email", payload: { email, password } });
         }}
       >
         <Field name="email" label={t("login.emailLabel")}>
@@ -96,6 +133,7 @@ export default function Signup() {
           label={t("login.signupButton.label")}
           loadingLabel={t("login.signupButton.loadingLabel")!}
           className="w-full"
+          isLoading={state.matches("logging in with password")}
         />
       </ValidatedForm>
     </>

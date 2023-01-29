@@ -9,6 +9,7 @@
     "signupHeader": "Create your account",
     "socialLogin": {
       "label": "Sign in with",
+      "signupLabel": "Sign up with",
       "google": "Google",
       "orPasswordLogin": "Or continue with"
     },
