@@ -6,9 +6,6 @@ import {
   applyActionCode,
   checkActionCode,
   confirmPasswordReset,
-  reauthenticateWithCredential,
-  signInWithCredential,
-  signInWithCustomToken,
   verifyPasswordResetCode,
 } from "firebase/auth";
 import { Loader2 } from "lucide-react";
@@ -39,7 +36,7 @@ const authActionMachine =
   createMachine({
     id: "authAction",
     initial: "decision",
-    tsTypes: {} as import("./_auth.auth-action.typegen").Typegen0,
+    tsTypes: {} as import("./index.typegen").Typegen0,
 
     schema: {
       events: {} as {
