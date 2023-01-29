@@ -24,6 +24,7 @@ import { Alert } from "~/ui/Alert";
 import { Button } from "~/ui/Button";
 import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
+import { Link } from "~/ui/Link";
 
 const actionBody = zfd.formData({
   idToken: z.string(),
@@ -183,12 +184,7 @@ export default function Login() {
           </div>
 
           <div className="text-sm">
-            <a
-              href="/password-reset"
-              className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-500"
-            >
-              {t("login.forgotPassword")}
-            </a>
+            <Link href="/password-reset">{t("login.forgotPassword")}</Link>
           </div>
         </div>
         <SubmitButton
