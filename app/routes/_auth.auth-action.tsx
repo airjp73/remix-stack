@@ -6,6 +6,9 @@ import {
   applyActionCode,
   checkActionCode,
   confirmPasswordReset,
+  reauthenticateWithCredential,
+  signInWithCredential,
+  signInWithCustomToken,
   verifyPasswordResetCode,
 } from "firebase/auth";
 import { Loader2 } from "lucide-react";
@@ -32,7 +35,7 @@ const passwordConfirmationValidator = withZod(
 );
 
 const authActionMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgQQMboEsB7AOwDoIxcDZiSBiAbQAYBdRUAByNsNI5AAPRAEYAbAHYyAZgBMADhEiJ0gCyTZzAJwAaEAE9EAVhHSyI2UebiJY5mItGAvk71osePuUrVapJiLsSCDcvHQCwggiRlJyispqGtp6hgjy0kZk8hJW8lqq0iLyqvIubhg4+HQUVDR0TLJBXDwEXhGikjIKSirqEpq6BqJazDI51vLysqoKRloSZSDulV5kAE5wYOgACsiwsADuRGsQZABuYGsEAGb6BCRQ9BCkYGT3Z0QA1q-LntUbsC2u32RxO50uNzuDwQ7yIuGQXhYrCRAlCrXCwUiYgcMmY6nkcwkWjEmjEKWMzDM0mpGRMshEqnyWmcriWFT+pHWmx2e0Ox1OYBI6EuADkwAdgXyTvRYKgAEYAW1aYolvNBEBRwTRbUxohE1lx6i0CgcI2p5IQjLM4zx0QKTJZ5Q8VU5AKBav5ZFwpGuBDWCqeLzeJA+3zIvxd5DdPJBnu9JF9-phIbhCLoSM1zTC-F1UTmIjIzFkGQkpfU5aMFpKBeYtcphWsVsdbOdq2jkvVXp9foDlzWxzInAANgjrscFeH2ZGuYCY1LTvHEwrkx94Yi2JmQi0daBItEtDXizEy2IKxajNSyAfsVoMgySczFhG29yO3Hu-606QAGLIAhDyAZXlJV0BVN8Tk3bUMV3DpLC6PFTxGWR6VUC0xGkMQyCsWtVEpCRmHkawFlZZ9-ioIgLjWABRBU-yHcErlue5HmeEhXlhMNSNdcjKJouiGMhZiV1TddkTYVFt2goREDEOYyByUtinUZDtAkC0CWtbDbyJGJJCfKcX29XjaP-ASmIeeg+wHYdR3HSdWzIozLj40zKME6FYTXdMN3ErVJJzGCEFkrR5OPJSSQGNShgQA9ZDISxrGYFRb2icR9Iczk3NuFz6KyqEWKDDifgM6o8pysz8uErzSAzXys3RALpKC+x4uJbJcNkCQSiMMlopELQQrrItVGUVRkuUdKVlKiFspM3KZvyyy1n7NZBxHdAx39eypsyhbyryoTPK-EhaqaLdsxIdpmsw2Q2q6osuoJXrUksKRsJwwiCNw1RJo5KNXw9MEDosqzVpsja7K4-7Z3A05gagKrjtOiSLquoxJnMaY5gwsbTxyc8MZpalmCMGZpCLMQXFZEgiEoeBgihlGGsu3MAFpnsQVniyvAbmVJ5CcjpX7px8OpGqgxrIhmC1+vkeLsOiMQDwsHDhZfGHAYgJmdyajI4twkkjHRsRJhiHqLWpG7GV5-JlAZLQ1bIjXYyBhbmO1qSpdrMgDcsY3TZyDnLQkOX0mpUm1HpHrHe4535zIQVhTWMDNY9yXEBGUY7cmU9ClLBRzyLGQaX6LreksGPofdF2Fw-BU05ZwLTCKQs6ysEwBtLKt8NC2ti1MbJ0Mrmdq-j2VcFwOB6fqnW92KOLrDmBR7HSfIotSEpRiG6YMkpBkfpIkrY9HztFx7Y7f3-SAG6uooZkLfdl5N6Q1-PaQ5fe6QiVxgbh42JzqJzRvrmDCZhlDEnyPSdIOcLT4UGnWOw6E5iTGkH-Hizk5oVXdn5VGuYRoFnAUrGYRR37yCDsUMw71oHEwwpTQ+GV-oAPKuPSe+xgGBRzoaU8VgxrS2igSOKNoCR4lUOjIkaCmGYNBuwpqnDyYVjxF1WQFplby1rFoMhI15gV3oTtcgZUgE4OZldDIIVJBFEQUofIcg0KULrLMEaDgv5pV0X9Cq+03YPBkV7KQ5iyH2CsQUZR0UoG91rJMAi-QiiyGHgY-iLCp7eMQCHOKeR7Ak0pJSU8MsNGtz7poZQigNCxL2lI5axwkkIBSVkEYdgrDkxxhaSwmF3rIRmNibIDtXHTnbJrBO5S1iVPSKMfo2gX4jG+tINC3NNCKAkEUAkBIJpUyAA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgQQMboEsB7AOwDoIxcDZiSBiAbQAYBdRUAByNsNI5AAPRAEYAbAHYyAZgBMADhELm8hROYTpAGhABPRABYDssmNkGAnAFYr8i8ekiAvk51osePuUrVapJiLsSCDcvHQCwggiVlJyisqq8uqaOvoIEiLyMhIG8rbRYmIGti5uGDj4dBRUNHRMskFcPAReEaKSMgpK8ipqGtp67WJkSVbMzCLMVhYWzLJzpSDuFV5kAE5wYOgACsiwsADuRGsQZABuYGsEAGa6BCRQ9BCkYGT3Z0QA1q-LnlUbsC2u32RxO50uNzuDwQ7yIuGQXhYrCRAlCLXCwUihREMmYBgycmkYmk0nkYlShmYFhkJMcVjMRLE0ysi1+lVI602Oz2h2OpwuV1u90elzWxzInAANgjrscALZkNmrAFAnmg-kQoXQ2HwxFsFHBNGtTGIbG4-EiQnE0nkwYIAwdeQk2QiCxOkRGYms8p-Dkq7kgvlkMAkdCXAByYAOwN5J3osFQACM5S1I9G1XyDU0wvwTVFJjjpHizBYii6rEYKQhpDMyDkZpoLNERK7ZN6POzyP6Y+qyLhSNcCGs5U8Xm8SB9voqfZ3OYCA7HTv2SIPhzCJ3CEXQkVmQs1jaBItEm2Q5iTElaMlWbWQZneDBom5YLO2Vv8uT2g8vVyPReKpTK8rTh2yofhmYLfkOcrrh8urbvqbCovuGKHqI0w4mepIKJeIhVgYNa3uIEiyAykiuvIr6+l2YGBhBA5QVupAAGLIAQkqQPGSYpugaaficu5GihQjtLIVidHMYhEXMD62mkFYmM+bpFEYEiqZRs4bP2AoAKJyqxkrgoKUKPM8JCvLCU5Ku+WmXLp+mGZCwowZuerIohhrIbmqEIEy1ISDEEgWOYJKlvSVbqNIZDPjkNpEtYYjqaBNlrHZbEOVqIprGKawStK6CysOwFvn6VBEDpelpQKjnahucGkDu7nZuiXnCT50x1gFQX4TWTKyYgEiSbeMxkmIeKKFMBiJVUVW3KlBkzcZo5meOk4-DOqwLXN6XGc5dUkA1jR7jmJBtD5zDDLIpZ2DW0hWDWExVs2Q13qSJJnm2rhLOt02aroW0LcK9B-jlAH5UBVkcptFXzb9Tk6ox+0IYdgktVi51kJdYjXRYt33bhdouswZBjOMGhzE2mTSC4n0kEQlDwMEEMnR5x2nQAtH1CBs7IkV3nz-MzFTn1M9UvhCSjzPecYj05B14yyDzxjzIoFHC99JXznxEBIazea3Qp50kb0cyBdYVYKNSonjNEPRGOdSRTRrqq0RqRnCjrzWS61D5EzJRuqCbMxWNetYqG9A1BTkD5C2UIHvpr4GnCGYZrLxicewerWzETIgZPITqJKoRJ4SoNJvfY+I9LnjvUQnLt9vRw4Z0JR6OFIfOibMTLSBI14DXLczmKphRmDXc7O4uZAJrguBwAzTWZ0e8jGKe0Q2IF0gOjzAxpKSYl80ksxxDEY-donDcrgxXgsWxkDN6jojLyYEw2DEONbySeFGMTpMTFSOM9DUmrOOTsFy9mBvfL2kRs5kFzpkAuCgi6cwdMMJ0zoSL4TsFjFkwDirUWSnNSBp0iSRVzhYdQo0VZmAMFWSSBhnp2HOlYUSMRJq4KopyAh0NtruxZp7U6BgWywMChQlQmRqHhR5hjSwgVmFiBmPMF87CNKlXKvZaes99hELzPnYYRZ8RTGsGIuY4U5hRWGiggaHpJKn1UbZbhEC+GL0QLo806hmTGNkOFUaz1-IqCdEFJkY8ob6W0d5W61IyJ5AkE6Yo8haGRUUj0N0pIZhFGCb9f6sMHhhO9hoUwecYixNsDLHE9YZgaGKFSFsGSjJbQ0XPXJkQYkmEYUUVQSgzCSEemMZ6boBoxGPLUyEW1HELxbv1VQIwu65BdCREivcCZUh-r-PIcgKwqGpk4IAA */
   createMachine({
     id: "authAction",
     initial: "decision",
@@ -73,10 +76,6 @@ const authActionMachine =
       },
 
       resetPassword: {
-        invoke: {
-          src: "verifyPasswordReset",
-        },
-
         states: {
           verifying: {
             invoke: {
@@ -115,10 +114,6 @@ const authActionMachine =
       },
 
       recoverEmail: {
-        invoke: {
-          src: "verifyRecoverEmail",
-        },
-
         states: {
           verifying: {
             invoke: {
@@ -136,10 +131,6 @@ const authActionMachine =
       },
 
       verifyEmail: {
-        invoke: {
-          src: "verifyEmail",
-        },
-
         states: {
           verifying: {
             invoke: {
@@ -175,7 +166,18 @@ export default function AuthAction() {
     },
     services: {
       verifyPasswordReset: () => verifyPasswordResetCode(auth(), oobCode),
-      verifyEmail: () => applyActionCode(auth(), oobCode),
+      verifyEmail: async () => {
+        try {
+          console.log("check");
+          await checkActionCode(auth(), oobCode);
+          console.log("verify");
+          await applyActionCode(auth(), oobCode);
+          console.log("done");
+        } catch (err) {
+          console.log(err);
+          throw err;
+        }
+      },
       verifyRecoverEmail: async () => {
         await checkActionCode(auth(), oobCode);
         await applyActionCode(auth(), oobCode);
@@ -211,7 +213,7 @@ export default function AuthAction() {
     return (
       <>
         <Alert
-          variant="error"
+          variant="success"
           details={
             <div className="space-y-2">
               <p>{t("authActions.emailVerified")}</p>
@@ -229,7 +231,7 @@ export default function AuthAction() {
     return (
       <>
         <Alert
-          variant="error"
+          variant="success"
           details={
             <div className="space-y-2">
               <p>{t("authActions.emailRestored")}</p>
