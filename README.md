@@ -36,6 +36,12 @@ This is still a work in progress and not ready for use.
 
 - Email/Password Authentication
 
+## Setup steps
+
+- Setup firebase project
+- `npm i -g firebase-tools`
+- Init firebase project
+
 ## What's kept from the orignal
 
 - [Multi-region Fly app deployment](https://fly.io/docs/reference/scaling/) with [Docker](https://www.docker.com/)

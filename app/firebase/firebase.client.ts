@@ -21,7 +21,7 @@ export const getClientAuth = ({
     const auth = getAuth(app);
     auth.languageCode = document.documentElement.lang;
 
-    if (emulatorUrl) connectAuthEmulator(auth, emulatorUrl);
+    if (emulatorUrl) connectAuthEmulator(auth, `http://${emulatorUrl}`);
 
     // Let Remix handle the persistence via session cookies
     setPersistence(auth, inMemoryPersistence);
