@@ -12,21 +12,22 @@ This is still a work in progress and not ready for use.
 
 ## Changes intended
 
-[X] Prepopulated with components some components
-[X] remix-validated-form & zod pre-installed
-[X] Example app replaced
-[X] Dark mode implemented
-[X] I18n support
-[X] Authentication with Firebase and remix-auth
-  [X] Add example of page requiring a session
-  [X] Add user info somewhere on the page
-  [X] Add "login with google"
-  [] Update signup page to match login
-  [] Add user record to DB
-[X] Clean up how inputs look in dark mode
-[] I18n for form validation errors errors
-[] Test deployment with fly
-[] Sentry error monitoring
+- [X] Prepopulated with components some components
+- [X] remix-validated-form & zod pre-installed
+- [X] Example app replaced
+- [X] Dark mode implemented
+- [X] I18n support
+- [X] Authentication with Firebase and remix-auth
+  - [X] Add example of page requiring a session
+  - [X] Add user info somewhere on the page
+  - [X] Add "login with google"
+  - [] Update signup page to match login
+  - [] Add user record to DB
+- [X] Clean up how inputs look in dark mode
+- [] Make all grays use gray and set gray in theme
+- [] I18n for form validation errors errors
+- [] Test deployment with fly
+- [] Sentry error monitoring
 
 ## What's being removed
 
