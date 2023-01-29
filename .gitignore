@@ -5,6 +5,9 @@ yarn.lock
 pnpm-lock.yaml
 pnpm-lock.yml
 
+# Don't include this because it's project-specific
+.firebaserc
+
 node_modules
 
 /build

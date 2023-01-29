@@ -98,13 +98,6 @@ export default function Login() {
 
   return (
     <>
-      {state.matches("error") && (
-        <Alert
-          className="mb-6"
-          variant="error"
-          details={t("login.loginFailed")}
-        />
-      )}
       <div>
         <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
           {t("login.socialLogin.label")}
@@ -160,6 +153,13 @@ export default function Login() {
             <Link href="/password-reset">{t("login.forgotPassword")}</Link>
           </div>
         </div>
+        {state.matches("error") && (
+          <Alert
+            className="mb-6"
+            variant="error"
+            details={t("login.loginFailed")}
+          />
+        )}
         <div>
           <SubmitButton
             variant="default"

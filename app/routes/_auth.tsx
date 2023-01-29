@@ -2,6 +2,7 @@ import { Outlet, useLoaderData, useMatches } from "@remix-run/react";
 import { json } from "@remix-run/server-runtime";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
+import { FirebaseClientOptions } from "~/firebase/firebase.client";
 import { env } from "~/server/env.server";
 import { ThemeToggle } from "~/theme";
 
@@ -12,7 +13,8 @@ export const loader = async () => {
       authDomain: env.FIREBASE_AUTH_DOMAIN,
       projectId: env.FIREBASE_PROJECT_ID,
       appId: env.FIREBASE_APP_ID,
-    },
+      emulatorUrl: env.FIREBASE_AUTH_EMULATOR_HOST,
+    } satisfies FirebaseClientOptions,
   });
 };
 

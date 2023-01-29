@@ -8,6 +8,7 @@ const schema = z.object({
   FIREBASE_PROJECT_ID: z.string(),
   FIREBASE_APP_ID: z.string(),
   FIREBASE_SERVICE_KEY: z.string(),
+  FIREBASE_AUTH_EMULATOR_HOST: z.string().optional(),
 });
 
 export const env = schema.parse(process.env);
