@@ -35,5 +35,17 @@
     },
     "successMessage": "If you entered your email correctly, we sent you an email with a link to reset your password.",
     "errorMessage": "An unexpected error occurred while sending the email. Please try again in a few seconds."
+  },
+  "authActions": {
+    "invalidCode": "We were't able to verify your request. The link you received in your email may be expired or invalid.",
+    "emailVerified": "Your email has been verified!",
+    "emailRestored": "Your email has been restored!",
+    "passwordChanged": "Your password has been changed!",
+    "backToLoginLink": "Back to login",
+    "newPasswordLabel": "New password",
+    "updatedPasswordButton": {
+      "label": "Update password",
+      "loadingLabel": "Updating password..."
+    }
   }
 }
