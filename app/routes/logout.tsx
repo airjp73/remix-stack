@@ -8,5 +8,5 @@ export function action({ request }: ActionArgs) {
 }
 
 export function loader() {
-  return redirect("/");
+  return redirect("/login");
 }

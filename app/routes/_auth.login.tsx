@@ -165,6 +165,7 @@ export default function Login() {
         }}
       >
         <Field name="email" label={t("login.emailLabel")}>
+          {" "}
           <FieldInput />
         </Field>
         <Field name="password" label={t("login.passwordLabel")}>
@@ -187,12 +188,18 @@ export default function Login() {
             <Link href="/password-reset">{t("login.forgotPassword")}</Link>
           </div>
         </div>
-        <SubmitButton
-          variant="default"
-          label={t("login.loginButton.label")}
-          loadingLabel={t("login.loginButton.loadingLabel")!}
-          className="w-full"
-        />
+        <div>
+          <SubmitButton
+            variant="default"
+            label={t("login.loginButton.label")}
+            loadingLabel={t("login.loginButton.loadingLabel")!}
+            className="w-full"
+          />
+          <p className="mt-4 text-sm font-medium text-slate-700 dark:text-slate-300">
+            {t("login.noAccount")}{" "}
+            <Link href="/signup">{t("login.signupLink")}</Link>
+          </p>
+        </div>
       </ValidatedForm>
     </>
   );

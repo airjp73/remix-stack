@@ -3,7 +3,10 @@ import type { ActionArgs } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { withZod } from "@remix-validated-form/with-zod";
 import type { FirebaseOptions } from "firebase/app";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import type { TFunction } from "i18next";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -57,6 +60,7 @@ export default function Signup() {
         password
       );
       const idToken = await credential.user.getIdToken();
+      sendEmailVerification(credential.user);
       fetcher.submit({ idToken }, { method: "post" });
     } catch (err) {
       setError(true);

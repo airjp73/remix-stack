@@ -25,7 +25,9 @@
     "loginFailed": "Email or password is incorrect.",
     "signupFailed": "An unexpected error occurred while creating your account. Please try again in a few seconds.",
     "rememberMe": "Remember me",
-    "forgotPassword": "Forgot your password?"
+    "forgotPassword": "Forgot your password?",
+    "noAccount": "Don't have an account?",
+    "signupLink": "Sign up"
   },
   "resetPassword": {
     "header": "Reset password",
@@ -37,7 +39,7 @@
     "errorMessage": "An unexpected error occurred while sending the email. Please try again in a few seconds."
   },
   "authActions": {
-    "invalidCode": "We were't able to verify your request. The link you received in your email may be expired or invalid.",
+    "invalidCode": "We weren't able to verify your request. The link you received in your email may be expired or invalid.",
     "emailVerified": "Your email has been verified!",
     "emailRestored": "Your email has been restored!",
     "passwordChanged": "Your password has been changed!",
