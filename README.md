@@ -26,6 +26,7 @@ This is still a work in progress and not ready for use.
   - [] Write tests for all of this
   - [] Add user record to DB
 - [X] Clean up how inputs look in dark mode
+- [] Fix button hover state in dark mode
 - [] Make all grays use gray and set gray in theme
 - [] I18n for form validation errors errors
 - [] Test deployment with fly
