@@ -13,6 +13,7 @@ import { useFirebaseAuth } from "~/firebase/firebase";
 import { Alert } from "~/ui/Alert";
 import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
+import { Link } from "~/ui/Link";
 
 export const handle = {
   authHeader: (t: TFunction) => t("resetPassword.header"),
@@ -105,7 +106,15 @@ export default function PasswordReset() {
   return (
     <>
       {state.matches("success") && (
-        <Alert variant="success" title={t("resetPassword.successMessage")} />
+        <Alert
+          variant="success"
+          title={t("resetPassword.successMessage")}
+          details={
+            <Link href="/login" className="block">
+              {t("authActions.backToLoginLink")}
+            </Link>
+          }
+        />
       )}
       {state.matches("error") && (
         <Alert variant="error" title={t("resetPassword.errorMessage")} />
