@@ -21,8 +21,8 @@ This is still a work in progress and not ready for use.
   - [X] Add example of page requiring a session
   - [X] Add user info somewhere on the page
   - [X] Add "login with google"
-  - [] Add google login to signup page
-  - [] Make "remember me" button do something
+  - [X] Add google login to signup page
+  - [X] Make "remember me" button do something
   - [] Write tests for all of this
   - [] Add user record to DB
 - [X] Clean up how inputs look in dark mode

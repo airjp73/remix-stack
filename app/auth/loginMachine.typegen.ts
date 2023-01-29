@@ -26,7 +26,9 @@ export interface Typegen0 {
     guards: never;
     services: "log in with google" | "log in with password" | "verify id token";
   };
-  eventsCausingActions: {};
+  eventsCausingActions: {
+    setRemember: "log in with email";
+  };
   eventsCausingDelays: {};
   eventsCausingGuards: {};
   eventsCausingServices: {

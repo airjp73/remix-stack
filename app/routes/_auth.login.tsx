@@ -31,15 +31,19 @@ import { Link } from "~/ui/Link";
 const actionBody = zfd.formData({
   idToken: z.string(),
   redirectTo: z.string().optional(),
+  remember: z.boolean().optional(),
 });
 
 export const action = async ({ request }: ActionArgs) => {
-  const { idToken, redirectTo } = actionBody.parse(await request.formData());
+  const { idToken, redirectTo, remember } = actionBody.parse(
+    await request.formData()
+  );
 
   await serverAuth.verifyIdToken(idToken);
   return createUserSession({
     request,
     idToken,
+    remember,
     redirectTo: redirectTo ?? "/dashboard",
   });
 };
@@ -83,9 +87,10 @@ export default function Login() {
         );
         return await credential.user.getIdToken();
       },
-      "verify id token": async (_ctx, { data: idToken }) => {
+      "verify id token": async (ctx, { data: idToken }) => {
         const body: Record<string, string> = { idToken };
         if (redirectTo) body.redirectTo = redirectTo;
+        if (ctx.remember) body.remember = "true";
         fetcher.submit(body, { method: "post" });
       },
     },

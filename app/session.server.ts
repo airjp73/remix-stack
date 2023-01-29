@@ -1,4 +1,3 @@
-import type { Session } from "@remix-run/node";
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import type { DecodedIdToken } from "firebase-admin/auth";
 import { serverAuth } from "./firebase/firebase.server";
@@ -27,18 +26,20 @@ const ID_TOKEN_KEY = "idToken";
 export async function createUserSession({
   request,
   idToken,
+  remember,
   redirectTo,
 }: {
   request: Request;
   idToken: string;
   redirectTo: string;
+  remember?: boolean;
 }) {
   const session = await getSession(request);
   session.set(ID_TOKEN_KEY, idToken);
   return redirect(redirectTo, {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session, {
-        maxAge: SESSION_EXPIRY_SECONDS,
+        maxAge: remember ? SESSION_EXPIRY_SECONDS : undefined,
       }),
     },
   });
