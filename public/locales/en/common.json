@@ -26,5 +26,14 @@
     "signupFailed": "An unexpected error occurred while creating your account. Please try again in a few seconds.",
     "rememberMe": "Remember me",
     "forgotPassword": "Forgot your password?"
+  },
+  "resetPassword": {
+    "header": "Reset password",
+    "submitButton": {
+      "label": "Reset password",
+      "loadingLabel": "Sending email..."
+    },
+    "successMessage": "If you entered your email correctly, we sent you an email with a link to reset your password.",
+    "errorMessage": "An unexpected error occurred while sending the email. Please try again in a few seconds."
   }
 }

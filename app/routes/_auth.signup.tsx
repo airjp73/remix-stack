@@ -1,7 +1,8 @@
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData, useOutletContext } from "@remix-run/react";
 import type { ActionArgs } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { withZod } from "@remix-validated-form/with-zod";
+import type { FirebaseOptions } from "firebase/app";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import type { TFunction } from "i18next";
 import { useState } from "react";
@@ -11,22 +12,10 @@ import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { useFirebaseAuth } from "~/firebase/firebase";
 import { serverAuth } from "~/firebase/firebase.server";
-import { env } from "~/server/env.server";
 import { createUserSession } from "~/session.server";
 import { Alert } from "~/ui/Alert";
 import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
-
-export const loader = async () => {
-  return json({
-    firebaseOptions: {
-      apiKey: env.FIREBASE_API_KEY,
-      authDomain: env.FIREBASE_AUTH_DOMAIN,
-      projectId: env.FIREBASE_PROJECT_ID,
-      appId: env.FIREBASE_APP_ID,
-    },
-  });
-};
 
 const actionBody = zfd.formData({
   idToken: z.string(),
@@ -36,7 +25,7 @@ export const action = async ({ request }: ActionArgs) => {
   const { idToken } = actionBody.parse(await request.formData());
 
   await serverAuth.verifyIdToken(idToken);
-  return createUserSession({ request, idToken, redirectTo: "/" });
+  return createUserSession({ request, idToken, redirectTo: "/dashboard" });
 };
 
 const formValidator = withZod(
@@ -52,8 +41,10 @@ export const handle = {
 };
 
 export default function Signup() {
-  const { firebaseOptions } = useLoaderData<typeof loader>();
   const { t } = useTranslation();
+  const { firebaseOptions } = useOutletContext<{
+    firebaseOptions: FirebaseOptions;
+  }>();
   const auth = useFirebaseAuth(firebaseOptions);
   const fetcher = useFetcher();
   const [error, setError] = useState(false);

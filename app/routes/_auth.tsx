@@ -1,7 +1,20 @@
-import { Outlet, useMatches } from "@remix-run/react";
+import { Outlet, useLoaderData, useMatches } from "@remix-run/react";
+import { json } from "@remix-run/server-runtime";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
+import { env } from "~/server/env.server";
 import { ThemeToggle } from "~/theme";
+
+export const loader = async () => {
+  return json({
+    firebaseOptions: {
+      apiKey: env.FIREBASE_API_KEY,
+      authDomain: env.FIREBASE_AUTH_DOMAIN,
+      projectId: env.FIREBASE_PROJECT_ID,
+      appId: env.FIREBASE_APP_ID,
+    },
+  });
+};
 
 export const AuthHeader = ({ children }: PropsWithChildren) => (
   <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -17,6 +30,7 @@ export default function AuthLayout() {
     (match) => typeof match.handle?.authHeader === "function"
   );
   const { t } = useTranslation();
+  const data = useLoaderData<typeof loader>();
 
   return (
     <div className="h-full">
@@ -29,7 +43,7 @@ export default function AuthLayout() {
         )}
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="space-y-6 bg-white py-8 px-4 shadow-lg dark:bg-slate-800 sm:rounded-lg sm:px-10">
-            <Outlet />
+            <Outlet context={data} />
           </div>
         </div>
       </div>

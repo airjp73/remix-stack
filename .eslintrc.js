@@ -22,5 +22,6 @@ module.exports = {
   rules: {
     // userEvent events are all async now
     "testing-library/no-await-sync-events": "off",
+    "@typescript-eslint/consistent-type-imports": "off",
   },
 };

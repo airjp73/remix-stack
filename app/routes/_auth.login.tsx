@@ -1,7 +1,11 @@
-import { useFetcher, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  useFetcher,
+  useOutletContext,
+  useSearchParams,
+} from "@remix-run/react";
 import type { ActionArgs } from "@remix-run/server-runtime";
-import { json } from "@remix-run/server-runtime";
 import { withZod } from "@remix-validated-form/with-zod";
+import type { FirebaseOptions } from "firebase/app";
 import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
@@ -15,23 +19,11 @@ import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { useFirebaseAuth } from "~/firebase/firebase";
 import { serverAuth } from "~/firebase/firebase.server";
-import { env } from "~/server/env.server";
 import { createUserSession } from "~/session.server";
 import { Alert } from "~/ui/Alert";
 import { Button } from "~/ui/Button";
 import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
-
-export const loader = async () => {
-  return json({
-    firebaseOptions: {
-      apiKey: env.FIREBASE_API_KEY,
-      authDomain: env.FIREBASE_AUTH_DOMAIN,
-      projectId: env.FIREBASE_PROJECT_ID,
-      appId: env.FIREBASE_APP_ID,
-    },
-  });
-};
 
 const actionBody = zfd.formData({
   idToken: z.string(),
@@ -88,8 +80,10 @@ const GoogleIcon = () => (
 );
 
 export default function Login() {
-  const { firebaseOptions } = useLoaderData<typeof loader>();
   const { t } = useTranslation();
+  const { firebaseOptions } = useOutletContext<{
+    firebaseOptions: FirebaseOptions;
+  }>();
   const auth = useFirebaseAuth(firebaseOptions);
   const fetcher = useFetcher();
   const [error, setError] = useState(false);
@@ -190,7 +184,7 @@ export default function Login() {
 
           <div className="text-sm">
             <a
-              href="#"
+              href="/password-reset"
               className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-500"
             >
               {t("login.forgotPassword")}

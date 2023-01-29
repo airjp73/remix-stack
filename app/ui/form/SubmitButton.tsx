@@ -7,14 +7,16 @@ import { Button } from "../Button";
 export type SubmitButtonProps = Omit<ButtonProps, "children"> & {
   loadingLabel?: string;
   label: string;
+  isLoading?: boolean;
 };
 
 const SubmitButton = React.forwardRef<HTMLButtonElement, SubmitButtonProps>(
-  ({ disabled, label, loadingLabel, ...rest }, ref) => {
+  ({ disabled, label, loadingLabel, isLoading, ...rest }, ref) => {
     const isSubmitting = useIsSubmitting();
+    const showLoadingState = isSubmitting || isLoading;
     return (
-      <Button disabled={disabled || isSubmitting} {...rest}>
-        {isSubmitting ? (
+      <Button disabled={disabled || showLoadingState} {...rest}>
+        {showLoadingState ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             {loadingLabel}

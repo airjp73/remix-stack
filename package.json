@@ -42,6 +42,7 @@
     "@remix-run/react": "*",
     "@remix-run/server-runtime": "*",
     "@remix-validated-form/with-zod": "^2.0.5",
+    "@xstate/react": "^3.1.0",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.4.0",
     "classnames": "^2.3.2",
@@ -69,6 +70,7 @@
     "tailwind-merge": "^1.8.1",
     "tailwindcss-animate": "^1.0.5",
     "tiny-invariant": "^1.3.1",
+    "xstate": "^4.35.3",
     "zod": "^3.20.2",
     "zod-form-data": "^1.2.4"
   },
