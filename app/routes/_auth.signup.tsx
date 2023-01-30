@@ -11,7 +11,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import type { TFunction } from "i18next";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ValidatedForm } from "remix-validated-form";
 import { z } from "zod";
@@ -81,6 +81,9 @@ export default function Signup() {
     },
   });
 
+  const socialLabelId = useId();
+  const googleId = useId();
+
   return (
     <>
       {state.matches("error") && (
@@ -98,9 +101,10 @@ export default function Signup() {
           variant="google"
           className="w-full space-x-4"
           onClick={() => send("log in with google")}
+          aria-labelledby={[socialLabelId, googleId].join(" ")}
         >
           <GoogleIcon />
-          <span>{t("login.socialLogin.google")}</span>
+          <span id={googleId}>{t("login.socialLogin.google")}</span>
         </Button>
       </div>
       <div className="relative">

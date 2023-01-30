@@ -11,8 +11,10 @@ import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
+  signInWithRedirect,
 } from "firebase/auth";
 import type { TFunction } from "i18next";
+import { useId } from "react";
 import { useTranslation } from "react-i18next";
 import { ValidatedForm } from "remix-validated-form";
 import { z } from "zod";
@@ -96,19 +98,26 @@ export default function Login() {
     },
   });
 
+  const socialLabelId = useId();
+  const googleId = useId();
+
   return (
     <>
       <div>
-        <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+        <p
+          id={socialLabelId}
+          className="text-sm font-medium text-slate-700 dark:text-slate-300"
+        >
           {t("login.socialLogin.label")}
         </p>
         <Button
           variant="google"
           className="w-full space-x-4"
           onClick={() => send("log in with google")}
+          aria-labelledby={[socialLabelId, googleId].join(" ")}
         >
           <GoogleIcon />
-          <span>{t("login.socialLogin.google")}</span>
+          <span id={googleId}>{t("login.socialLogin.google")}</span>
         </Button>
       </div>
       <div className="relative">

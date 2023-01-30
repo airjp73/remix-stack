@@ -11,6 +11,7 @@
       "label": "Sign in with",
       "signupLabel": "Sign up with",
       "google": "Google",
+      "googleAriaLabel": "Sign in with Google",
       "orPasswordLogin": "Or continue with"
     },
     "emailLabel": "Email",

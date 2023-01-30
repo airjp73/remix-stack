@@ -20,3 +20,4 @@ node_modules
 
 /app/styles/tailwind.css
 ui-debug.log
+firebase-debug.log

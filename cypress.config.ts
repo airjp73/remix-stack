@@ -1,6 +1,12 @@
 import { defineConfig } from "cypress";
+import * as dotenv from "dotenv";
+import * as path from "path";
+import * as fs from "fs";
+
+const env = dotenv.parse(fs.readFileSync(path.join(__dirname, ".env")));
 
 export default defineConfig({
+  env,
   e2e: {
     setupNodeEvents: (on, config) => {
       const isDev = config.watchForFileChanges;
