@@ -165,11 +165,8 @@ export default function AuthAction() {
       verifyPasswordReset: () => verifyPasswordResetCode(auth(), oobCode),
       verifyEmail: async () => {
         try {
-          console.log("check");
           await checkActionCode(auth(), oobCode);
-          console.log("verify");
           await applyActionCode(auth(), oobCode);
-          console.log("done");
         } catch (err) {
           console.log(err);
           throw err;

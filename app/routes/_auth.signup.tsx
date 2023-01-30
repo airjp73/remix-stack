@@ -73,6 +73,7 @@ export default function Signup() {
           email,
           password
         );
+        sendEmailVerification(credential.user);
         return await credential.user.getIdToken();
       },
       "verify id token": async (_ctx, { data: idToken }) => {
