@@ -29,6 +29,7 @@ export const Alert: FC<AlertProps> = ({
 
   return (
     <div
+      role="alert"
       className={classNames(
         "rounded-md border border-red-400 p-4",
         variant === "error" && "border-red-400 bg-red-50",

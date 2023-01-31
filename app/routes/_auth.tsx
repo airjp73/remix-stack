@@ -36,9 +36,6 @@ export default function AuthLayout() {
 
   return (
     <div className="h-full">
-      <div className="absolute top-4 right-4">
-        <ThemeToggle />
-      </div>
       <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
         {headerMatch && (
           <AuthHeader>{headerMatch.handle!.authHeader(t)}</AuthHeader>
@@ -48,6 +45,9 @@ export default function AuthLayout() {
             <Outlet context={data} />
           </div>
         </div>
+      </div>
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
       </div>
     </div>
   );

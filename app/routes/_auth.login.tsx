@@ -3,7 +3,7 @@ import {
   useOutletContext,
   useSearchParams,
 } from "@remix-run/react";
-import type { ActionArgs } from "@remix-run/server-runtime";
+import type { ActionArgs, MetaFunction } from "@remix-run/server-runtime";
 import { useMachine } from "@xstate/react";
 import type { FirebaseOptions } from "firebase/app";
 import {
@@ -54,14 +54,18 @@ export const action = async ({ request }: ActionArgs) => {
   });
 };
 
+export const handle = {
+  authHeader: (t: TFunction) => t("login.header"),
+};
+
+export const meta: MetaFunction = () => ({
+  title: "Login - Remix Stack",
+});
+
 const formValidator = makeValidator({
   email: zfd.text(z.string().email()),
   password: zfd.text(),
 });
-
-export const handle = {
-  authHeader: (t: TFunction) => t("login.header"),
-};
 
 export default function Login() {
   const { t } = useTranslation();
