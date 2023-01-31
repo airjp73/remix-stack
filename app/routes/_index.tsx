@@ -1,10 +1,14 @@
 import { ThemeToggle } from "~/theme";
 import { useTranslation } from "react-i18next";
+import { ButtonLink } from "~/ui/Button";
 
-export default function Example() {
+export default function Home() {
   const { t } = useTranslation();
   return (
     <>
+      <div className="absolute top-4 left-4">
+        <ButtonLink href="/login">{t("login.loginButton.label")}</ButtonLink>
+      </div>
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>

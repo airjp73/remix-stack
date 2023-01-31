@@ -27,11 +27,11 @@ This is still a work in progress and not ready for use.
   - [X] Add user record to DB
   - [X] Handle "email taken" error during signup
 - [X] Clean up how inputs look in dark mode
-- [] Fix button hover state in dark mode
-- [] Make all grays use gray and set gray in theme
-- [] I18n for form validation errors errors
-- [] Test deployment with fly
-- [] Sentry error monitoring
+- [X] Fix button hover state in dark mode
+- [ ] Make all grays use gray and set gray in theme
+- [ ] I18n for form validation errors errors
+- [ ] Test deployment with fly
+- [ ] Sentry error monitoring
 
 ## What's being removed
 

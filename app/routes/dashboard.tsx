@@ -19,7 +19,7 @@ export default function Dashboard() {
   const { email } = useLoaderData<typeof loader>();
   return (
     <>
-      <div className="space-between absolute top-4 left-4">
+      <div className="absolute top-4 left-4">
         <ValidatedForm
           validator={withZod(z.object({}))}
           method="post"
@@ -28,7 +28,7 @@ export default function Dashboard() {
           <SubmitButton label="Logout" loadingLabel="Logging out..." />
         </ValidatedForm>
       </div>
-      <div className="space-between absolute top-4 right-4">
+      <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
       <div className="flex min-h-full flex-col justify-center bg-gray-50 py-12 dark:bg-gray-800 sm:px-6 lg:px-8">

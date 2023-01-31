@@ -23,5 +23,9 @@ module.exports = {
     // userEvent events are all async now
     "testing-library/no-await-sync-events": "off",
     "@typescript-eslint/consistent-type-imports": "off",
+    "jsx-a11y/anchor-has-content": [
+      "error",
+      { components: ["ButtonLink", "Link"] },
+    ],
   },
 };
