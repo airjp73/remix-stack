@@ -1,6 +1,4 @@
-import { useFetcher, useLoaderData, useOutletContext } from "@remix-run/react";
-import type { ActionArgs } from "@remix-run/server-runtime";
-import { json } from "@remix-run/server-runtime";
+import { useFetcher, useOutletContext } from "@remix-run/react";
 import { withZod } from "@remix-validated-form/with-zod";
 import { useMachine } from "@xstate/react";
 import type { FirebaseOptions } from "firebase/app";

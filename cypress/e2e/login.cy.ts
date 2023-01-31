@@ -133,6 +133,6 @@ describe("signing up", () => {
     cy.findByRole("textbox", { name: /email/i }).type(existingAccount.email);
     cy.findByLabelText(/password/i).type("notimportant");
     cy.findByRole("button", { name: /sign up/i }).click();
-    cy.findByText(/email is taken/i).should("exist");
+    cy.findByText(/an account already exists for that email/i).should("exist");
   });
 });

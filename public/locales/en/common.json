@@ -26,6 +26,7 @@
     },
     "loginFailed": "Email or password is incorrect.",
     "signupFailed": "An unexpected error occurred while creating your account. Please try again in a few seconds.",
+    "emailTaken": "An account already exists for that email.",
     "rememberMe": "Remember me",
     "forgotPassword": "Forgot your password?",
     "noAccount": "Don't have an account?",
