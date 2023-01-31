@@ -32,6 +32,7 @@ This is still a work in progress and not ready for use.
 - [X] I18n for form validation errors errors
 - [ ] Add profile photo upload demo page
 - [ ] Test deployment with fly
+- [ ] Enable github action in repo
 - [ ] Sentry error monitoring
 
 ## What's being removed
