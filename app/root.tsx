@@ -9,7 +9,7 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "@remix-run/react";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { useTranslation } from "react-i18next";
 import i18next from "./i18n.server";
 import { env } from "./env/env.server";
@@ -44,6 +44,9 @@ export async function loader({ request }: LoaderArgs) {
   });
 }
 
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
 export default function App() {
   const { locale, env } = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
@@ -52,6 +55,14 @@ export default function App() {
   useEffect(() => {
     i18n.changeLanguage(locale);
   }, [locale, i18n]);
+
+  useIsomorphicLayoutEffect(() => {
+    // We do this here as well as the script tag below.
+    // The script tag ensures the theme is set before hydration.
+    // This effect ensures the theme is set when refreshing the page in dev mode
+    if (localStorage.theme === "dark")
+      document.documentElement.dataset.theme = "dark";
+  }, []);
 
   return (
     <html lang={locale} dir={i18n.dir()} className="h-full">
