@@ -15,6 +15,7 @@ import i18next from "./i18n.server";
 import { env } from "./env/env.server";
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { useHydrated } from "remix-utils";
+import { getUser } from "./session.server";
 
 export const links: LinksFunction = () => {
   return [
@@ -36,11 +37,13 @@ export const handle = { i18n: "common" };
 
 export async function loader({ request }: LoaderArgs) {
   const locale = await i18next.getLocale(request);
+  const user = await getUser(request);
   return json({
     locale,
     env: {
       NODE_ENV: env.NODE_ENV,
     },
+    user,
   });
 }
 

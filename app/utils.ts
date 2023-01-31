@@ -1,7 +1,6 @@
+import { User } from "@prisma/client";
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
-
-import type { User } from "~/models/user.server";
 
 const DEFAULT_REDIRECT = "/";
 
@@ -45,7 +44,9 @@ export function useMatchesData(
 }
 
 function isUser(user: any): user is User {
-  return user && typeof user === "object" && typeof user.email === "string";
+  return (
+    user && typeof user === "object" && typeof user.firebase_uid === "string"
+  );
 }
 
 export function useOptionalUser(): User | undefined {
@@ -64,8 +65,4 @@ export function useUser(): User {
     );
   }
   return maybeUser;
-}
-
-export function validateEmail(email: unknown): email is string {
-  return typeof email === "string" && email.length > 3 && email.includes("@");
 }

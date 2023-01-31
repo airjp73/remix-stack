@@ -2,7 +2,11 @@
   "greeting": "Welcome!",
   "dashboard": {
     "title": "Dashboard",
-    "welcome": "Welcome, {{name}}!"
+    "welcome": "Welcome, {{name}}!",
+    "uploadProfileLink": "Upload profile picture"
+  },
+  "uploadProfilePicture": {
+    "header": "Upload profile picture"
   },
   "login": {
     "header": "Sign in to your account",

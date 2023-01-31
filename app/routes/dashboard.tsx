@@ -3,10 +3,10 @@ import type { LoaderArgs } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { useTranslation } from "react-i18next";
 import { ValidatedForm } from "remix-validated-form";
-import { z } from "zod";
 import { requireAuthentication } from "~/session.server";
 import { ThemeToggle } from "~/theme";
 import { SubmitButton } from "~/ui/form/SubmitButton";
+import { Link } from "~/ui/Link";
 import { makeValidator } from "~/validation";
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -35,6 +35,9 @@ export default function Dashboard() {
             {t("dashboard.title")}
           </h1>
           <p>{t("dashboard.welcome", { name: email })}</p>
+          <Link href="/upload-profile-picture">
+            {t("dashboard.uploadProfileLink")}
+          </Link>
         </div>
       </div>
     </>

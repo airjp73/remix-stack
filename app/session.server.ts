@@ -3,6 +3,7 @@ import { serverAuth } from "./firebase/firebase.server";
 import { env } from "./env/env.server";
 import { User } from "@prisma/client";
 import { get_user_by_uid } from "./models/user.server";
+import invariant from "tiny-invariant";
 
 export const sessionStorage = createCookieSessionStorage({
   cookie: {
@@ -37,13 +38,28 @@ export async function createUserSession({
 }) {
   const session = await getSession(request);
   session.set(ID_TOKEN_KEY, idToken);
+  const firebaseJwt = await serverAuth.createSessionCookie(idToken, {
+    expiresIn: SESSION_EXPIRY_SECONDS,
+  });
   return redirect(redirectTo, {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session, {
-        maxAge: remember ? SESSION_EXPIRY_SECONDS : undefined,
+        expires: new Date(Date.now() + SESSION_EXPIRY_SECONDS * 1000),
       }),
     },
   });
+}
+
+export async function getUser(request: Request): Promise<User | null> {
+  const session = await getSession(request);
+  const idToken = session.get(ID_TOKEN_KEY);
+  if (!idToken) return null;
+
+  const decoded = await serverAuth.verifyIdToken(idToken);
+  const user = await get_user_by_uid(decoded.uid);
+  invariant(user, "user not found");
+
+  return user;
 }
 
 export async function requireAuthentication(
@@ -53,16 +69,9 @@ export async function requireAuthentication(
   const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
   const redirectUrl = `/login?${searchParams}`;
 
-  const session = await getSession(request);
-  const idToken = session.get(ID_TOKEN_KEY);
-
-  if (!idToken) throw redirect(redirectUrl);
-
   try {
-    const decoded = await serverAuth.verifyIdToken(idToken);
-    const user = await get_user_by_uid(decoded.uid);
-    if (!user) throw Error("user not found");
-
+    const user = await getUser(request);
+    if (!user) throw redirect(redirectUrl);
     return user;
   } catch (err) {
     throw redirect(redirectUrl);
