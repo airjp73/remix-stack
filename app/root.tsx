@@ -12,6 +12,7 @@ import {
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import i18next from "./i18n.server";
+import { env } from "./env/env.server";
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 
 export const links: LinksFunction = () => {
@@ -34,11 +35,16 @@ export const handle = { i18n: "common" };
 
 export async function loader({ request }: LoaderArgs) {
   const locale = await i18next.getLocale(request);
-  return json({ locale });
+  return json({
+    locale,
+    env: {
+      NODE_ENV: env.NODE_ENV,
+    },
+  });
 }
 
 export default function App() {
-  const { locale } = useLoaderData<typeof loader>();
+  const { locale, env } = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
 
   useEffect(() => {
@@ -50,11 +56,15 @@ export default function App() {
       <head>
         <Meta />
         <Links />
-        {/* Ensure dark mode is always correctly set without a flash of light mode */}
         <script
           dangerouslySetInnerHTML={{
-            __html:
-              "if (localStorage.theme === 'dark') document.documentElement.dataset.theme = 'dark';",
+            __html: `
+              // Ensure dark mode is always correctly set without a flash of light mode 
+              if (localStorage.theme === 'dark') document.documentElement.dataset.theme = 'dark';
+
+              // Provide global env variables to the window
+              window.env = ${JSON.stringify(env)};
+            `,
           }}
         />
       </head>

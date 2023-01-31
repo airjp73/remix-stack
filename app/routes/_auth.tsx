@@ -3,7 +3,7 @@ import { json } from "@remix-run/server-runtime";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import { FirebaseClientOptions } from "~/firebase/firebase.client";
-import { env } from "~/server/env.server";
+import { env } from "~/env/env.server";
 import { ThemeToggle } from "~/theme";
 
 export const loader = async () => {

@@ -84,20 +84,20 @@ describe("signing up", () => {
     cy.findByRole("heading", { name: /dashboard/i }).should("exist");
     cy.location("pathname").should("contain", "/dashboard");
 
-    // cy.request(getRequestsUrl).then((response) => {
-    //   const { oobCodes } = responseSchema.parse(response.body);
-    //   const request = [...oobCodes].find(
-    //     (oob) =>
-    //       oob.requestType === "VERIFY_EMAIL" &&
-    //       oob.email.toLowerCase() === email.toLowerCase()
-    //   );
-    //   const oobCode = request?.oobCode;
-    //   cy.wrap(oobCode).should("exist");
-    //   cy.wait(1000);
-    //   cy.visitAndCheck(`/auth-action?mode=verifyEmail&oobCode=${oobCode}`);
-    // });
-    // cy.findByText(/your email has been verified/i).should("exist");
-    // cy.findByRole("link", { name: /back to login/i }).click();
-    // cy.findByRole("button", { name: /login/i }).should("exist");
+    cy.request(getRequestsUrl).then((response) => {
+      const { oobCodes } = responseSchema.parse(response.body);
+      const request = [...oobCodes].find(
+        (oob) =>
+          oob.requestType === "VERIFY_EMAIL" &&
+          oob.email.toLowerCase() === email.toLowerCase()
+      );
+      const oobCode = request?.oobCode;
+      cy.wrap(oobCode).should("exist");
+      cy.wait(1000);
+      cy.visitAndCheck(`/auth-action?mode=verifyEmail&oobCode=${oobCode}`);
+    });
+    cy.findByText(/your email has been verified/i).should("exist");
+    cy.findByRole("link", { name: /back to login/i }).click();
+    cy.findByRole("button", { name: /login/i }).should("exist");
   });
 });

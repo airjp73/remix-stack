@@ -11,9 +11,10 @@ import {
 import { Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ValidatedForm } from "remix-validated-form";
-import { createMachine } from "xstate";
+import { createMachine, send as sendAction } from "xstate";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
+import { isomorphicEnv } from "~/env/env";
 import { useFirebaseAuth } from "~/firebase/firebase";
 import { Alert } from "~/ui/Alert";
 import { Field, FieldInput } from "~/ui/form/Field";
@@ -32,119 +33,135 @@ const passwordConfirmationValidator = withZod(
 );
 
 const authActionMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgQQMboEsB7AOwDoIxcDZiSBiAbQAYBdRUAByNsNI5AAPRAEYAbAHYyAZgBMADhELm8hROYTpAGhABPRABYDssmNkGAnAFYr8i8ekiAvk51osePuUrVapJiLsSCDcvHQCwggiVlJyisqq8uqaOvoIEiLyMhIG8rbRYmIGti5uGDj4dBRUNHRMskFcPAReEaKSMgpK8ipqGtp67WJkSVbMzCLMVhYWzLJzpSDuFV5kAE5wYOgACsiwsADuRGsQZABuYGsEAGa6BCRQ9BCkYGT3Z0QA1q-LnlUbsC2u32RxO50uNzuDwQ7yIuGQXhYrCRAlCLXCwUihREMmYBgycmkYmk0nkYlShmYFhkJMcVjMRLE0ysi1+lVI602Oz2h2OpwuV1u90elzWxzInAANgjrscALZkNmrAFAnmg-kQoXQ2HwxFsFHBNGtTGIbG4-EiQnE0nkwYIAwdeQk2QiCxOkRGYms8p-Dkq7kgvlkMAkdCXAByYAOwN5J3osFQACM5S1I9G1XyDU0wvwTVFJjjpHizBYii6rEYKQhpDMyDkZpoLNERK7ZN6POzyP6Y+qyLhSNcCGs5U8Xm8SB9voqfZ3OYCA7HTv2SIPhzCJ3CEXQkVmQs1jaBItEm2Q5iTElaMlWbWQZneDBom5YLO2Vv8uT2g8vVyPReKpTK8rTh2yofhmYLfkOcrrh8urbvqbCovuGKHqI0w4mepIKJeIhVgYNa3uIEiyAykiuvIr6+l2YGBhBA5QVupAAGLIAQkqQPGSYpugaaficu5GihQjtLIVidHMYhEXMD62mkFYmM+bpFEYEiqZRs4bP2AoAKJyqxkrgoKUKPM8JCvLCU5Ku+WmXLp+mGZCwowZuerIohhrIbmqEIEy1ISDEEgWOYJKlvSVbqNIZDPjkNpEtYYjqaBNlrHZbEOVqIprGKawStK6CysOwFvn6VBEDpelpQKjnahucGkDu7nZuiXnCT50x1gFQX4TWTKyYgEiSbeMxkmIeKKFMBiJVUVW3KlBkzcZo5meOk4-DOqwLXN6XGc5dUkA1jR7jmJBtD5zDDLIpZ2DW0hWDWExVs2Q13qSJJnm2rhLOt02aroW0LcK9B-jlAH5UBVkcptFXzb9Tk6ox+0IYdgktVi51kJdYjXRYt33bhdouswZBjOMGhzE2mTSC4n0kEQlDwMEEMnR5x2nQAtH1CBs7IkV3nz-MzFTn1M9UvhCSjzPecYj05B14yyDzxjzIoFHC99JXznxEBIazea3Qp50kb0cyBdYVYKNSonjNEPRGOdSRTRrqq0RqRnCjrzWS61D5EzJRuqCbMxWNetYqG9A1BTkD5C2UIHvpr4GnCGYZrLxicewerWzETIgZPITqJKoRJ4SoNJvfY+I9LnjvUQnLt9vRw4Z0JR6OFIfOibMTLSBI14DXLczmKphRmDXc7O4uZAJrguBwAzTWZ0e8jGKe0Q2IF0gOjzAxpKSYl80ksxxDEY-donDcrgxXgsWxkDN6jojLyYEw2DEONbySeFGMTpMTFSOM9DUmrOOTsFy9mBvfL2kRs5kFzpkAuCgi6cwdMMJ0zoSL4TsFjFkwDirUWSnNSBp0iSRVzhYdQo0VZmAMFWSSBhnp2HOlYUSMRJq4KopyAh0NtruxZp7U6BgWywMChQlQmRqHhR5hjSwgVmFiBmPMF87CNKlXKvZaes99hELzPnYYRZ8RTGsGIuY4U5hRWGiggaHpJKn1UbZbhEC+GL0QLo806hmTGNkOFUaz1-IqCdEFJkY8ob6W0d5W61IyJ5AkE6Yo8haGRUUj0N0pIZhFGCb9f6sMHhhO9hoUwecYixNsDLHE9YZgaGKFSFsGSjJbQ0XPXJkQYkmEYUUVQSgzCSEemMZ6boBoxGPLUyEW1HELxbv1VQIwu65BdCREivcCZUh-r-PIcgKwqGpk4IAA */
-  createMachine({
-    id: "authAction",
-    initial: "decision",
-    tsTypes: {} as import("./index.typegen").Typegen0,
+  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgQQMboEsB7AOwDoAnOMdABWVlgHciKIyA3MCggMwE8CJKAGIIpMGSEciAa0loseQqUrU6DZq3ZceAoVATSiuZCpIBtAAwBdazcSgADkVgFzjkAA9EAdl8AbGS+ACwAnBFWAExhABxxUQA0IPyIAb5RZLEAzLkAjFEBsVZhIQCsvgC+lcmKOPjE5FSwNPSMLGyc3HyCwiLcFKxkTgA2ZrysALZkdcqNai0a7dpder2Gxqbm9vaeLm4eSN5+gcHhkTHxsUkpftl5ZLlPVjn3Ydlh1bUY9eYLrZoOuwwCR0NwAHJgJhtLRsESwVAAI0m7kh0MB2l2R327kanh8CAKeSCgTKARCxKsRSivliyVSCACAWyZCi5wCFRebLKXxAswaqmaAOWnVwpF4BAokzEEikJBk8hmPzmgvUMKBZDFJAlUqM8pMZkaO1se1cuNI+MQeV8VLI51iNptbJCVjy9LSZSsdoiYX8eTivmyUVivP5fyFS1h7C1OulAyGo3GUyVSgFTTVGNF4slkz1Mi2RtsWOcZsOoAJ1tt9sd0RCLrdtwQNpZFKZZXiYSiNOyoeVaf+kY1MZzhtIADFkAQRpB4UiUeg0erMSbsaW8UcK6Evb4wukQtTHeV3QhimUyD7d9krLTfGUwjyany++GwGLdABRSaTkarHoGGUkJIxiKmG8xUG+3Cft+v76MIeYGtsRYriWBzruWfgclkITZBkISFFYVhlEGx55GUmQEQReTRKRgQBFEvapi+EEUFBU4wes-QUIMFDDGM6ATFKKa-GBr5EB+X5sbof5wZso6WEhDirqhFobhhZ6xNhuH4YRxGNlEVHehEZEvHedafI+oGqFJAisT+1kceIgFygqCjPvM9m2exBjwQWpDGopKHmiQlqMukdpEdeETZK8DYMtFQQ+rEZQUiEgR5FeAQMcJVndDZEl2blHHxjxib8cmlnkB5+VeTJ+q+fJdjISAOJlscoW+OFV47u8MXHnWZ7nKUSWxP6GUPt8jHzBAr4EG4pAiF+JCoMgIwAARCO4xbNWuKnoYSYVBiN0XYQRxQ5H1LzBHEARhFSMQFByWUquQ024LNjQLcgS0retJCbXkAXbcpwWqYSFSPMG6UaVeLwvNkx7NlkoTvHevikbERRPf2r3vfNi3LWtG3oBYUSAy1aFtcSHWHVDJ2w+djbEiEZB0eEGNBslRFJdUj4kEQ03wEcFWmsDIUALRBPp5LYVE0XtlR2QBMeYuy+ePoZGR-hsul9EWW5qg43NIOBa1BIUsEORlGSaUUvE5IkWjZwRKlrrowUVR65NqqLEubAi0FIX7h10OBp2xQUnkdKNlbmS3gRZT+vuZIjVjL4+5mOiFQY-um4gCfqZpHzBlYEdRwyTKZO2+TBruVKhKnInpyKwKghCUK+xAOcUxWrpnnRnpWNk+5D1RITHukDyvFeURUjdREN97wpRpq2ZSl3u2U9hLZFIGgZ3cUvjjy6rLnP4FJy-uC-pk3y8IrguBwILJvd1a94dfaeFkRyNKxWk4SGbuDkGkty6wmtla+S8hyry-OYCcU5IDr2NpTN+hkNJRC-prX+TZrxqwiMAxWcQNJXwHB3MgxVEEhSoqRFm6CCJD2ZBSEuCMryPCeDPfSnZXbEPAmJSC+UKGg33GEVkA8SiegiAEV0Y9GzMjIKImG58h4lG4aJcS0F7LZyUgHUGCcOq0IIveEotcsHWgeMje8LpkqER3io5ink74P0YAIvaERMgujomfaK15pEMlIg8Ci152w5DQXEWxvCWLVXIVo3OCBXF2jup4g+PjEAz2EYNFKaN7xS2IVVb8zi2p4S9CNdB6CRrYQTkyY8NcREUV0bea0TIcmFU8ho4Q+SzZFCyAUMi8tynEiVo2HCJJzgZTrOHUBT4vaVWadVBxj92mIA0szO6qU2S3VlmXRActcFhH9CNZOoTPbgPYp5KJz8N4EiWWQFZuF1nRT6nWABOFdw7meR7aoQA */
+  createMachine(
+    {
+      id: "authAction",
+      initial: "decision",
+      tsTypes: {} as import("./index.typegen").Typegen0,
 
-    schema: {
-      events: {} as {
-        type: "submitNewPassword";
-        payload: { password: string };
+      schema: {
+        events: {} as
+          | {
+              type: "submitNewPassword";
+              payload: { password: string };
+            }
+          | { type: "manual init" },
+        context: {} as {
+          email?: string;
+        },
+        services: {} as {
+          verifyPasswordReset: { data: string };
+          verifyEmail: { data: void };
+          verifyRecoverEmail: { data: void };
+          confirmPasswordReset: { data: void };
+        },
       },
-      context: {} as {
-        email?: string;
-      },
-      services: {} as {
-        verifyPasswordReset: { data: string };
-        verifyEmail: { data: void };
-        verifyRecoverEmail: { data: void };
-        confirmPasswordReset: { data: void };
+
+      states: {
+        decision: {
+          on: {
+            "manual init": [
+              {
+                target: "verifyEmail",
+                cond: "isVerifyEmail",
+              },
+              {
+                target: "resetPassword",
+                cond: "isPasswordReset",
+              },
+              {
+                target: "recoverEmail",
+                cond: "isRecoverEmail",
+              },
+            ],
+          },
+
+          entry: "strictSafeInit",
+        },
+
+        resetPassword: {
+          states: {
+            verifying: {
+              invoke: {
+                src: "verifyPasswordReset",
+                onDone: "enterNewPassword",
+                onError: "error",
+              },
+            },
+
+            enterNewPassword: {
+              on: {
+                submitNewPassword: "confirm",
+              },
+            },
+
+            confirm: {
+              invoke: {
+                src: "confirmPasswordReset",
+                onDone: "success",
+                onError: "confirmationFailed",
+              },
+            },
+
+            success: {},
+
+            confirmationFailed: {
+              on: {
+                submitNewPassword: "enterNewPassword",
+              },
+            },
+
+            error: {},
+          },
+
+          initial: "verifying",
+        },
+
+        recoverEmail: {
+          states: {
+            verifying: {
+              invoke: {
+                src: "verifyRecoverEmail",
+                onDone: "success",
+                onError: "error",
+              },
+            },
+
+            success: {},
+            error: {},
+          },
+
+          initial: "verifying",
+        },
+
+        verifyEmail: {
+          states: {
+            verifying: {
+              invoke: {
+                src: "verifyEmail",
+                onDone: "success",
+                onError: "error",
+              },
+            },
+
+            success: {},
+            error: {},
+          },
+
+          initial: "verifying",
+        },
       },
     },
-
-    states: {
-      decision: {
-        always: [
-          {
-            target: "resetPassword",
-            cond: "isPasswordReset",
-          },
-          {
-            target: "recoverEmail",
-            cond: "isRecoverEmail",
-          },
-          {
-            target: "verifyEmail",
-            cond: "isVerifyEmail",
-          },
-        ],
+    {
+      actions: {
+        // This prevents the machien from running twice in strict mode
+        strictSafeInit: sendAction({ type: "manual init" } as any, {
+          delay: isomorphicEnv.NODE_ENV === "development" ? 0 : undefined,
+        }),
       },
-
-      resetPassword: {
-        states: {
-          verifying: {
-            invoke: {
-              src: "verifyPasswordReset",
-              onDone: "enterNewPassword",
-              onError: "error",
-            },
-          },
-
-          enterNewPassword: {
-            on: {
-              submitNewPassword: "confirm",
-            },
-          },
-
-          confirm: {
-            invoke: {
-              src: "confirmPasswordReset",
-              onDone: "success",
-              onError: "confirmationFailed",
-            },
-          },
-
-          success: {},
-
-          confirmationFailed: {
-            on: {
-              submitNewPassword: "enterNewPassword",
-            },
-          },
-
-          error: {},
-        },
-
-        initial: "verifying",
-      },
-
-      recoverEmail: {
-        states: {
-          verifying: {
-            invoke: {
-              src: "verifyRecoverEmail",
-              onDone: "success",
-              onError: "error",
-            },
-          },
-
-          success: {},
-          error: {},
-        },
-
-        initial: "verifying",
-      },
-
-      verifyEmail: {
-        states: {
-          verifying: {
-            invoke: {
-              src: "verifyEmail",
-              onDone: "success",
-              onError: "error",
-            },
-          },
-
-          success: {},
-          error: {},
-        },
-
-        initial: "verifying",
-      },
-    },
-  });
+    }
+  );
 
 export default function AuthAction() {
   const { t } = useTranslation();

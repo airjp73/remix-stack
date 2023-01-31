@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 const schema = z.object({
+  NODE_ENV: z.string().optional(),
   DATABASE_URL: z.string(),
   SESSION_SECRET: z.string(),
   FIREBASE_API_KEY: z.string(),

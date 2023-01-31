@@ -1,7 +1,7 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import type { DecodedIdToken } from "firebase-admin/auth";
 import { serverAuth } from "./firebase/firebase.server";
-import { env } from "./server/env.server";
+import { env } from "./env/env.server";
 
 export const sessionStorage = createCookieSessionStorage({
   cookie: {

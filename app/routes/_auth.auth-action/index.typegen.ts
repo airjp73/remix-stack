@@ -3,7 +3,6 @@
 export interface Typegen0 {
   "@@xstate/typegen": true;
   internalEvents: {
-    "": { type: "" };
     "xstate.init": { type: "xstate.init" };
   };
   invokeSrcNameMap: {
@@ -22,18 +21,20 @@ export interface Typegen0 {
       | "verifyPasswordReset"
       | "verifyRecoverEmail";
   };
-  eventsCausingActions: {};
+  eventsCausingActions: {
+    strictSafeInit: "xstate.init";
+  };
   eventsCausingDelays: {};
   eventsCausingGuards: {
-    isPasswordReset: "";
-    isRecoverEmail: "";
-    isVerifyEmail: "";
+    isPasswordReset: "manual init";
+    isRecoverEmail: "manual init";
+    isVerifyEmail: "manual init";
   };
   eventsCausingServices: {
     confirmPasswordReset: "submitNewPassword";
-    verifyEmail: "";
-    verifyPasswordReset: "";
-    verifyRecoverEmail: "";
+    verifyEmail: "manual init";
+    verifyPasswordReset: "manual init";
+    verifyRecoverEmail: "manual init";
   };
   matchesStates:
     | "decision"

@@ -2,7 +2,7 @@ import type { App } from "firebase-admin/app";
 import { initializeApp, cert, getApps, getApp } from "firebase-admin/app";
 import type { Auth } from "firebase-admin/auth";
 import { getAuth } from "firebase-admin/auth";
-import { env } from "~/server/env.server";
+import { env } from "~/env/env.server";
 
 let app: App;
 let auth: Auth;
