@@ -1,62 +1,21 @@
-import type { Password, User } from "@prisma/client";
-import bcrypt from "bcryptjs";
+import type { User } from "@prisma/client";
+import { db } from "~/db.server";
 
-import { prisma } from "~/db.server";
-
-export type { User } from "@prisma/client";
-
-export async function getUserById(id: User["id"]) {
-  return prisma.user.findUnique({ where: { id } });
+export async function get_user_by_id(id: User["id"]) {
+  return db.user.findUnique({ where: { id } });
 }
 
-export async function getUserByEmail(email: User["email"]) {
-  return prisma.user.findUnique({ where: { email } });
-}
-
-export async function createUser(email: User["email"], password: string) {
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  return prisma.user.create({
-    data: {
-      email,
-      password: {
-        create: {
-          hash: hashedPassword,
-        },
-      },
-    },
-  });
-}
-
-export async function deleteUserByEmail(email: User["email"]) {
-  return prisma.user.delete({ where: { email } });
-}
-
-export async function verifyLogin(
-  email: User["email"],
-  password: Password["hash"]
+export async function get_or_create_user(
+  userParams: Pick<User, "email" | "firebase_uid">
 ) {
-  const userWithPassword = await prisma.user.findUnique({
-    where: { email },
-    include: {
-      password: true,
-    },
+  const user = await db.user.findUnique({
+    where: { firebase_uid: userParams.firebase_uid },
   });
+  if (user) return user;
 
-  if (!userWithPassword || !userWithPassword.password) {
-    return null;
-  }
+  return db.user.create({ data: userParams });
+}
 
-  const isValid = await bcrypt.compare(
-    password,
-    userWithPassword.password.hash
-  );
-
-  if (!isValid) {
-    return null;
-  }
-
-  const { password: _password, ...userWithoutPassword } = userWithPassword;
-
-  return userWithoutPassword;
+export async function get_user_by_uid(firebase_uid: User["firebase_uid"]) {
+  return db.user.findUnique({ where: { firebase_uid } });
 }

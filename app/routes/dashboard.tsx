@@ -11,15 +11,12 @@ import { SubmitButton } from "~/ui/form/SubmitButton";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireAuthentication(request);
-  return json({
-    email: user.idToken.email,
-    picture: user.idToken.picture,
-  });
+  return json({ email: user.email });
 };
 
 export default function Dashboard() {
   const { t } = useTranslation();
-  const { email, picture } = useLoaderData<typeof loader>();
+  const { email } = useLoaderData<typeof loader>();
   return (
     <>
       <div className="space-between absolute top-4 left-4">
@@ -40,9 +37,6 @@ export default function Dashboard() {
             {t("dashboard.title")}
           </h1>
           <p>{t("dashboard.welcome", { name: email })}</p>
-          {picture && (
-            <img src={picture} alt="You" referrerPolicy="no-referrer" />
-          )}
         </div>
       </div>
     </>

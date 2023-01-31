@@ -11,7 +11,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import type { TFunction } from "i18next";
-import { useId, useState } from "react";
+import { useId } from "react";
 import { useTranslation } from "react-i18next";
 import { ValidatedForm } from "remix-validated-form";
 import { z } from "zod";
@@ -19,29 +19,15 @@ import { zfd } from "zod-form-data";
 import { GoogleIcon } from "~/auth/GoogleIcon";
 import { loginMachine } from "~/auth/loginMachine";
 import { useFirebaseAuth } from "~/firebase/firebase";
-import { serverAuth } from "~/firebase/firebase.server";
-import { createUserSession } from "~/session.server";
 import { Alert } from "~/ui/Alert";
 import { Button } from "~/ui/Button";
 import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
 
-const actionBody = zfd.formData({
-  idToken: z.string(),
-});
-
-export const action = async ({ request }: ActionArgs) => {
-  const { idToken } = actionBody.parse(await request.formData());
-
-  await serverAuth.verifyIdToken(idToken);
-  return createUserSession({ request, idToken, redirectTo: "/dashboard" });
-};
-
 const formValidator = withZod(
   z.object({
     email: zfd.text(z.string().email()),
-    // TODO: Improve requirements
-    password: zfd.text(z.string().min(8)),
+    password: zfd.text(z.string().min(6)),
   })
 );
 
@@ -77,7 +63,7 @@ export default function Signup() {
         return await credential.user.getIdToken();
       },
       "verify id token": async (_ctx, { data: idToken }) => {
-        fetcher.submit({ idToken }, { method: "post" });
+        fetcher.submit({ idToken }, { method: "post", action: "/login" });
       },
     },
   });

@@ -1,7 +1,8 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
-import type { DecodedIdToken } from "firebase-admin/auth";
 import { serverAuth } from "./firebase/firebase.server";
 import { env } from "./env/env.server";
+import { User } from "@prisma/client";
+import { get_user_by_uid } from "./models/user.server";
 
 export const sessionStorage = createCookieSessionStorage({
   cookie: {
@@ -45,10 +46,6 @@ export async function createUserSession({
   });
 }
 
-type User = {
-  idToken: DecodedIdToken;
-};
-
 export async function requireAuthentication(
   request: Request,
   redirectTo: string = new URL(request.url).pathname
@@ -59,13 +56,14 @@ export async function requireAuthentication(
   const session = await getSession(request);
   const idToken = session.get(ID_TOKEN_KEY);
 
-  if (!idToken) {
-    throw redirect(redirectUrl);
-  }
+  if (!idToken) throw redirect(redirectUrl);
 
   try {
     const decoded = await serverAuth.verifyIdToken(idToken);
-    return { idToken: decoded };
+    const user = await get_user_by_uid(decoded.uid);
+    if (!user) throw Error("user not found");
+
+    return user;
   } catch (err) {
     throw redirect(redirectUrl);
   }

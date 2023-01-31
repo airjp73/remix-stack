@@ -7,9 +7,10 @@
 import { installGlobals } from "@remix-run/node";
 import { parse } from "cookie";
 import { z } from "zod";
-import { createUser } from "~/models/user.server";
 import { createUserSession } from "~/session.server";
 import { config } from "dotenv";
+import { serverAuth } from "~/firebase/firebase.server";
+import { db } from "~/db.server";
 config();
 
 installGlobals();
@@ -38,9 +39,9 @@ async function createAndLogin(email: string) {
   );
   const schema = z.object({ idToken: z.string() });
   const data = schema.parse(await res.json());
+  const { uid } = await serverAuth.verifyIdToken(data.idToken);
 
-  // Can't parellelize because we'll eventually need to put the firebase uid in here
-  await createUser(email, "myreallystrongpassword");
+  await db.user.create({ data: { email, firebase_uid: uid } });
 
   const response = await createUserSession({
     request: new Request("test://test"),

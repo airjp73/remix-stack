@@ -6,7 +6,7 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { installGlobals } from "@remix-run/node";
 
-import { prisma } from "~/db.server";
+import { db } from "~/db.server";
 
 installGlobals();
 
@@ -20,7 +20,7 @@ async function deleteUser(email: string, idToken: string) {
 
   async function cleanupPrisma() {
     try {
-      await prisma.user.delete({ where: { email } });
+      await db.user.delete({ where: { email } });
     } catch (error) {
       if (
         error instanceof PrismaClientKnownRequestError &&
@@ -31,7 +31,7 @@ async function deleteUser(email: string, idToken: string) {
         throw error;
       }
     } finally {
-      await prisma.$disconnect();
+      await db.$disconnect();
     }
   }
 

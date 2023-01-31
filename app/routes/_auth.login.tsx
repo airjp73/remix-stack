@@ -11,18 +11,19 @@ import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
-  signInWithRedirect,
 } from "firebase/auth";
 import type { TFunction } from "i18next";
 import { useId } from "react";
 import { useTranslation } from "react-i18next";
 import { ValidatedForm } from "remix-validated-form";
+import invariant from "tiny-invariant";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { GoogleIcon } from "~/auth/GoogleIcon";
 import { loginMachine } from "~/auth/loginMachine";
 import { useFirebaseAuth } from "~/firebase/firebase";
 import { serverAuth } from "~/firebase/firebase.server";
+import { get_or_create_user } from "~/models/user.server";
 import { createUserSession } from "~/session.server";
 import { Alert } from "~/ui/Alert";
 import { Button } from "~/ui/Button";
@@ -41,7 +42,10 @@ export const action = async ({ request }: ActionArgs) => {
     await request.formData()
   );
 
-  await serverAuth.verifyIdToken(idToken);
+  const { email, uid } = await serverAuth.verifyIdToken(idToken);
+  invariant(email, "User login must have an email");
+
+  await get_or_create_user({ email, firebase_uid: uid });
   return createUserSession({
     request,
     idToken,
