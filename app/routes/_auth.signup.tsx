@@ -1,5 +1,4 @@
 import { useFetcher, useOutletContext } from "@remix-run/react";
-import { withZod } from "@remix-validated-form/with-zod";
 import { useMachine } from "@xstate/react";
 import { FirebaseError, FirebaseOptions } from "firebase/app";
 import {
@@ -21,13 +20,12 @@ import { Alert } from "~/ui/Alert";
 import { Button } from "~/ui/Button";
 import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
+import { makeValidator } from "~/validation";
 
-const formValidator = withZod(
-  z.object({
-    email: zfd.text(z.string().email()),
-    password: zfd.text(z.string().min(6)),
-  })
-);
+const formValidator = makeValidator({
+  email: zfd.text(z.string().email()),
+  password: zfd.text(z.string().min(6)),
+});
 
 export const handle = {
   authHeader: (t: TFunction) => t("login.signupHeader"),

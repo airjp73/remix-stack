@@ -52,5 +52,12 @@
       "label": "Update password",
       "loadingLabel": "Updating password..."
     }
+  },
+  "validation": {
+    "required": "This field is required",
+    "string": {
+      "email": "Must be a valid email",
+      "tooShort": "Must be at least {{min}} characters"
+    }
   }
 }

@@ -29,7 +29,7 @@ This is still a work in progress and not ready for use.
 - [X] Clean up how inputs look in dark mode
 - [X] Fix button hover state in dark mode
 - [X] Make all grays use gray and set gray in theme
-- [ ] I18n for form validation errors errors
+- [X] I18n for form validation errors errors
 - [ ] Add profile photo upload demo page
 - [ ] Test deployment with fly
 - [ ] Sentry error monitoring

@@ -1,5 +1,4 @@
 import { useOutletContext } from "@remix-run/react";
-import { withZod } from "@remix-validated-form/with-zod";
 import { useMachine } from "@xstate/react";
 import { FirebaseError, FirebaseOptions } from "firebase/app";
 import { sendPasswordResetEmail } from "firebase/auth";
@@ -14,16 +13,15 @@ import { Alert } from "~/ui/Alert";
 import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
 import { Link } from "~/ui/Link";
+import { makeValidator } from "~/validation";
 
 export const handle = {
   authHeader: (t: TFunction) => t("resetPassword.header"),
 };
 
-const validator = withZod(
-  z.object({
-    email: zfd.text(z.string().email()),
-  })
-);
+const validator = makeValidator({
+  email: zfd.text(z.string().email()),
+});
 
 const resetMachine =
   /** @xstate-layout N4IgpgJg5mDOIC5QAcCGtYHcD2AnCAtLnGAC4B0sArgEYC2AlqaQwHZQDEE2rY5bAN2wBrPmgw58REhWr0mLdgkHYAxqhY8A2gAYAurr2IU2WEwY9jIAB6IALADYATOQDMDgJwBWAOw6fTjoedl52ADQgAJ6IAIx2ABzkPq5eDq5O7h4xOl6urgC++RHiWHiExLBklLSMzGycYLi4eOTIADYaAGZ4dK3opVIVVXK1ilDKrELqmqyGhlbIpuaWSDaIrvE+5PGeXvEeTg5eHq4xMV4R0QhOMR7ktx465+52ryGFxf2S5TLV8nXsDiNZq4VodUjdXC9ErfaSVWQ1BT1CZTDQWWb6LQxIyrRZmGZWWwIVweO52Hz7OzZeK+JzxVw+S7rG7kDI6G7OVx2PJ+OwfEAwspwsgcEZMea4pYE1ZEuxOJkIGI+LzkBxPXJ0nRHfwOByFIogVjYCBwBZfIVDUgLKXowmIAgOBWuHSq9V0pzJLwe3zxfmCwa-BgQNpga3420yxChe7eZ3xdkZKl7BVnLbZZ6a7U+XV+80B+F-Ub1MPLVh2xXR-ZamJq14Oek1lNe13nD0xeLxwJ5XMSC2-aiqVRweCS8MrUBE+MuzYHDwBbJHVIptKshxyna7EnKpw9gY-AvAvAl6UTxDxGKue5U9UeNWLx1RdZypJaim3tc7Ll8-VAA */

@@ -1,18 +1,20 @@
 import { useLoaderData } from "@remix-run/react";
 import type { LoaderArgs } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
-import { withZod } from "@remix-validated-form/with-zod";
 import { useTranslation } from "react-i18next";
 import { ValidatedForm } from "remix-validated-form";
 import { z } from "zod";
 import { requireAuthentication } from "~/session.server";
 import { ThemeToggle } from "~/theme";
 import { SubmitButton } from "~/ui/form/SubmitButton";
+import { makeValidator } from "~/validation";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireAuthentication(request);
   return json({ email: user.email });
 };
+
+const validator = makeValidator({});
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -20,11 +22,7 @@ export default function Dashboard() {
   return (
     <>
       <div className="absolute top-4 left-4">
-        <ValidatedForm
-          validator={withZod(z.object({}))}
-          method="post"
-          action="/logout"
-        >
+        <ValidatedForm validator={validator} method="post" action="/logout">
           <SubmitButton label="Logout" loadingLabel="Logging out..." />
         </ValidatedForm>
       </div>

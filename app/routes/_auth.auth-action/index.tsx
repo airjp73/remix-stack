@@ -1,5 +1,4 @@
 import { useOutletContext, useSearchParams } from "@remix-run/react";
-import { withZod } from "@remix-validated-form/with-zod";
 import { useMachine } from "@xstate/react";
 import { FirebaseOptions } from "firebase/app";
 import {
@@ -20,17 +19,16 @@ import { Alert } from "~/ui/Alert";
 import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
 import { Link } from "~/ui/Link";
+import { makeValidator } from "~/validation";
 
 const searchSchema = zfd.formData({
   mode: z.enum(["resetPassword", "recoverEmail", "verifyEmail"]),
   oobCode: z.string(),
 });
 
-const passwordConfirmationValidator = withZod(
-  z.object({
-    password: z.string().min(8),
-  })
-);
+const passwordConfirmationValidator = makeValidator({
+  password: z.string().min(8),
+});
 
 const authActionMachine =
   /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgQQMboEsB7AOwDoAnOMdABWVlgHciKIyA3MCggMwE8CJKAGIIpMGSEciAa0loseQqUrU6DZq3ZceAoVATSiuZCpIBtAAwBdazcSgADkVgFzjkAA9EAdl8AbGS+ACwAnBFWAExhABxxUQA0IPyIAb5RZLEAzLkAjFEBsVZhIQCsvgC+lcmKOPjE5FSwNPSMLGyc3HyCwiLcFKxkTgA2ZrysALZkdcqNai0a7dpder2Gxqbm9vaeLm4eSN5+gcHhkTHxsUkpftl5ZLlPVjn3Ydlh1bUY9eYLrZoOuwwCR0NwAHJgJhtLRsESwVAAI0m7kh0MB2l2R327kanh8CAKeSCgTKARCxKsRSivliyVSCACAWyZCi5wCFRebLKXxAswaqmaAOWnVwpF4BAokzEEikJBk8hmPzmgvUMKBZDFJAlUqM8pMZkaO1se1cuNI+MQeV8VLI51iNptbJCVjy9LSZSsdoiYX8eTivmyUVivP5fyFS1h7C1OulAyGo3GUyVSgFTTVGNF4slkz1Mi2RtsWOcZsOoAJ1tt9sd0RCLrdtwQNpZFKZZXiYSiNOyoeVaf+kY1MZzhtIADFkAQRpB4UiUeg0erMSbsaW8UcK6Evb4wukQtTHeV3QhimUyD7d9krLTfGUwjyany++GwGLdABRSaTkarHoGGUkJIxiKmG8xUG+3Cft+v76MIeYGtsRYriWBzruWfgclkITZBkISFFYVhlEGx55GUmQEQReTRKRgQBFEvapi+EEUFBU4wes-QUIMFDDGM6ATFKKa-GBr5EB+X5sbof5wZso6WEhDirqhFobhhZ6xNhuH4YRxGNlEVHehEZEvHedafI+oGqFJAisT+1kceIgFygqCjPvM9m2exBjwQWpDGopKHmiQlqMukdpEdeETZK8DYMtFQQ+rEZQUiEgR5FeAQMcJVndDZEl2blHHxjxib8cmlnkB5+VeTJ+q+fJdjISAOJlscoW+OFV47u8MXHnWZ7nKUSWxP6GUPt8jHzBAr4EG4pAiF+JCoMgIwAARCO4xbNWuKnoYSYVBiN0XYQRxQ5H1LzBHEARhFSMQFByWUquQ024LNjQLcgS0retJCbXkAXbcpwWqYSFSPMG6UaVeLwvNkx7NlkoTvHevikbERRPf2r3vfNi3LWtG3oBYUSAy1aFtcSHWHVDJ2w+djbEiEZB0eEGNBslRFJdUj4kEQ03wEcFWmsDIUALRBPp5LYVE0XtlR2QBMeYuy+ePoZGR-hsul9EWW5qg43NIOBa1BIUsEORlGSaUUvE5IkWjZwRKlrrowUVR65NqqLEubAi0FIX7h10OBp2xQUnkdKNlbmS3gRZT+vuZIjVjL4+5mOiFQY-um4gCfqZpHzBlYEdRwyTKZO2+TBruVKhKnInpyKwKghCUK+xAOcUxWrpnnRnpWNk+5D1RITHukDyvFeURUjdREN97wpRpq2ZSl3u2U9hLZFIGgZ3cUvjjy6rLnP4FJy-uC-pk3y8IrguBwILJvd1a94dfaeFkRyNKxWk4SGbuDkGkty6wmtla+S8hyry-OYCcU5IDr2NpTN+hkNJRC-prX+TZrxqwiMAxWcQNJXwHB3MgxVEEhSoqRFm6CCJD2ZBSEuCMryPCeDPfSnZXbEPAmJSC+UKGg33GEVkA8SiegiAEV0Y9GzMjIKImG58h4lG4aJcS0F7LZyUgHUGCcOq0IIveEotcsHWgeMje8LpkqER3io5ink74P0YAIvaERMgujomfaK15pEMlIg8Ci152w5DQXEWxvCWLVXIVo3OCBXF2jup4g+PjEAz2EYNFKaN7xS2IVVb8zi2p4S9CNdB6CRrYQTkyY8NcREUV0bea0TIcmFU8ho4Q+SzZFCyAUMi8tynEiVo2HCJJzgZTrOHUBT4vaVWadVBxj92mIA0szO6qU2S3VlmXRActcFhH9CNZOoTPbgPYp5KJz8N4EiWWQFZuF1nRT6nWABOFdw7meR7aoQA */

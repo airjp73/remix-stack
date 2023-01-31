@@ -128,6 +128,16 @@ describe("signing up", () => {
     cy.findByRole("button", { name: /login/i }).should("exist");
   });
 
+  it("should validate the form", () => {
+    cy.visitAndCheck("/signup");
+    cy.findByRole("button", { name: /sign up/i }).click();
+    cy.findAllByText(/this field is required/i).should("have.length", 2);
+    cy.findByRole("textbox", { name: /email/i }).type("asdf");
+    cy.findByText(/must be a valid email/i).should("exist");
+    cy.findByLabelText(/password/i).type("asdf");
+    cy.findByText(/must be at least 6 characters/i).should("exist");
+  });
+
   it("should gracefully handle when an email is taken", () => {
     cy.visitAndCheck("/signup");
     cy.findByRole("textbox", { name: /email/i }).type(existingAccount.email);
