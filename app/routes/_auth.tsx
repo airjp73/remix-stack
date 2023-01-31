@@ -14,6 +14,7 @@ export const loader = async () => {
       projectId: env.FIREBASE_PROJECT_ID,
       appId: env.FIREBASE_APP_ID,
       emulatorUrl: env.FIREBASE_AUTH_EMULATOR_HOST,
+      storageBucket: env.FIREBASE_CLOUD_STORAGE_BUCKET,
     } satisfies FirebaseClientOptions,
   });
 };
