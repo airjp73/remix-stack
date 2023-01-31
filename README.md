@@ -28,7 +28,7 @@ This is still a work in progress and not ready for use.
   - [X] Handle "email taken" error during signup
 - [X] Clean up how inputs look in dark mode
 - [X] Fix button hover state in dark mode
-- [ ] Make all grays use gray and set gray in theme
+- [X] Make all grays use gray and set gray in theme
 - [ ] I18n for form validation errors errors
 - [ ] Add profile photo upload demo page
 - [ ] Test deployment with fly

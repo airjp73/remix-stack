@@ -49,7 +49,7 @@ const Field = ({ name, description, children, label }: FieldProps) => {
         {description && (
           <p
             id={descriptionId}
-            className="mt-1 text-sm text-slate-500 dark:text-slate-400"
+            className="mt-1 text-sm text-gray-500 dark:text-gray-400"
           >
             {description}
           </p>

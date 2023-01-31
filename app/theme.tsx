@@ -50,7 +50,7 @@ const ThemeToggleInternal = () => {
         }}
         checked={theme === "dark"}
       />
-      <p id={descriptionId} className="text-slate-900 dark:text-slate-100">
+      <p id={descriptionId} className="text-gray-900 dark:text-gray-100">
         {theme === "dark" ? "Dark" : "Light"}
       </p>
     </div>

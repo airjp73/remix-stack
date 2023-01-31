@@ -82,7 +82,7 @@ export default function App() {
         />
       </head>
       <body
-        className="h-full bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-900 dark:text-slate-50"
+        className="h-full bg-gray-50 font-sans text-gray-900 antialiased dark:bg-gray-900 dark:text-gray-50"
         data-hydrated={isHydrated}
       >
         <Outlet />

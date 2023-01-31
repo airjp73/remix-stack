@@ -85,7 +85,7 @@ export default function Signup() {
         <Alert className="mb-6" variant="error" details={getErrorMessage()} />
       )}
       <div>
-        <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
           {t("login.socialLogin.signupLabel")}
         </p>
         <Button
@@ -103,7 +103,7 @@ export default function Signup() {
           <div className="w-full border-t border-gray-300 dark:border-gray-600" />
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="bg-white px-2 text-slate-500 dark:bg-slate-800 dark:text-slate-300">
+          <span className="bg-white px-2 text-gray-500 dark:bg-gray-800 dark:text-gray-300">
             {t("login.socialLogin.orPasswordLogin")}
           </span>
         </div>

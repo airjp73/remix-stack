@@ -110,7 +110,7 @@ export default function Login() {
       <div>
         <p
           id={socialLabelId}
-          className="text-sm font-medium text-slate-700 dark:text-slate-300"
+          className="text-sm font-medium text-gray-700 dark:text-gray-300"
         >
           {t("login.socialLogin.label")}
         </p>
@@ -129,7 +129,7 @@ export default function Login() {
           <div className="w-full border-t border-gray-300 dark:border-gray-600" />
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="bg-white px-2 text-slate-500 dark:bg-slate-800 dark:text-slate-300">
+          <span className="bg-white px-2 text-gray-500 dark:bg-gray-800 dark:text-gray-300">
             {t("login.socialLogin.orPasswordLogin")}
           </span>
         </div>
@@ -181,7 +181,7 @@ export default function Login() {
             className="w-full"
             isLoading={state.matches("logging in with password")}
           />
-          <p className="mt-4 text-sm font-medium text-slate-700 dark:text-slate-300">
+          <p className="mt-4 text-sm font-medium text-gray-700 dark:text-gray-300">
             {t("login.noAccount")}{" "}
             <Link href="/signup">{t("login.signupLink")}</Link>
           </p>

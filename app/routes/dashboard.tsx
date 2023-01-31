@@ -33,7 +33,7 @@ export default function Dashboard() {
       </div>
       <div className="flex min-h-full flex-col justify-center bg-gray-50 py-12 dark:bg-gray-800 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight dark:text-slate-100 lg:text-5xl">
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight dark:text-gray-100 lg:text-5xl">
             {t("dashboard.title")}
           </h1>
           <p>{t("dashboard.welcome", { name: email })}</p>

@@ -44,7 +44,7 @@ export default function AuthLayout() {
           <AuthHeader>{headerMatch.handle!.authHeader(t)}</AuthHeader>
         )}
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="space-y-6 bg-white py-8 px-4 shadow-lg dark:bg-slate-800 sm:rounded-lg sm:px-10">
+          <div className="space-y-6 bg-white py-8 px-4 shadow-lg dark:bg-gray-800 sm:rounded-lg sm:px-10">
             <Outlet context={data} />
           </div>
         </div>
