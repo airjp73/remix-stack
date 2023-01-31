@@ -12,6 +12,10 @@ const responseSchema = z.object({
   ),
 });
 const getRequestsUrl = `http://localhost:9099/emulator/v1/projects/${project_id}/oobCodes`;
+const existingAccount = {
+  email: "existing-password-account@example.com",
+  password: "testing123",
+};
 
 describe("login", () => {
   afterEach(() => {
@@ -20,14 +24,9 @@ describe("login", () => {
   });
 
   it("should log in with email and password", () => {
-    const loginForm = {
-      email: "existing-password-account@example.com",
-      password: "testing123",
-    };
-
     cy.visitAndCheck("/login");
-    cy.findByRole("textbox", { name: /email/i }).type(loginForm.email);
-    cy.findByLabelText(/password/i).type(loginForm.password);
+    cy.findByRole("textbox", { name: /email/i }).type(existingAccount.email);
+    cy.findByLabelText(/password/i).type(existingAccount.password);
     cy.findByRole("button", { name: /login/i }).click();
 
     cy.findByRole("heading", { name: /dashboard/i }).should("exist");
@@ -70,7 +69,7 @@ describe("login", () => {
   });
 });
 
-describe("authorization", () => {
+describe("authorized visit", () => {
   afterEach(() => {
     cy.cleanupUser();
   });
@@ -81,6 +80,20 @@ describe("authorization", () => {
     cy.login();
     cy.visitAndCheck("/dashboard");
     cy.findByRole("heading", { name: /dashboard/i }).should("exist");
+  });
+});
+
+describe("unauthorized visit", () => {
+  it("should not allow dashbaord access if logged out", () => {
+    cy.visitAndCheck("/dashboard");
+    cy.location("pathname").should("contain", "/login");
+
+    cy.findByRole("textbox", { name: /email/i }).type(existingAccount.email);
+    cy.findByLabelText(/password/i).type(existingAccount.password);
+    cy.findByRole("button", { name: /login/i }).click();
+
+    cy.findByRole("heading", { name: /dashboard/i }).should("exist");
+    cy.location("pathname").should("contain", "/dashboard");
   });
 });
 
