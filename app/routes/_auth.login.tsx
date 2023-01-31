@@ -1,11 +1,6 @@
-import {
-  useFetcher,
-  useOutletContext,
-  useSearchParams,
-} from "@remix-run/react";
+import { useFetcher, useSearchParams } from "@remix-run/react";
 import type { ActionArgs, MetaFunction } from "@remix-run/server-runtime";
 import { useMachine } from "@xstate/react";
-import type { FirebaseOptions } from "firebase/app";
 import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
@@ -29,6 +24,7 @@ import { Button } from "~/ui/Button";
 import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
 import { Link } from "~/ui/Link";
+import { useFirebaseOptions } from "~/utils";
 import { makeValidator } from "~/validation";
 
 const actionBody = zfd.formData({
@@ -69,9 +65,7 @@ const formValidator = makeValidator({
 
 export default function Login() {
   const { t } = useTranslation();
-  const { firebaseOptions } = useOutletContext<{
-    firebaseOptions: FirebaseOptions;
-  }>();
+  const firebaseOptions = useFirebaseOptions();
   const auth = useFirebaseAuth(firebaseOptions);
   const fetcher = useFetcher();
   const [params] = useSearchParams();

@@ -1,6 +1,5 @@
-import { useOutletContext } from "@remix-run/react";
 import { useMachine } from "@xstate/react";
-import { FirebaseError, FirebaseOptions } from "firebase/app";
+import { FirebaseError } from "firebase/app";
 import { sendPasswordResetEmail } from "firebase/auth";
 import type { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
@@ -13,6 +12,7 @@ import { Alert } from "~/ui/Alert";
 import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
 import { Link } from "~/ui/Link";
+import { useFirebaseOptions } from "~/utils";
 import { makeValidator } from "~/validation";
 
 export const handle = {
@@ -89,9 +89,7 @@ const resetMachine =
 
 export default function PasswordReset() {
   const { t } = useTranslation();
-  const { firebaseOptions } = useOutletContext<{
-    firebaseOptions: FirebaseOptions;
-  }>();
+  const firebaseOptions = useFirebaseOptions();
   const auth = useFirebaseAuth(firebaseOptions);
   const [state, send] = useMachine(resetMachine, {
     services: {

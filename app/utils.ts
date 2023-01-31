@@ -1,6 +1,7 @@
 import { User } from "@prisma/client";
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
+import { FirebaseClientOptions } from "./firebase/firebase.client";
 
 const DEFAULT_REDIRECT = "/";
 
@@ -65,4 +66,14 @@ export function useUser(): User {
     );
   }
   return maybeUser;
+}
+
+export function useFirebaseOptions(): FirebaseClientOptions {
+  const data = useMatchesData("root");
+  if (!data || !data.firebaseOptions) {
+    throw new Error(
+      "No firebase options found in root loader. This is required for firebase to work."
+    );
+  }
+  return data.firebaseOptions;
 }

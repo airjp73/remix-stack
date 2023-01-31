@@ -15,7 +15,12 @@ import i18next from "./i18n.server";
 import { env } from "./env/env.server";
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { useHydrated } from "remix-utils";
-import { getUser } from "./session.server";
+import { getFirebaseToken, getUser } from "./session.server";
+import { signInWithCustomToken } from "firebase/auth";
+import {
+  FirebaseClientOptions,
+  getClientAuth,
+} from "./firebase/firebase.client";
 
 export const links: LinksFunction = () => {
   return [
@@ -38,12 +43,24 @@ export const handle = { i18n: "common" };
 export async function loader({ request }: LoaderArgs) {
   const locale = await i18next.getLocale(request);
   const user = await getUser(request);
+  const firebaseJwt = user
+    ? await getFirebaseToken(user.firebase_uid)
+    : undefined;
   return json({
     locale,
     env: {
       NODE_ENV: env.NODE_ENV,
     },
     user,
+    firebaseJwt,
+    firebaseOptions: {
+      apiKey: env.FIREBASE_API_KEY,
+      authDomain: env.FIREBASE_AUTH_DOMAIN,
+      projectId: env.FIREBASE_PROJECT_ID,
+      appId: env.FIREBASE_APP_ID,
+      emulatorUrl: env.FIREBASE_AUTH_EMULATOR_HOST,
+      storageBucket: env.FIREBASE_CLOUD_STORAGE_BUCKET,
+    } satisfies FirebaseClientOptions,
   });
 }
 
@@ -51,7 +68,8 @@ const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 export default function App() {
-  const { locale, env } = useLoaderData<typeof loader>();
+  const { locale, env, firebaseJwt, firebaseOptions } =
+    useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
   const isHydrated = useHydrated();
 
@@ -66,6 +84,17 @@ export default function App() {
     if (localStorage.theme === "dark")
       document.documentElement.dataset.theme = "dark";
   }, []);
+
+  // TODO: move this elsewhere so the whole site doesn't rely on firebase
+  useEffect(() => {
+    if (firebaseJwt) {
+      const auth = getClientAuth(firebaseOptions);
+      signInWithCustomToken(auth, firebaseJwt).catch((err) => {
+        // TODO: do something here?
+        console.log(err);
+      });
+    }
+  }, [firebaseJwt, firebaseOptions]);
 
   return (
     <html lang={locale} dir={i18n.dir()} className="h-full">

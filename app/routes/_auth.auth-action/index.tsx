@@ -1,6 +1,5 @@
-import { useOutletContext, useSearchParams } from "@remix-run/react";
+import { useSearchParams } from "@remix-run/react";
 import { useMachine } from "@xstate/react";
-import { FirebaseOptions } from "firebase/app";
 import {
   applyActionCode,
   checkActionCode,
@@ -19,6 +18,7 @@ import { Alert } from "~/ui/Alert";
 import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
 import { Link } from "~/ui/Link";
+import { useFirebaseOptions } from "~/utils";
 import { makeValidator } from "~/validation";
 
 const searchSchema = zfd.formData({
@@ -163,9 +163,7 @@ const authActionMachine =
 
 export default function AuthAction() {
   const { t } = useTranslation();
-  const { firebaseOptions } = useOutletContext<{
-    firebaseOptions: FirebaseOptions;
-  }>();
+  const firebaseOptions = useFirebaseOptions();
   const auth = useFirebaseAuth(firebaseOptions);
 
   const [params] = useSearchParams();

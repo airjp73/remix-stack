@@ -1,4 +1,8 @@
-import { createCookieSessionStorage, redirect } from "@remix-run/node";
+import {
+  createCookie,
+  createCookieSessionStorage,
+  redirect,
+} from "@remix-run/node";
 import { serverAuth } from "./firebase/firebase.server";
 import { env } from "./env/env.server";
 import { User } from "@prisma/client";
@@ -22,8 +26,9 @@ export async function getSession(request: Request) {
 }
 
 // 7 days
-export const SESSION_EXPIRY_SECONDS = 60 * 60 * 24 * 7;
+export const SESSION_EXPIRY_MILLIS = 60 * 60 * 24 * 7 * 1000;
 const ID_TOKEN_KEY = "idToken";
+const FIREBASE_JWT = "firebaseJwt";
 
 export async function createUserSession({
   request,
@@ -38,13 +43,11 @@ export async function createUserSession({
 }) {
   const session = await getSession(request);
   session.set(ID_TOKEN_KEY, idToken);
-  const firebaseJwt = await serverAuth.createSessionCookie(idToken, {
-    expiresIn: SESSION_EXPIRY_SECONDS,
-  });
+
   return redirect(redirectTo, {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session, {
-        expires: new Date(Date.now() + SESSION_EXPIRY_SECONDS * 1000),
+        expires: new Date(Date.now() + SESSION_EXPIRY_MILLIS - 10),
       }),
     },
   });
@@ -60,6 +63,16 @@ export async function getUser(request: Request): Promise<User | null> {
   invariant(user, "user not found");
 
   return user;
+}
+
+export async function getFirebaseToken(uid: string) {
+  // const session = await getSession(request);
+  // const idToken = session.get(ID_TOKEN_KEY);
+  // if (!idToken) return null;
+
+  // const decoded = await serverAuth.verifyIdToken(idToken);
+  const firebaseJwt = await serverAuth.createCustomToken(uid);
+  return firebaseJwt;
 }
 
 export async function requireAuthentication(

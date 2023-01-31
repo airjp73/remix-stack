@@ -1,4 +1,4 @@
-import { useFetcher, useOutletContext } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
 import { useMachine } from "@xstate/react";
 import { FirebaseError, FirebaseOptions } from "firebase/app";
 import {
@@ -20,6 +20,7 @@ import { Alert } from "~/ui/Alert";
 import { Button } from "~/ui/Button";
 import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
+import { useFirebaseOptions } from "~/utils";
 import { makeValidator } from "~/validation";
 
 const formValidator = makeValidator({
@@ -33,9 +34,7 @@ export const handle = {
 
 export default function Signup() {
   const { t } = useTranslation();
-  const { firebaseOptions } = useOutletContext<{
-    firebaseOptions: FirebaseOptions;
-  }>();
+  const firebaseOptions = useFirebaseOptions();
   const auth = useFirebaseAuth(firebaseOptions);
   const fetcher = useFetcher();
 
