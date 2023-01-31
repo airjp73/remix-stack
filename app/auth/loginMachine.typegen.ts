@@ -13,6 +13,14 @@ export interface Typegen0 {
       data: unknown;
       __tip: "See the XState TS docs to learn how to strongly type this.";
     };
+    "error.platform.login.logging in with google:invocation[0]": {
+      type: "error.platform.login.logging in with google:invocation[0]";
+      data: unknown;
+    };
+    "error.platform.login.logging in with password:invocation[0]": {
+      type: "error.platform.login.logging in with password:invocation[0]";
+      data: unknown;
+    };
     "xstate.init": { type: "xstate.init" };
   };
   invokeSrcNameMap: {
@@ -27,7 +35,10 @@ export interface Typegen0 {
     services: "log in with google" | "log in with password" | "verify id token";
   };
   eventsCausingActions: {
-    setRemember: "log in with email";
+    "set error":
+      | "error.platform.login.logging in with google:invocation[0]"
+      | "error.platform.login.logging in with password:invocation[0]";
+    "set remember": "log in with email";
   };
   eventsCausingDelays: {};
   eventsCausingGuards: {};

@@ -1,7 +1,7 @@
 import { useFetcher, useOutletContext } from "@remix-run/react";
 import { withZod } from "@remix-validated-form/with-zod";
 import { useMachine } from "@xstate/react";
-import type { FirebaseOptions } from "firebase/app";
+import { FirebaseError, FirebaseOptions } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
@@ -69,14 +69,20 @@ export default function Signup() {
   const socialLabelId = useId();
   const googleId = useId();
 
+  const getErrorMessage = () => {
+    if (
+      state.context.error instanceof FirebaseError &&
+      state.context.error.code
+    ) {
+      return t("login.emailTaken");
+    }
+    return t("login.signupFailed");
+  };
+
   return (
     <>
       {state.matches("error") && (
-        <Alert
-          className="mb-6"
-          variant="error"
-          details={t("login.signupFailed")}
-        />
+        <Alert className="mb-6" variant="error" details={getErrorMessage()} />
       )}
       <div>
         <p className="text-sm font-medium text-slate-700 dark:text-slate-300">

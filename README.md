@@ -25,7 +25,7 @@ This is still a work in progress and not ready for use.
   - [X] Make "remember me" button do something
   - [X] Write tests for all of this
   - [X] Add user record to DB
-  - [ ] Handle "email taken" error during signup
+  - [X] Handle "email taken" error during signup
 - [X] Clean up how inputs look in dark mode
 - [] Fix button hover state in dark mode
 - [] Make all grays use gray and set gray in theme
