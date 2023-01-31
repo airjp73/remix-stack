@@ -90,7 +90,10 @@ const FieldInput = React.forwardRef<HTMLInputElement, FieldInputProps>(
         {...getInputProps({
           ...props,
           invalid: !!error,
+          "aria-errormessage": errorId,
           id,
+          // aria-errormessage doesn't seem to be supported by VoiceOver
+          // so we put it in the description, too
           "aria-describedby":
             [errorId, descriptionId].filter(Boolean).join(" ") || undefined,
         })}

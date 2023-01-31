@@ -32,6 +32,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           })
         )}
         ref={ref}
+        aria-invalid={invalid}
         {...props}
       />
     );
