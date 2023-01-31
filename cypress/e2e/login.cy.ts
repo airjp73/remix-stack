@@ -127,4 +127,12 @@ describe("signing up", () => {
     cy.findByRole("link", { name: /back to login/i }).click();
     cy.findByRole("button", { name: /login/i }).should("exist");
   });
+
+  it("should gracefully handle when an email is taken", () => {
+    cy.visitAndCheck("/signup");
+    cy.findByRole("textbox", { name: /email/i }).type(existingAccount.email);
+    cy.findByLabelText(/password/i).type("notimportant");
+    cy.findByRole("button", { name: /sign up/i }).click();
+    cy.findByText(/email is taken/i).should("exist");
+  });
 });

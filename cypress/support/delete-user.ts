@@ -7,6 +7,7 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { installGlobals } from "@remix-run/node";
 
 import { db } from "~/db.server";
+import { serverAuth } from "~/firebase/firebase.server";
 
 installGlobals();
 
@@ -18,9 +19,11 @@ async function deleteUser(email: string, idToken: string) {
     throw new Error("All test emails must end in @example.com");
   }
 
+  const { uid } = await serverAuth.verifyIdToken(idToken);
+
   async function cleanupPrisma() {
     try {
-      await db.user.delete({ where: { email } });
+      await db.user.delete({ where: { firebase_uid: uid } });
     } catch (error) {
       if (
         error instanceof PrismaClientKnownRequestError &&

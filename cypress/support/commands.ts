@@ -48,7 +48,7 @@ function login({
 } = {}) {
   return cy
     .exec(
-      `npx ts-node --require tsconfig-paths/register ./cypress/support/create-user.ts "${email}"`
+      `FIREBASE_AUTH_EMULATOR_HOST=localhost:9099 npx ts-node --require tsconfig-paths/register --require dotenv/config ./cypress/support/create-user.ts "${email}"`
     )
     .then(({ stdout }) => {
       const [, idToken, cookie] = stdout.match(
@@ -77,7 +77,7 @@ function cleanupUser(params?: { email: string; idToken: string }) {
 
 function deleteUser(email: string, idToken: string) {
   cy.exec(
-    `npx ts-node --require tsconfig-paths/register ./cypress/support/delete-user.ts "${email}" "${idToken}"`
+    `FIREBASE_AUTH_EMULATOR_HOST=localhost:9099 npx ts-node --require tsconfig-paths/register --require dotenv/config ./cypress/support/delete-user.ts "${email}" "${idToken}"`
   );
   cy.clearCookie("__session");
 }

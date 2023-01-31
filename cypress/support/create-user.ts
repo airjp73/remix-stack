@@ -3,15 +3,12 @@
 // npx ts-node --require tsconfig-paths/register ./cypress/support/create-user.ts username@example.com
 // and it will log out the cookie value you can use to interact with the server
 // as that new user.
-
 import { installGlobals } from "@remix-run/node";
 import { parse } from "cookie";
 import { z } from "zod";
 import { createUserSession } from "~/session.server";
-import { config } from "dotenv";
 import { serverAuth } from "~/firebase/firebase.server";
 import { db } from "~/db.server";
-config();
 
 installGlobals();
 
@@ -38,7 +35,11 @@ async function createAndLogin(email: string) {
     }
   );
   const schema = z.object({ idToken: z.string() });
-  const data = schema.parse(await res.json());
+  const json = await res.json();
+  console.log(process.env);
+  console.log(json);
+  const data = schema.parse(json);
+  console.log(data);
   const { uid } = await serverAuth.verifyIdToken(data.idToken);
 
   await db.user.create({ data: { email, firebase_uid: uid } });
