@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker";
+import { z } from "zod";
 
 declare global {
   namespace Cypress {
@@ -28,14 +29,12 @@ declare global {
       cleanupUser: typeof cleanupUser;
 
       /**
-       * Extends the standard visit command to wait for the page to load
+       * Fixes issues where hydration can result in different html elements being rendered.
        *
        * @returns {typeof visitAndCheck}
        * @memberof Chainable
        * @example
        *    cy.visitAndCheck('/')
-       *  @example
-       *    cy.visitAndCheck('/', 500)
        */
       visitAndCheck: typeof visitAndCheck;
     }
@@ -47,48 +46,45 @@ function login({
 }: {
   email?: string;
 } = {}) {
-  cy.then(() => ({ email })).as("user");
-  cy.exec(
-    `npx ts-node --require tsconfig-paths/register ./cypress/support/create-user.ts "${email}"`
-  ).then(({ stdout }) => {
-    const cookieValue = stdout
-      .replace(/.*<cookie>(?<cookieValue>.*)<\/cookie>.*/s, "$<cookieValue>")
-      .trim();
-    cy.setCookie("__session", cookieValue);
-  });
-  return cy.get("@user");
+  return cy
+    .exec(
+      `npx ts-node --require tsconfig-paths/register ./cypress/support/create-user.ts "${email}"`
+    )
+    .then(({ stdout }) => {
+      const [, idToken, cookie] = stdout.match(
+        /.*<idToken>(?<idToken>.*)<\/idToken>.*<cookie>(?<cookieValue>.*)<\/cookie>.*/s
+      )!;
+      cy.setCookie("__session", cookie.trim());
+      return cy.wrap({ email, idToken: idToken.trim() });
+    })
+    .as("user");
 }
 
-function cleanupUser({ email }: { email?: string } = {}) {
-  if (email) {
-    deleteUserByEmail(email);
+function cleanupUser(params?: { email: string; idToken: string }) {
+  if (params) {
+    deleteUser(params.email, params.idToken);
   } else {
     cy.get("@user").then((user) => {
-      const email = (user as { email?: string }).email;
-      if (email) {
-        deleteUserByEmail(email);
+      const schema = z.object({ email: z.string(), idToken: z.string() });
+      if (user) {
+        const { email, idToken } = schema.parse(user);
+        deleteUser(email, idToken);
       }
     });
   }
   cy.clearCookie("__session");
 }
 
-function deleteUserByEmail(email: string) {
+function deleteUser(email: string, idToken: string) {
   cy.exec(
-    `npx ts-node --require tsconfig-paths/register ./cypress/support/delete-user.ts "${email}"`
+    `npx ts-node --require tsconfig-paths/register ./cypress/support/delete-user.ts "${email}" "${idToken}"`
   );
   cy.clearCookie("__session");
 }
 
-// We're waiting a second because of this issue happen randomly
-// https://github.com/cypress-io/cypress/issues/7306
-// Also added custom types to avoid getting detached
-// https://github.com/cypress-io/cypress/issues/7306#issuecomment-1152752612
-// ===========================================================
-function visitAndCheck(url: string, waitTime: number = 500) {
+function visitAndCheck(url: string) {
   cy.visit(url);
-  const withoutSearch = url.split("?")[0];
-  cy.location("pathname").should("contain", withoutSearch).wait(waitTime);
+  cy.get('[data-hydrated="true"]').should("exist");
 }
 
 Cypress.Commands.add("login", login);

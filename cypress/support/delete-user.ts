@@ -10,7 +10,7 @@ import { prisma } from "~/db.server";
 
 installGlobals();
 
-async function deleteUser(email: string) {
+async function deleteUser(email: string, idToken: string) {
   if (!email) {
     throw new Error("email required for login");
   }
@@ -18,20 +18,40 @@ async function deleteUser(email: string) {
     throw new Error("All test emails must end in @example.com");
   }
 
-  try {
-    await prisma.user.delete({ where: { email } });
-  } catch (error) {
-    if (
-      error instanceof PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
-      console.log("User not found, so no need to delete");
-    } else {
-      throw error;
+  async function cleanupPrisma() {
+    try {
+      await prisma.user.delete({ where: { email } });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === "P2025"
+      ) {
+        console.log("User not found, so no need to delete");
+      } else {
+        throw error;
+      }
+    } finally {
+      await prisma.$disconnect();
     }
-  } finally {
-    await prisma.$disconnect();
   }
+
+  async function cleanupFirebase() {
+    const res = await fetch(
+      `http://localhost:9099/identitytoolkit.googleapis.com/v1/accounts:delete?key=${process.env.FIREBASE_API_KEY}`,
+      {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ idToken }),
+      }
+    );
+    if (!res.ok) {
+      throw new Error(`Failed to delete user. ${await res.text()}`);
+    }
+  }
+
+  await Promise.all([cleanupPrisma(), cleanupFirebase()]);
 }
 
-deleteUser(process.argv[2]);
+deleteUser(process.argv[2], process.argv[3]);

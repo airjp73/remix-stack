@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import i18next from "./i18n.server";
 import { env } from "./env/env.server";
 import tailwindStylesheetUrl from "./styles/tailwind.css";
+import { useHydrated } from "remix-utils";
 
 export const links: LinksFunction = () => {
   return [
@@ -46,6 +47,7 @@ export async function loader({ request }: LoaderArgs) {
 export default function App() {
   const { locale, env } = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
+  const isHydrated = useHydrated();
 
   useEffect(() => {
     i18n.changeLanguage(locale);
@@ -68,7 +70,10 @@ export default function App() {
           }}
         />
       </head>
-      <body className="h-full bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-900 dark:text-slate-50">
+      <body
+        className="h-full bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-900 dark:text-slate-50"
+        data-hydrated={isHydrated}
+      >
         <Outlet />
         <ScrollRestoration />
         <Scripts />

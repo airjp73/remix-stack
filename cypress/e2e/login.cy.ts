@@ -70,6 +70,20 @@ describe("login", () => {
   });
 });
 
+describe("authorization", () => {
+  afterEach(() => {
+    cy.cleanupUser();
+  });
+
+  it("should allow dashboard access if logged in", () => {
+    // The previous test might leave us on the page we're looking for, so let's relocate first
+    cy.visitAndCheck("/");
+    cy.login();
+    cy.visitAndCheck("/dashboard");
+    cy.findByRole("heading", { name: /dashboard/i }).should("exist");
+  });
+});
+
 describe("signing up", () => {
   it("should create an account and verify email", () => {
     // Go to signup page through link

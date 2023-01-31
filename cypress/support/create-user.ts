@@ -6,9 +6,11 @@
 
 import { installGlobals } from "@remix-run/node";
 import { parse } from "cookie";
-
+import { z } from "zod";
 import { createUser } from "~/models/user.server";
 import { createUserSession } from "~/session.server";
+import { config } from "dotenv";
+config();
 
 installGlobals();
 
@@ -20,11 +22,29 @@ async function createAndLogin(email: string) {
     throw new Error("All test emails must end in @example.com");
   }
 
-  const user = await createUser(email, "myreallystrongpassword");
+  const res = await fetch(
+    `http://localhost:9099/identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.FIREBASE_API_KEY}`,
+    {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: "myreallystrongpassword",
+        returnSecureToken: true,
+      }),
+    }
+  );
+  const schema = z.object({ idToken: z.string() });
+  const data = schema.parse(await res.json());
+
+  // Can't parellelize because we'll eventually need to put the firebase uid in here
+  await createUser(email, "myreallystrongpassword");
 
   const response = await createUserSession({
     request: new Request("test://test"),
-    userId: user.id,
+    idToken: data.idToken,
     remember: false,
     redirectTo: "/",
   });
@@ -38,6 +58,9 @@ async function createAndLogin(email: string) {
   // the cookie value.
   console.log(
     `
+<idToken>
+  ${data.idToken}
+</idToken>
 <cookie>
   ${parsedCookie.__session}
 </cookie>
