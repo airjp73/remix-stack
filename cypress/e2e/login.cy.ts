@@ -18,11 +18,6 @@ const existingAccount = {
 };
 
 describe("login", () => {
-  afterEach(() => {
-    // TODO: probably need to reimplement this
-    // cy.cleanupUser();
-  });
-
   it("should log in with email and password", () => {
     cy.visitAndCheck("/login");
     cy.findByRole("textbox", { name: /email/i }).type(existingAccount.email);
