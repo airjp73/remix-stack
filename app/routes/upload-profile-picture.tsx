@@ -1,9 +1,10 @@
 import { json, LoaderArgs } from "@remix-run/server-runtime";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { ref, uploadBytes } from "firebase/storage";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ValidatedForm } from "remix-validated-form";
 import { zfd } from "zod-form-data";
+import { useFirebase } from "~/firebase/firebase";
 import { requireAuthentication } from "~/session.server";
 import { ThemeToggle } from "~/theme";
 import { Alert } from "~/ui/Alert";
@@ -26,6 +27,7 @@ export default function Upload() {
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
+  const { storage } = useFirebase();
 
   return (
     <div className="h-full">
@@ -55,7 +57,7 @@ export default function Upload() {
                 try {
                   setStatus("loading");
                   const fileRef = ref(
-                    getStorage(),
+                    storage(),
                     `profile-pictures/${user.firebase_uid}/profile`
                   );
                   const response = await uploadBytes(fileRef, data.picture);

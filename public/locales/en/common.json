@@ -8,7 +8,7 @@
   "uploadProfilePicture": {
     "header": "Upload profile picture",
     "error": "Failed to upload profile picture.",
-    "success": "Profile picutre uploaded!"
+    "success": "Profile picture uploaded!"
   },
   "login": {
     "header": "Sign in to your account",
