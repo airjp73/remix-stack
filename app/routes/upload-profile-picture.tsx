@@ -37,8 +37,18 @@ export default function Upload() {
         </div>
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="space-y-6 bg-white py-8 px-4 shadow-lg dark:bg-gray-800 sm:rounded-lg sm:px-10">
-            {status === "error" && <Alert variant="error" title="Failed" />}
-            {status === "success" && <Alert variant="success" title="Worked" />}
+            {status === "error" && (
+              <Alert
+                variant="error"
+                title={t("uploadProfilePicture.success")}
+              />
+            )}
+            {status === "success" && (
+              <Alert
+                variant="success"
+                title={t("uploadProfilePicture.success")}
+              />
+            )}
             <ValidatedForm
               onSubmit={async (data, e) => {
                 e.preventDefault();

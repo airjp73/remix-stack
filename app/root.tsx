@@ -1,4 +1,9 @@
-import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
+import type {
+  LinksFunction,
+  LoaderArgs,
+  MetaFunction,
+  SerializeFrom,
+} from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
   Links,
@@ -16,11 +21,7 @@ import { env } from "./env/env.server";
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { useHydrated } from "remix-utils";
 import { getFirebaseToken, getUser } from "./session.server";
-import { signInWithCustomToken } from "firebase/auth";
-import {
-  FirebaseClientOptions,
-  getClientAuth,
-} from "./firebase/firebase.client";
+import { FirebaseClientOptions } from "./firebase/firebase.client";
 
 export const links: LinksFunction = () => {
   return [
@@ -67,9 +68,10 @@ export async function loader({ request }: LoaderArgs) {
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
+export type RootLoaderData = SerializeFrom<typeof loader>;
+
 export default function App() {
-  const { locale, env, firebaseJwt, firebaseOptions } =
-    useLoaderData<typeof loader>();
+  const { locale, env } = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
   const isHydrated = useHydrated();
 
@@ -84,17 +86,6 @@ export default function App() {
     if (localStorage.theme === "dark")
       document.documentElement.dataset.theme = "dark";
   }, []);
-
-  // TODO: move this elsewhere so the whole site doesn't rely on firebase
-  useEffect(() => {
-    if (firebaseJwt) {
-      const auth = getClientAuth(firebaseOptions);
-      signInWithCustomToken(auth, firebaseJwt).catch((err) => {
-        // TODO: do something here?
-        console.log(err);
-      });
-    }
-  }, [firebaseJwt, firebaseOptions]);
 
   return (
     <html lang={locale} dir={i18n.dir()} className="h-full">

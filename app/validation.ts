@@ -35,8 +35,15 @@ export const makeValidator = <T extends ZodRawShape>(schema: T) => {
               throw new Error("Untranslated too_small");
           }
         }
+        case ZodIssueCode.custom: {
+          if (issue.message && /instance of file/i.test(issue.message)) {
+            return msg("validation.required");
+          }
+
+          throw new Error(`Untranslated custom issue: ${issue.message}`);
+        }
         default:
-          throw new Error("Untranslated issue");
+          throw new Error(`Untranslated issue code: ${issue.code}`);
       }
     },
   });

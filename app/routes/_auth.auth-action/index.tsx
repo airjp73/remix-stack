@@ -13,12 +13,11 @@ import { createMachine, send as sendAction } from "xstate";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { isomorphicEnv } from "~/env/env";
-import { useFirebaseAuth } from "~/firebase/firebase";
+import { useFirebase } from "~/firebase/firebase";
 import { Alert } from "~/ui/Alert";
 import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
 import { Link } from "~/ui/Link";
-import { useFirebaseOptions } from "~/utils";
 import { makeValidator } from "~/validation";
 
 const searchSchema = zfd.formData({
@@ -163,8 +162,7 @@ const authActionMachine =
 
 export default function AuthAction() {
   const { t } = useTranslation();
-  const firebaseOptions = useFirebaseOptions();
-  const auth = useFirebaseAuth(firebaseOptions);
+  const { auth } = useFirebase();
 
   const [params] = useSearchParams();
   const { mode, oobCode } = searchSchema.parse(params);

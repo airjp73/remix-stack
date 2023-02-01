@@ -6,7 +6,9 @@
     "uploadProfileLink": "Upload profile picture"
   },
   "uploadProfilePicture": {
-    "header": "Upload profile picture"
+    "header": "Upload profile picture",
+    "error": "Failed to upload profile picture.",
+    "success": "Profile picutre uploaded!"
   },
   "login": {
     "header": "Sign in to your account",

@@ -1,6 +1,6 @@
 import { useFetcher } from "@remix-run/react";
 import { useMachine } from "@xstate/react";
-import { FirebaseError, FirebaseOptions } from "firebase/app";
+import { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
@@ -15,12 +15,11 @@ import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { GoogleIcon } from "~/auth/GoogleIcon";
 import { loginMachine } from "~/auth/loginMachine";
-import { useFirebaseAuth } from "~/firebase/firebase";
+import { useFirebase } from "~/firebase/firebase";
 import { Alert } from "~/ui/Alert";
 import { Button } from "~/ui/Button";
 import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
-import { useFirebaseOptions } from "~/utils";
 import { makeValidator } from "~/validation";
 
 const formValidator = makeValidator({
@@ -34,8 +33,7 @@ export const handle = {
 
 export default function Signup() {
   const { t } = useTranslation();
-  const firebaseOptions = useFirebaseOptions();
-  const auth = useFirebaseAuth(firebaseOptions);
+  const { auth } = useFirebase();
   const fetcher = useFetcher();
 
   const [state, send] = useMachine(loginMachine, {

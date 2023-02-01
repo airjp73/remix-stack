@@ -58,11 +58,13 @@ export async function getUser(request: Request): Promise<User | null> {
   const idToken = session.get(ID_TOKEN_KEY);
   if (!idToken) return null;
 
-  const decoded = await serverAuth.verifyIdToken(idToken);
-  const user = await get_user_by_uid(decoded.uid);
-  invariant(user, "user not found");
-
-  return user;
+  try {
+    const decoded = await serverAuth.verifyIdToken(idToken);
+    const user = await get_user_by_uid(decoded.uid);
+    return user;
+  } catch (err) {
+    return null;
+  }
 }
 
 export async function getFirebaseToken(uid: string) {

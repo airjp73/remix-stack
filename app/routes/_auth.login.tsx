@@ -15,7 +15,7 @@ import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { GoogleIcon } from "~/auth/GoogleIcon";
 import { loginMachine } from "~/auth/loginMachine";
-import { useFirebaseAuth } from "~/firebase/firebase";
+import { useFirebase } from "~/firebase/firebase";
 import { serverAuth } from "~/firebase/firebase.server";
 import { get_or_create_user } from "~/models/user.server";
 import { createUserSession } from "~/session.server";
@@ -24,7 +24,6 @@ import { Button } from "~/ui/Button";
 import { Field, FieldInput } from "~/ui/form/Field";
 import { SubmitButton } from "~/ui/form/SubmitButton";
 import { Link } from "~/ui/Link";
-import { useFirebaseOptions } from "~/utils";
 import { makeValidator } from "~/validation";
 
 const actionBody = zfd.formData({
@@ -65,8 +64,7 @@ const formValidator = makeValidator({
 
 export default function Login() {
   const { t } = useTranslation();
-  const firebaseOptions = useFirebaseOptions();
-  const auth = useFirebaseAuth(firebaseOptions);
+  const { auth } = useFirebase();
   const fetcher = useFetcher();
   const [params] = useSearchParams();
   const redirectTo = params.get("redirectTo") ?? undefined;

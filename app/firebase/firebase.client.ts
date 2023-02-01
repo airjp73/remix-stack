@@ -13,7 +13,10 @@ export type FirebaseClientOptions = FirebaseOptions & {
   emulatorUrl?: string;
 };
 
-const getFirebase = ({ emulatorUrl, ...rest }: FirebaseClientOptions) => {
+export const getFirebase = ({
+  emulatorUrl,
+  ...rest
+}: FirebaseClientOptions) => {
   if (getApps().length === 0) {
     const app = initializeApp(rest);
 
@@ -32,12 +35,4 @@ const getFirebase = ({ emulatorUrl, ...rest }: FirebaseClientOptions) => {
     const storage = getStorage(app);
     return { auth, app, storage };
   }
-};
-
-export const getClientAuth = (options: FirebaseClientOptions) => {
-  return getFirebase(options).auth;
-};
-
-export const getClientStorage = (options: FirebaseClientOptions) => {
-  return getFirebase(options).storage;
 };
