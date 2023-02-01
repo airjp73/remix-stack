@@ -8,6 +8,7 @@ import { useFirebase } from "~/firebase/firebase";
 import { requireAuthentication } from "~/session.server";
 import { ThemeToggle } from "~/theme";
 import { Alert } from "~/ui/Alert";
+import { FileUploadArea } from "~/ui/FileUploadArea";
 import { SubmitButton } from "~/ui/form/SubmitButton";
 import { useUser } from "~/utils";
 import { makeValidator } from "~/validation";
@@ -71,9 +72,7 @@ export default function Upload() {
               validator={validator}
               className="space-y-6"
             >
-              <div>
-                <input type="file" name="picture" />
-              </div>
+              <FileUploadArea name="picture" />
               <SubmitButton className="w-full" label="Submit" />
             </ValidatedForm>
           </div>
