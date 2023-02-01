@@ -8,6 +8,7 @@ const env = dotenv.parse(fs.readFileSync(path.join(__dirname, ".env")));
 export default defineConfig({
   env,
   e2e: {
+    experimentalSessionAndOrigin: true,
     setupNodeEvents: (on, config) => {
       const isDev = config.watchForFileChanges;
       const port = process.env.PORT ?? (isDev ? "3000" : "8811");

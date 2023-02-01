@@ -1,5 +1,7 @@
-before(() => {
-  cy.login();
+beforeEach(() => {
+  cy.session("session", () => {
+    cy.login();
+  });
 });
 
 it("should upload a file", () => {
@@ -15,4 +17,25 @@ it("should upload a file", () => {
     .should("exist");
   cy.findByRole("link", { name: /back to dashboard/i }).click();
   cy.location("pathname").should("contain", "/dashboard");
+});
+
+it("should reject files over 10MB", () => {
+  cy.visitAndCheck("/dashboard");
+  cy.findByRole("link", { name: /upload profile picture/i }).click();
+  cy.fixture("images/cat-picture-large.png", null).then((pic) => {
+    cy.findByLabelText(/upload a file/i)
+      .parent() // get the upload area not the actual input
+      .selectFile(
+        {
+          contents: pic,
+          fileName: "cat-picture-large.png",
+        },
+        { action: "drag-drop" }
+      );
+  });
+  cy.findByRole("alert")
+    .findByRole("heading", {
+      name: /cat-picture-large\.png is too large. profile photos can't be larger than 10mb/i,
+    })
+    .should("exist");
 });
