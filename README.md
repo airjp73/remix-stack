@@ -31,6 +31,7 @@ This is still a work in progress and not ready for use.
 - [X] Make all grays use gray and set gray in theme
 - [X] I18n for form validation errors errors
 - [ ] Add profile photo upload demo page
+- [ ] Signing up with a duplicate email blows up
 - [ ] Test deployment with fly
 - [ ] Enable github action in repo
 - [ ] Sentry error monitoring
