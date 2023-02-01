@@ -1,19 +1,32 @@
-import { FolderOpen } from "lucide-react";
+import { FilePlus, FolderOpen, Loader2 } from "lucide-react";
 import { useId } from "react";
-import { useDropzone } from "react-dropzone";
+import { useDropzone, DropzoneOptions } from "react-dropzone";
+import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import { cn } from "./cn";
 
-export type FileUploadAreaProps = React.InputHTMLAttributes<HTMLInputElement>;
+export type FileUploadAreaProps =
+  React.InputHTMLAttributes<HTMLInputElement> & {
+    dropzoneOptions?: DropzoneOptions;
+    isLoading?: boolean;
+    loadingLabel?: string;
+  };
 
-export const FileUploadArea = ({ className, ...rest }: FileUploadAreaProps) => {
+export const FileUploadArea = ({
+  className,
+  dropzoneOptions,
+  isLoading,
+  loadingLabel,
+  ...rest
+}: FileUploadAreaProps) => {
+  const { t } = useTranslation();
   const {
     getInputProps,
     getRootProps,
     isDragActive,
     acceptedFiles,
     isFileDialogActive,
-  } = useDropzone();
+  } = useDropzone(dropzoneOptions);
 
   const file = acceptedFiles.length === 1 ? acceptedFiles[0] : undefined;
   invariant(
@@ -26,16 +39,46 @@ export const FileUploadArea = ({ className, ...rest }: FileUploadAreaProps) => {
   return (
     <div
       {...getRootProps({
-        className: cn("mt-1 sm:col-span-2 sm:mt-0", className),
+        className: cn(
+          "mt-1 sm:col-span-2 sm:mt-0",
+          "focus-within:ring-2 focus-within:ring-brand-500 focus-within:ring-offset-2 rounded-md",
+          className
+        ),
       })}
     >
       <div
         className={cn(
-          "flex max-w-lg justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6 dark:border-gray-600",
-          isDragActive && "border-brand-300 bg-brand-100 dark:border-brand-600"
+          "relative flex max-w-lg justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6 dark:border-gray-600",
+          isDragActive &&
+            "border-brand-300 bg-brand-100 dark:border-brand-600 dark:bg-brand-800"
         )}
       >
-        <div className="space-y-1 text-center">
+        {isDragActive && (
+          <FilePlus className="absolute inset-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 text-brand-600 dark:text-brand-400" />
+        )}
+        {isFileDialogActive && (
+          <FolderOpen className="absolute inset-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+        )}
+        {isLoading && (
+          <div
+            className={cn(
+              "absolute inset-1/2 flex w-12 -translate-x-1/2 -translate-y-1/2 flex-col items-center space-y-2 text-gray-400 dark:text-gray-500",
+              !loadingLabel && "h-12",
+              !!loadingLabel && "h-20"
+            )}
+          >
+            <div>
+              <Loader2 className="h-12 w-12 animate-spin" />
+            </div>
+            {loadingLabel && <p aria-live="polite">{loadingLabel}</p>}
+          </div>
+        )}
+        <div
+          className={cn(
+            "display-none space-y-1 text-center",
+            (isDragActive || isFileDialogActive || isLoading) && "invisible"
+          )}
+        >
           {file && (
             <h4
               className={cn(
@@ -47,7 +90,7 @@ export const FileUploadArea = ({ className, ...rest }: FileUploadAreaProps) => {
               {file.name}
             </h4>
           )}
-          {!file && !isFileDialogActive && (
+          {!file && (
             <svg
               className={cn(
                 "mx-auto h-12 w-12 text-gray-400 dark:text-gray-500"
@@ -65,13 +108,6 @@ export const FileUploadArea = ({ className, ...rest }: FileUploadAreaProps) => {
               />
             </svg>
           )}
-          {isFileDialogActive && (
-            <FolderOpen
-              className={cn(
-                "mx-auto h-12 w-12 text-gray-400 dark:text-gray-500"
-              )}
-            />
-          )}
           <div
             className={cn(
               "flex justify-center text-sm text-gray-600",
@@ -81,10 +117,14 @@ export const FileUploadArea = ({ className, ...rest }: FileUploadAreaProps) => {
             <label
               htmlFor={inputId}
               className={cn(
-                "relative cursor-pointer rounded-md text-center font-medium text-brand-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-brand-500 focus-within:ring-offset-2 hover:text-brand-500"
+                "relative cursor-pointer text-center font-medium text-brand-600 hover:text-brand-500"
               )}
             >
-              <span>{file ? "Choose another file" : "Upload a file"}</span>
+              <span>
+                {file
+                  ? t("fileUploadArea.chooseAnother")
+                  : t("fileUploadArea.uploadText")}
+              </span>
               <input
                 {...getInputProps({
                   id: inputId,
@@ -94,7 +134,7 @@ export const FileUploadArea = ({ className, ...rest }: FileUploadAreaProps) => {
                 })}
               />
             </label>
-            <p className="pl-1">or drag and drop</p>
+            <p className="pl-1">{t("fileUploadArea.orDragAndDrop")}</p>
           </div>
           <p
             className={cn(
@@ -102,7 +142,7 @@ export const FileUploadArea = ({ className, ...rest }: FileUploadAreaProps) => {
               isDragActive && "text-brand-600"
             )}
           >
-            PNG, JPG, GIF up to 10MB
+            {t("fileUploadArea.constraintText", { maxMegabytes: 10 })}
           </p>
         </div>
       </div>

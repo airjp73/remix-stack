@@ -5,10 +5,21 @@
     "welcome": "Welcome, {{name}}!",
     "uploadProfileLink": "Upload profile picture"
   },
+  "fileUploadArea": {
+    "constraintText": "PNG, JPG, GIF up to {{maxMegabytes}}MB",
+    "uploadText": "Upload a file",
+    "chooseAnother": "Choose another file",
+    "orDragAndDrop": "or drag and drop here"
+  },
   "uploadProfilePicture": {
     "header": "Upload profile picture",
     "error": "Failed to upload profile picture.",
-    "success": "Profile picture uploaded!"
+    "success": "Profile picture uploaded!",
+    "backToDashboard": "Back to dashboard",
+    "uploading": "Uploading...",
+    "validation": {
+      "fileTooLarge": "{{fileName}} is too large. Profile photos can't be larger than {{maxMegabytes}}MB."
+    }
   },
   "login": {
     "header": "Sign in to your account",

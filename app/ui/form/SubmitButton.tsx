@@ -15,7 +15,7 @@ const SubmitButton = React.forwardRef<HTMLButtonElement, SubmitButtonProps>(
     const isSubmitting = useIsSubmitting();
     const showLoadingState = isSubmitting || isLoading;
     return (
-      <Button disabled={disabled || showLoadingState} {...rest}>
+      <Button disabled={disabled || showLoadingState} type="submit" {...rest}>
         {showLoadingState ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
