@@ -28,4 +28,13 @@ module.exports = {
       { components: ["ButtonLink", "Link"] },
     ],
   },
+  overrides: [
+    {
+      files: "*.test.*",
+      rules: {
+        // I18n is not needed in tests
+        "i18next/no-literal-string": "off",
+      },
+    },
+  ],
 };
