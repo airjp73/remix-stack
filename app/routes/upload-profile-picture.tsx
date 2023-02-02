@@ -1,3 +1,4 @@
+import { useFetcher } from "@remix-run/react";
 import {
   ActionArgs,
   json,
@@ -5,29 +6,41 @@ import {
   unstable_parseMultipartFormData,
 } from "@remix-run/server-runtime";
 import { useMachine } from "@xstate/react";
-import { ref, uploadBytes } from "firebase/storage";
 import { FileRejection } from "react-dropzone";
 import { useTranslation } from "react-i18next";
 import { assign, createMachine } from "xstate";
-import { useFirebase } from "~/firebase/firebase";
 import { createFirebaseUploadHandler } from "~/firebase/firebase.server";
+import i18next from "~/i18n.server";
+import { redirectWithNotification } from "~/notifications";
 import { requireAuthentication } from "~/session.server";
 import { ThemeToggle } from "~/theme";
 import { Alert } from "~/ui/Alert";
 import { FileUploadArea } from "~/ui/FileUploadArea";
-import { Link } from "~/ui/Link";
-import { useUser } from "~/utils";
 
 export const action = async ({ request }: ActionArgs) => {
   const user = await requireAuthentication(request);
-  const formData = await unstable_parseMultipartFormData(
-    request,
-    createFirebaseUploadHandler({
-      filePath: `profile-pictures/${user.firebase_uid}/profile`,
-      // The return value doesn't really matter in this case
-      getReturnVal: (file) => file.id,
-    })
-  );
+  try {
+    // Can get formData from the request
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const formData = await unstable_parseMultipartFormData(
+      request,
+      createFirebaseUploadHandler({
+        filePath: `profile-pictures/${user.firebase_uid}/profile`,
+        // The return value doesn't really matter in this case
+        getReturnVal: (file) => file.name,
+      })
+    );
+
+    const t = await i18next.getFixedT(request);
+    return redirectWithNotification({
+      request,
+      redirectTo: "/dashboard",
+      notification: t("uploadProfilePicture.success"),
+      notificationType: "success",
+    });
+  } catch (err) {
+    return json({ error: true }, { status: 500 });
+  }
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -36,7 +49,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 const uploadMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QDMCWAbMBVADug9gIYQB0qEmAxGpgIIDG9YOALpANoAMAuoqDvlioWqfADs+IAB6IAjACYArCUUAaEAE85AZgBsJefN2KA7LvkAWC5wAcNpQF8H6mtjxFSAV3fFUYqJQQ4mBkYgBu+ADWIa64BMQk3vEQflAIfhH0hCLiXNx5kgJCORJI0oiKFgCcJFVVhpyyJjYmVTbm6loINrIqnP2ybS2c8pxtTi4YbsmJPin+lGAATkv4SyR42chrALYksXOzyanp4fhZJXkFZUXCoqWgMgiVNXUNTS1tHZpy8jX9AyGJhGYxsExABxm5CorgASmAAFZgehsCDXfiCO7iSRPBTKNQ-BBGGomIyKKrA3SyRRjCxOZwgMT4CBwSSQjyFTElHGIAC0uk6fP0AJFov6JnB7IS0LAnOK9x5CAs8kFRPaJGaugsxiq2isdiqkqmcQ8Rw8qTlWIe5QQ2kUyiUzSMzVa7RVhNksm0BjJZks1jsjgZUtIy1WS0t3LKTzMnAMNP6Fma2iUVNVSgsJCpbXkNm0nD0efsRswJoSsE8jDg8BuXIV0cQsfjAKTedTslVNjjCcaQJB43pQA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QDMCWAbMBVADug9gIYQB0qEmAxGpgEpgBWYAxgC6QDaADALqKg58sVK1T4AdvxAAPRAEYATAFYSATnUa5AZi1KFCgGwAOADQgAnon0qFAFnX2A7I6WOFWgL4ezNbHiKk5FS+AILMzGA47BDcfEgggsKiElKyCIoqGpo6eoamFvJctiT26o62unLlBlye3iC+uATEJACu-sSo4lCUYABOffh99BGoAG6cvFKJImKS8WlKNSRaLlz6ckZGCo7qZpYIRnIkzlq2clwGukpaBo5GXvXi+BBwUo0dENNCsykLiABaAz7QEGEhKLiQrRcJRVVxHZReHwYPzNQIUMDfJJzVKIWwKEEIOwKEgw1RGRxkorbCpIhoopoBNqfLpQLG-eagNLXE6OM62ClyJTC-SEoxcNQaAyqAXEzYPeofNEkfqDPrs5KcmSIU6k1SrNzynZ7ApEriqEhGfVyVTlLTaIy6OpeIA */
   createMachine({
     id: "fileUpload",
     tsTypes: {} as import("./upload-profile-picture.typegen").Typegen0,
@@ -44,10 +57,8 @@ const uploadMachine =
       context: {} as { error?: string },
       events: {} as
         | { type: "fileRejected"; rejection: FileRejection }
-        | { type: "fileAccepted"; file: File },
-      services: {} as {
-        uploadFile: { data: void };
-      },
+        | { type: "fileAccepted"; file: File }
+        | { type: "errorReceived"; error: string },
     },
     states: {
       idle: {
@@ -61,19 +72,19 @@ const uploadMachine =
       },
 
       uploading: {
-        invoke: {
-          src: "uploadFile",
-          onDone: "success",
-          onError: {
+        on: {
+          errorReceived: {
             target: "error",
-            actions: "setErrorFromUnknown",
+            actions: "setErrorFromResponse",
           },
         },
+
+        entry: "beginUpload",
       },
+
       error: {
         exit: "clearError",
       },
-      success: {},
     },
 
     initial: "idle",
@@ -81,17 +92,10 @@ const uploadMachine =
 
 export default function Upload() {
   const { t } = useTranslation();
-  const user = useUser();
-  const { storage } = useFirebase();
+  const fetcher = useFetcher<typeof action>();
   const [state, send] = useMachine(uploadMachine, {
     actions: {
       clearError: assign({ error: undefined }),
-      setErrorFromUnknown: assign({
-        error: (_context, event) => {
-          if (event.data instanceof Error) return event.data.message;
-          return undefined;
-        },
-      }),
       setErrorFromFileRejection: assign({
         error: (_context, event) => {
           const errors = event.rejection.errors;
@@ -112,14 +116,16 @@ export default function Upload() {
             .join(" ");
         },
       }),
-    },
-    services: {
-      uploadFile: async (context, event) => {
-        const fileRef = ref(
-          storage(),
-          `profile-pictures/${user.firebase_uid}/profile`
-        );
-        await uploadBytes(fileRef, event.file);
+      setErrorFromResponse: assign({
+        error: (context, error) => error.error,
+      }),
+      beginUpload: (context, event) => {
+        const data = new FormData();
+        data.append("picture", event.file, event.file.name);
+        fetcher.submit(data, {
+          method: "post",
+          encType: "multipart/form-data",
+        });
       },
     },
   });
@@ -134,42 +140,29 @@ export default function Upload() {
         </div>
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="space-y-6 bg-white py-8 px-4 shadow-lg dark:bg-gray-800 sm:rounded-lg sm:px-10">
-            {state.matches("error") && (
+            {(state.matches("error") || fetcher.data?.error) && (
               <Alert
                 variant="error"
-                title={state.context.error ?? t("uploadProfilePicture.error")}
+                title={state.context.error || t("uploadProfilePicture.error")}
               />
             )}
-            {state.matches("success") && (
-              <Alert
-                variant="success"
-                title={t("uploadProfilePicture.success")}
-                details={
-                  <Link href="/dashboard">
-                    {t("uploadProfilePicture.backToDashboard")}
-                  </Link>
-                }
-              />
-            )}
-            {!state.matches("success") && (
-              <FileUploadArea
-                name="picture"
-                isLoading={state.matches("uploading")}
-                loadingLabel={t("uploadProfilePicture.uploading")}
-                dropzoneOptions={{
-                  maxSize: 1024 * 1024 * 10, // 10 MB
-                  onDropAccepted: async (files) => {
-                    send({ type: "fileAccepted", file: files[0] });
-                  },
-                  onDropRejected: (rejections) => {
-                    send({
-                      type: "fileRejected",
-                      rejection: rejections[0],
-                    });
-                  },
-                }}
-              />
-            )}
+            <FileUploadArea
+              name="picture"
+              isLoading={state.matches("uploading")}
+              loadingLabel={t("uploadProfilePicture.uploading")}
+              dropzoneOptions={{
+                maxSize: 1024 * 1024 * 10, // 10 MB
+                onDropAccepted: async (files) => {
+                  send({ type: "fileAccepted", file: files[0] });
+                },
+                onDropRejected: (rejections) => {
+                  send({
+                    type: "fileRejected",
+                    rejection: rejections[0],
+                  });
+                },
+              }}
+            />
           </div>
         </div>
       </div>

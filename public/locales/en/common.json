@@ -14,7 +14,7 @@
   },
   "uploadProfilePicture": {
     "header": "Upload profile picture",
-    "error": "Failed to upload profile picture.",
+    "error": "An unknown error occurred while uploading your profile picture. Please try again in a few seconds.",
     "success": "Profile picture uploaded!",
     "backToDashboard": "Back to dashboard",
     "uploading": "Uploading...",

@@ -20,8 +20,15 @@ import i18next from "./i18n.server";
 import { env } from "./env/env.server";
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { useHydrated } from "remix-utils";
-import { getFirebaseToken, getUser } from "./session.server";
+import {
+  commitSession,
+  getFirebaseToken,
+  getSession,
+  getUser,
+  getUserFromSession,
+} from "./session.server";
 import { FirebaseClientOptions } from "./firebase/firebase.client";
+import { getNotification, Notification } from "./notifications";
 
 export const links: LinksFunction = () => {
   return [
@@ -43,26 +50,36 @@ export const handle = { i18n: "common" };
 
 export async function loader({ request }: LoaderArgs) {
   const locale = await i18next.getLocale(request);
-  const user = await getUser(request);
+  const session = await getSession(request);
+  const user = await getUserFromSession(session);
   const firebaseJwt = user
     ? await getFirebaseToken(user.firebase_uid)
     : undefined;
-  return json({
-    locale,
-    env: {
-      NODE_ENV: env.NODE_ENV,
+  const notification = await getNotification(session);
+  return json(
+    {
+      locale,
+      env: {
+        NODE_ENV: env.NODE_ENV,
+      },
+      user,
+      firebaseJwt,
+      firebaseOptions: {
+        apiKey: env.FIREBASE_API_KEY,
+        authDomain: env.FIREBASE_AUTH_DOMAIN,
+        projectId: env.FIREBASE_PROJECT_ID,
+        appId: env.FIREBASE_APP_ID,
+        emulatorUrl: env.FIREBASE_AUTH_EMULATOR_HOST,
+        storageBucket: env.FIREBASE_CLOUD_STORAGE_BUCKET,
+      } satisfies FirebaseClientOptions,
+      notification,
     },
-    user,
-    firebaseJwt,
-    firebaseOptions: {
-      apiKey: env.FIREBASE_API_KEY,
-      authDomain: env.FIREBASE_AUTH_DOMAIN,
-      projectId: env.FIREBASE_PROJECT_ID,
-      appId: env.FIREBASE_APP_ID,
-      emulatorUrl: env.FIREBASE_AUTH_EMULATOR_HOST,
-      storageBucket: env.FIREBASE_CLOUD_STORAGE_BUCKET,
-    } satisfies FirebaseClientOptions,
-  });
+    {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    }
+  );
 }
 
 const useIsomorphicLayoutEffect =
@@ -108,6 +125,7 @@ export default function App() {
         className="h-full bg-gray-50 font-sans text-gray-900 antialiased dark:bg-gray-900 dark:text-gray-50"
         data-hydrated={isHydrated}
       >
+        <Notification className="absolute bottom-8 left-1/2 w-3/4 -translate-x-1/2 sm:bottom-auto sm:top-8 sm:w-96" />
         <Outlet />
         <ScrollRestoration />
         <Scripts />

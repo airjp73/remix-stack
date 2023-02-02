@@ -1,13 +1,8 @@
-import {
-  createCookie,
-  createCookieSessionStorage,
-  redirect,
-} from "@remix-run/node";
+import { createCookieSessionStorage, redirect, Session } from "@remix-run/node";
 import { serverAuth } from "./firebase/firebase.server";
 import { env } from "./env/env.server";
 import { User } from "@prisma/client";
 import { get_user_by_uid } from "./models/user.server";
-import invariant from "tiny-invariant";
 
 export const sessionStorage = createCookieSessionStorage({
   cookie: {
@@ -20,6 +15,8 @@ export const sessionStorage = createCookieSessionStorage({
   },
 });
 
+export const commitSession = sessionStorage.commitSession;
+
 export async function getSession(request: Request) {
   const cookie = request.headers.get("Cookie");
   return sessionStorage.getSession(cookie);
@@ -28,7 +25,6 @@ export async function getSession(request: Request) {
 // 7 days
 export const SESSION_EXPIRY_MILLIS = 60 * 60 * 24 * 7 * 1000;
 const ID_TOKEN_KEY = "idToken";
-const FIREBASE_JWT = "firebaseJwt";
 
 export async function createUserSession({
   request,
@@ -47,7 +43,7 @@ export async function createUserSession({
   return redirect(redirectTo, {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session, {
-        expires: new Date(Date.now() + SESSION_EXPIRY_MILLIS - 10),
+        expires: new Date(Date.now() + SESSION_EXPIRY_MILLIS),
       }),
     },
   });
@@ -55,6 +51,10 @@ export async function createUserSession({
 
 export async function getUser(request: Request): Promise<User | null> {
   const session = await getSession(request);
+  return getUserFromSession(session);
+}
+
+export async function getUserFromSession(session: Session) {
   const idToken = session.get(ID_TOKEN_KEY);
   if (!idToken) return null;
 
@@ -68,11 +68,6 @@ export async function getUser(request: Request): Promise<User | null> {
 }
 
 export async function getFirebaseToken(uid: string) {
-  // const session = await getSession(request);
-  // const idToken = session.get(ID_TOKEN_KEY);
-  // if (!idToken) return null;
-
-  // const decoded = await serverAuth.verifyIdToken(idToken);
   const firebaseJwt = await serverAuth.createCustomToken(uid);
   return firebaseJwt;
 }

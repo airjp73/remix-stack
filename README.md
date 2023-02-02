@@ -32,7 +32,7 @@ This is still a work in progress and not ready for use.
 - [X] I18n for form validation errors errors
 - [X] Add profile photo upload demo page
   - [X] Display photo on dashboard
-  - [ ] Use file upload handler instead of uploading directly to firebase
+  - [X] Use file upload handler instead of uploading directly to firebase
 - [ ] Signing up with a duplicate email blows up
 - [ ] Test deployment with fly
 - [ ] Enable github action in repo

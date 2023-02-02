@@ -19,6 +19,7 @@ const buttonVariants = cva(
         ghost:
           "bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-100 dark:hover:text-gray-100 data-[state=open]:bg-transparent dark:data-[state=open]:bg-transparent",
         link: "bg-transparent underline-offset-4 hover:underline text-gray-900 dark:text-gray-100 hover:bg-transparent dark:hover:bg-transparent",
+        inherit: "",
       },
       size: {
         default: "h-10 py-2 px-4",
