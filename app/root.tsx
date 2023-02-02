@@ -24,7 +24,6 @@ import {
   commitSession,
   getFirebaseToken,
   getSession,
-  getUser,
   getUserFromSession,
 } from "./session.server";
 import { FirebaseClientOptions } from "./firebase/firebase.client";
