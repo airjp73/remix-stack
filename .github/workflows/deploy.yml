@@ -97,6 +97,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+
+      - name: 🔥 Install firebase tools
         run: npm install -g firebase-tools
 
       - name: 📥 Download deps
