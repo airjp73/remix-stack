@@ -47,6 +47,7 @@ This is still a work in progress and not ready for use.
 - `npm i -g firebase-tools`
 - Init firebase project
 - Setup firebase emulators
+- Add firebase service account to secrets
 
 ## What's kept from the orignal
 
