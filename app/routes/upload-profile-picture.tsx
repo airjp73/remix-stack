@@ -50,52 +50,61 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 const uploadMachine =
   /** @xstate-layout N4IgpgJg5mDOIC5QDMCWAbMBVADug9gIYQB0qEmAxGpgEpgBWYAxgC6QDaADALqKg58sVK1T4AdvxAAPRAEYATAFYSATnUa5AZi1KFCgGwAOADQgAnon0qFAFnX2A7I6WOFWgL4ezNbHiKk5FS+AILMzGA47BDcfEgggsKiElKyCIoqGpo6eoamFvJctiT26o62unLlBlye3iC+uATEJACu-sSo4lCUYABOffh99BGoAG6cvFKJImKS8WlKNSRaLlz6ckZGCo7qZpYIRnIkzlq2clwGukpaBo5GXvXi+BBwUo0dENNCsykLiABaAz7QEGEhKLiQrRcJRVVxHZReHwYPzNQIUMDfJJzVKIWwKEEIOwKEgw1RGRxkorbCpIhoopoBNqfLpQLG-eagNLXE6OM62ClyJTC-SEoxcNQaAyqAXEzYPeofNEkfqDPrs5KcmSIU6k1SrNzynZ7ApEriqEhGfVyVTlLTaIy6OpeIA */
-  createMachine({
-    id: "fileUpload",
-    tsTypes: {} as import("./upload-profile-picture.typegen").Typegen0,
-    schema: {
-      context: {} as { error?: string },
-      events: {} as
-        | { type: "fileRejected"; rejection: FileRejection }
-        | { type: "fileAccepted"; file: File }
-        | { type: "errorReceived"; error: string },
-    },
-    states: {
-      idle: {
-        on: {
-          fileRejected: {
-            target: "error",
-            actions: "setErrorFromFileRejection",
-          },
-          fileAccepted: "uploading",
-        },
+  createMachine(
+    {
+      id: "fileUpload",
+      tsTypes: {} as import("./upload-profile-picture.typegen").Typegen0,
+      schema: {
+        context: {} as { error?: string },
+        events: {} as
+          | { type: "fileRejected"; rejection: FileRejection }
+          | { type: "fileAccepted"; file: File }
+          | { type: "errorReceived"; error: string },
       },
-
-      uploading: {
-        on: {
-          errorReceived: {
-            target: "error",
-            actions: "setErrorFromResponse",
+      states: {
+        idle: {
+          on: {
+            fileRejected: {
+              target: "error",
+              actions: "setErrorFromFileRejection",
+            },
+            fileAccepted: "uploading",
           },
         },
 
-        entry: "beginUpload",
+        uploading: {
+          on: {
+            errorReceived: {
+              target: "error",
+              actions: "setErrorFromResponse",
+            },
+          },
+
+          entry: "beginUpload",
+        },
+
+        error: {
+          exit: "clearError",
+        },
       },
 
-      error: {
-        exit: "clearError",
-      },
+      initial: "idle",
     },
-
-    initial: "idle",
-  });
+    {
+      actions: {
+        clearError: assign({ error: (_ctx, _event) => undefined }),
+        setErrorFromResponse: assign({
+          error: (context, error) => error.error,
+        }),
+      },
+    }
+  );
 
 export default function Upload() {
   const { t } = useTranslation();
   const fetcher = useFetcher<typeof action>();
   const [state, send] = useMachine(uploadMachine, {
     actions: {
-      clearError: assign({ error: undefined }),
       setErrorFromFileRejection: assign({
         error: (_context, event) => {
           const errors = event.rejection.errors;
@@ -115,9 +124,6 @@ export default function Upload() {
             .filter(Boolean)
             .join(" ");
         },
-      }),
-      setErrorFromResponse: assign({
-        error: (context, error) => error.error,
       }),
       beginUpload: (context, event) => {
         const data = new FormData();

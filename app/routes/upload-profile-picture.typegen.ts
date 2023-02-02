@@ -8,11 +8,7 @@ export interface Typegen0 {
   };
   invokeSrcNameMap: {};
   missingImplementations: {
-    actions:
-      | "beginUpload"
-      | "clearError"
-      | "setErrorFromFileRejection"
-      | "setErrorFromResponse";
+    actions: "beginUpload" | "setErrorFromFileRejection";
     delays: never;
     guards: never;
     services: never;
