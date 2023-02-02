@@ -1,7 +1,9 @@
+import { writeAsyncIterableToWritable } from "@remix-run/node";
+import { UploadHandler } from "@remix-run/server-runtime";
 import type { App } from "firebase-admin/app";
 import { initializeApp, cert, getApps, getApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
-import { getStorage } from "firebase-admin/storage";
+import { getStorage, Storage } from "firebase-admin/storage";
 import { env } from "~/env/env.server";
 
 let app: App;
@@ -17,3 +19,28 @@ if (getApps().length === 0) {
 
 export const serverAuth = getAuth(app);
 export const serverStorage = getStorage(app);
+
+// I have no idea if/where this type is exported from firebase-admin
+type FirebaseFile = ReturnType<ReturnType<Storage["bucket"]>["file"]>;
+type FirebaseUploadHandlerArgs = {
+  filePath: string;
+  getReturnVal: (
+    file: FirebaseFile,
+    fileName?: string
+  ) => Awaited<ReturnType<UploadHandler>>;
+};
+
+export const createFirebaseUploadHandler = ({
+  filePath,
+  getReturnVal,
+}: FirebaseUploadHandlerArgs) => {
+  const handler: UploadHandler = async ({ data, filename }) => {
+    const file = serverStorage
+      .bucket(env.FIREBASE_CLOUD_STORAGE_BUCKET)
+      .file(filePath);
+    const writeStream = file.createWriteStream();
+    await writeAsyncIterableToWritable(data, writeStream);
+    return getReturnVal(file, filename);
+  };
+  return handler;
+};

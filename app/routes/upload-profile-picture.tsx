@@ -1,16 +1,34 @@
-import { json, LoaderArgs } from "@remix-run/server-runtime";
+import {
+  ActionArgs,
+  json,
+  LoaderArgs,
+  unstable_parseMultipartFormData,
+} from "@remix-run/server-runtime";
 import { useMachine } from "@xstate/react";
 import { ref, uploadBytes } from "firebase/storage";
 import { FileRejection } from "react-dropzone";
 import { useTranslation } from "react-i18next";
 import { assign, createMachine } from "xstate";
 import { useFirebase } from "~/firebase/firebase";
+import { createFirebaseUploadHandler } from "~/firebase/firebase.server";
 import { requireAuthentication } from "~/session.server";
 import { ThemeToggle } from "~/theme";
 import { Alert } from "~/ui/Alert";
 import { FileUploadArea } from "~/ui/FileUploadArea";
 import { Link } from "~/ui/Link";
 import { useUser } from "~/utils";
+
+export const action = async ({ request }: ActionArgs) => {
+  const user = await requireAuthentication(request);
+  const formData = await unstable_parseMultipartFormData(
+    request,
+    createFirebaseUploadHandler({
+      filePath: `profile-pictures/${user.firebase_uid}/profile`,
+      // The return value doesn't really matter in this case
+      getReturnVal: (file) => file.id,
+    })
+  );
+};
 
 export const loader = async ({ request }: LoaderArgs) => {
   await requireAuthentication(request);
