@@ -46,6 +46,7 @@ This is still a work in progress and not ready for use.
 - Setup firebase project
 - `npm i -g firebase-tools`
 - Init firebase project
+- Setup firebase emulators
 
 ## What's kept from the orignal
 
