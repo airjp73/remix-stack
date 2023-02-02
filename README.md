@@ -33,7 +33,6 @@ This is still a work in progress and not ready for use.
 - [X] Add profile photo upload demo page
   - [X] Display photo on dashboard
   - [X] Use file upload handler instead of uploading directly to firebase
-- [ ] Signing up with a duplicate email blows up
 - [ ] Test deployment with fly
 - [ ] Enable github action in repo
 - [ ] Sentry error monitoring

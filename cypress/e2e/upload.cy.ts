@@ -12,10 +12,7 @@ it("should upload a file", () => {
       .parent() // get the upload area not the actual input
       .selectFile(pic, { action: "drag-drop" });
   });
-  cy.findByRole("alert")
-    .findByRole("heading", { name: /profile picture uploaded!/i })
-    .should("exist");
-  cy.findByRole("link", { name: /back to dashboard/i }).click();
+  cy.findByText(/profile picture uploaded!/i).should("exist");
   cy.location("pathname").should("contain", "/dashboard");
 });
 
