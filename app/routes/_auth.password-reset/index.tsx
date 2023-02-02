@@ -27,6 +27,7 @@ const resetMachine =
   createMachine(
     {
       id: "password-reset",
+      predictableActionArguments: true,
 
       schema: {
         events: {} as { type: "submit"; payload: { email: string } },

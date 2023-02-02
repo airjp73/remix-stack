@@ -53,6 +53,7 @@ const uploadMachine =
   createMachine(
     {
       id: "fileUpload",
+      predictableActionArguments: true,
       tsTypes: {} as import("./upload-profile-picture.typegen").Typegen0,
       schema: {
         context: {} as { error?: string },

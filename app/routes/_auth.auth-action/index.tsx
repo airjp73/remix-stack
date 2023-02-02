@@ -34,6 +34,7 @@ const authActionMachine =
   createMachine(
     {
       id: "authAction",
+      predictableActionArguments: true,
       initial: "decision",
       tsTypes: {} as import("./index.typegen").Typegen0,
 
