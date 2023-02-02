@@ -1,10 +1,8 @@
 import { json, LoaderArgs } from "@remix-run/server-runtime";
 import { useMachine } from "@xstate/react";
 import { ref, uploadBytes } from "firebase/storage";
-import { useState } from "react";
-import { FileError, FileRejection } from "react-dropzone";
+import { FileRejection } from "react-dropzone";
 import { useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
 import { assign, createMachine } from "xstate";
 import { useFirebase } from "~/firebase/firebase";
 import { requireAuthentication } from "~/session.server";

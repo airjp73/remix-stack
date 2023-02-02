@@ -3,7 +3,8 @@
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Welcome, {{name}}!",
-    "uploadProfileLink": "Upload profile picture"
+    "uploadProfileLink": "Upload profile picture",
+    "yourProfile": "Your profile picture"
   },
   "fileUploadArea": {
     "constraintText": "PNG, JPG, GIF up to {{maxMegabytes}}MB",

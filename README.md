@@ -30,7 +30,9 @@ This is still a work in progress and not ready for use.
 - [X] Fix button hover state in dark mode
 - [X] Make all grays use gray and set gray in theme
 - [X] I18n for form validation errors errors
-- [ ] Add profile photo upload demo page
+- [X] Add profile photo upload demo page
+  - [X] Display photo on dashboard
+  - [ ] Use file upload handler instead of uploading directly to firebase
 - [ ] Signing up with a duplicate email blows up
 - [ ] Test deployment with fly
 - [ ] Enable github action in repo

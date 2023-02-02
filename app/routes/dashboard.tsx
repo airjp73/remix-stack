@@ -19,6 +19,7 @@ const validator = makeValidator({});
 export default function Dashboard() {
   const { t } = useTranslation();
   const { email } = useLoaderData<typeof loader>();
+
   return (
     <>
       <div className="absolute top-4 left-4">
@@ -35,9 +36,16 @@ export default function Dashboard() {
             {t("dashboard.title")}
           </h1>
           <p>{t("dashboard.welcome", { name: email })}</p>
-          <Link href="/upload-profile-picture">
-            {t("dashboard.uploadProfileLink")}
-          </Link>
+          <div className="mt-4 flex items-center space-x-4">
+            <img
+              className="h-20 w-20 rounded-full"
+              src="/profile-photo"
+              alt={t("dashboard.yourProfile")}
+            />
+            <Link href="/upload-profile-picture">
+              {t("dashboard.uploadProfileLink")}
+            </Link>
+          </div>
         </div>
       </div>
     </>
