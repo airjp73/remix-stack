@@ -11,25 +11,26 @@ import { useTranslation } from "react-i18next";
 import { assign, createMachine } from "xstate";
 import { createFirebaseUploadHandler } from "~/firebase/firebase.server";
 import i18next from "~/i18n.server";
+import { update_user } from "~/models/user.server";
 import { redirectWithNotification } from "~/notifications";
 import { requireAuthentication } from "~/session.server";
 import { ThemeToggle } from "~/theme";
 import { Alert } from "~/ui/Alert";
 import { FileUploadArea } from "~/ui/FileUploadArea";
+import { v4 as uuid } from "uuid";
 
 export const action = async ({ request }: ActionArgs) => {
   const user = await requireAuthentication(request);
   try {
+    const filename = uuid();
+    const filePath = `${user.firebase_uid}/images/${filename}`;
     // Can get formData from the request
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const formData = await unstable_parseMultipartFormData(
       request,
-      createFirebaseUploadHandler({
-        filePath: `profile-pictures/${user.firebase_uid}/profile`,
-        // The return value doesn't really matter in this case
-        getReturnVal: (file) => file.name,
-      })
+      createFirebaseUploadHandler({ filePath })
     );
+    await update_user(user.id, { profile_photo: filePath });
 
     const t = await i18next.getFixedT(request);
     return redirectWithNotification({

@@ -24,7 +24,7 @@ export const serverStorage = getStorage(app);
 type FirebaseFile = ReturnType<ReturnType<Storage["bucket"]>["file"]>;
 type FirebaseUploadHandlerArgs = {
   filePath: string;
-  getReturnVal: (
+  getReturnVal?: (
     file: FirebaseFile,
     fileName?: string
   ) => Awaited<ReturnType<UploadHandler>>;
@@ -40,7 +40,7 @@ export const createFirebaseUploadHandler = ({
       .file(filePath);
     const writeStream = file.createWriteStream();
     await writeAsyncIterableToWritable(data, writeStream);
-    return getReturnVal(file, filename);
+    return getReturnVal?.(file, filename) ?? null;
   };
   return handler;
 };

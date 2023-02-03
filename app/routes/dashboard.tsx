@@ -11,14 +11,14 @@ import { makeValidator } from "~/validation";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireAuthentication(request);
-  return json({ email: user.email });
+  return json({ email: user.email, profile_photo: user.profile_photo });
 };
 
 const validator = makeValidator({});
 
 export default function Dashboard() {
   const { t } = useTranslation();
-  const { email } = useLoaderData<typeof loader>();
+  const { email, profile_photo } = useLoaderData<typeof loader>();
 
   return (
     <>
@@ -37,11 +37,13 @@ export default function Dashboard() {
           </h1>
           <p>{t("dashboard.welcome", { name: email })}</p>
           <div className="mt-4 flex items-center space-x-4">
-            <img
-              className="h-20 w-20 rounded-full"
-              src="/profile-photo"
-              alt={t("dashboard.yourProfile")}
-            />
+            {profile_photo && (
+              <img
+                className="h-20 w-20 rounded-full"
+                src={`user-images/${profile_photo}`}
+                alt={t("dashboard.yourProfile")}
+              />
+            )}
             <Link href="/upload-profile-picture">
               {t("dashboard.uploadProfileLink")}
             </Link>

@@ -19,3 +19,10 @@ export async function get_or_create_user(
 export async function get_user_by_uid(firebase_uid: User["firebase_uid"]) {
   return db.user.findUnique({ where: { firebase_uid } });
 }
+
+export async function update_user(
+  id: User["id"],
+  userParams: Partial<Omit<User, "id">>
+) {
+  return db.user.update({ where: { id }, data: userParams });
+}
