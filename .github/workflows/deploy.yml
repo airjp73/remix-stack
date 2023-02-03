@@ -130,6 +130,8 @@ jobs:
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           FIREBASE_CLOUD_STORAGE_BUCKET: ${{ secrets.FIREBASE_CLOUD_STORAGE_BUCKET }}
+          SESSION_SECRET: "cypresstestsecret"
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
 
   build:
     name: 🐳 Build
