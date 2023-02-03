@@ -40,6 +40,7 @@ export const createFirebaseUploadHandler = ({
       .file(filePath);
     const writeStream = file.createWriteStream();
     await writeAsyncIterableToWritable(data, writeStream);
+    await new Promise((resolve) => writeStream.on("finish", resolve));
     return getReturnVal?.(file, filename) ?? null;
   };
   return handler;
