@@ -1,12 +1,10 @@
 import { defineConfig } from "cypress";
 import * as dotenv from "dotenv";
-import * as path from "path";
-import * as fs from "fs";
 
-const env = dotenv.parse(fs.readFileSync(path.join(__dirname, ".env")));
+dotenv.config();
 
 export default defineConfig({
-  env,
+  env: process.env,
   e2e: {
     experimentalSessionAndOrigin: true,
     setupNodeEvents: (on, config) => {
