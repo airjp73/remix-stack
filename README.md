@@ -34,8 +34,8 @@ This is still a work in progress and not ready for use.
   - [X] Display photo on dashboard
   - [X] Use file upload handler instead of uploading directly to firebase
   - [ ] Add profile photo to user record
-- [ ] Test deployment with fly
-- [ ] Enable github action in repo
+- [X] Test deployment with fly
+- [X] Enable github action in repo
 - [ ] Sentry error monitoring
 
 ## What's being removed
@@ -49,6 +49,7 @@ This is still a work in progress and not ready for use.
 - Init firebase project
 - Setup firebase emulators
 - Add firebase service account to secrets
+- Add all env vars to fly.io secrets except DATABASE_URL. Keep current recommendation for SESSION_SCRET
 
 ## What's kept from the orignal
 
