@@ -12,7 +12,8 @@ FROM base as deps
 
 WORKDIR /myapp
 
-ADD package.json .npmrc patches ./
+ADD package.json .npmrc ./
+ADD patches patches
 RUN npm install --production=false
 
 # Setup production node_modules
