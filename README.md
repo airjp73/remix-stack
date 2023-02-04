@@ -34,9 +34,11 @@ This is still a work in progress and not ready for use.
   - [X] Display photo on dashboard
   - [X] Use file upload handler instead of uploading directly to firebase
   - [X] Add profile photo to user record
-  - [ ] Deploy firebase rules
+  - [ ] Deploy firebase rules 
 - [X] Test deployment with fly
 - [X] Enable github action in repo
+- [ ] Vercel
+- [ ] Planetscale
 - [ ] Sentry error monitoring
 
 ## What's being removed
