@@ -130,7 +130,7 @@ jobs:
       - name: 🛠 Setup Database
         run: npx prisma db push --force-reset
         env:
-          DATABASE_URL: "mysql://test_user:test_password@localhost:3306/test_db"
+          DATABASE_URL: "mysql://test_user:test_password@127.0.0.1:3306/test_db"
 
       - name: ⚙️ Build
         run: npm run build
@@ -149,4 +149,4 @@ jobs:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           FIREBASE_CLOUD_STORAGE_BUCKET: ${{ secrets.FIREBASE_CLOUD_STORAGE_BUCKET }}
           SESSION_SECRET: "cypresstestsecret"
-          DATABASE_URL: "mysql://test_user:test_password@localhost:3306/test_db"
+          DATABASE_URL: "mysql://test_user:test_password@127.0.0.1:3306/test_db"
