@@ -107,12 +107,12 @@ jobs:
         # the sleep is just there to give time for postgres to get started
         run: docker-compose up -d && sleep 3
         env:
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
+          DATABASE_URL: "mysql://test_user:test_password@localhost:3306/test_db"
 
       - name: 🛠 Setup Database
         run: npx prisma db push --force-reset
         env:
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
+          DATABASE_URL: "mysql://test_user:test_password@localhost:3306/test_db"
 
       - name: ⚙️ Build
         run: npm run build
@@ -131,4 +131,4 @@ jobs:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           FIREBASE_CLOUD_STORAGE_BUCKET: ${{ secrets.FIREBASE_CLOUD_STORAGE_BUCKET }}
           SESSION_SECRET: "cypresstestsecret"
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
+          DATABASE_URL: "mysql://test_user:test_password@localhost:3306/test_db"
