@@ -83,6 +83,19 @@ jobs:
   cypress:
     name: ⚫️ Cypress
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_DATABASE: test_db
+          MYSQL_USER: test_user
+          MYSQL_PASSWORD: test_password
+          MYSQL_ROOT_PASSWORD: example
+        ports:
+          - 33306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.11.0
@@ -103,9 +116,9 @@ jobs:
         with:
           useLockFile: false
 
-      - name: 🐳 Docker compose
-        # the sleep is just there to give time for postgres to get started
-        run: docker-compose up -d && sleep 3
+      # - name: 🐳 Docker compose
+      #   # the sleep is just there to give time for postgres to get started
+      #   run: docker-compose up -d && sleep 3
 
       # - name: Setup MySQL
       #   uses: mirromutth/mysql-action@v1.1
