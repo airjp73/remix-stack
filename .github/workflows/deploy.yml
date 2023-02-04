@@ -110,7 +110,7 @@ jobs:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
 
       - name: 🛠 Setup Database
-        run: npx prisma migrate reset --force
+        run: npx prisma db push --force-reset
         env:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
 
