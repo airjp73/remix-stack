@@ -10,6 +10,7 @@ import { I18nextProvider, initReactI18next } from "react-i18next";
 import I18NexFsBackend from "i18next-fs-backend";
 import i18n from "./i18n";
 import { resolve } from "path";
+import en_common from "~/../public/locales/en/common.json";
 
 const ABORT_DELAY = 5000;
 
@@ -38,8 +39,10 @@ export default async function handleRequest(
       ...i18n,
       lng,
       ns,
-      backend: {
-        loadPath: resolve("./public/locales/{{lng}}/{{ns}}.json"),
+      resources: {
+        en: {
+          common: en_common,
+        },
       },
     });
 
@@ -47,9 +50,9 @@ export default async function handleRequest(
     let didError = false;
 
     const { pipe, abort } = renderToPipeableStream(
-      <I18nextProvider i18n={instance}>
-        <RemixServer context={remixContext} url={request.url} />
-      </I18nextProvider>,
+      // <I18nextProvider i18n={instance}>
+      <RemixServer context={remixContext} url={request.url} />,
+      // </I18nextProvider>,
       {
         [callbackName]: () => {
           const body = new PassThrough();
