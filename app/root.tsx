@@ -28,6 +28,7 @@ import {
 } from "./session.server";
 import { FirebaseClientOptions } from "./firebase/firebase.client";
 import { getNotification, Notification } from "./notifications";
+import { withSentry } from "@sentry/remix";
 
 export const links: LinksFunction = () => {
   return [
@@ -60,6 +61,7 @@ export async function loader({ request }: LoaderArgs) {
       locale,
       env: {
         NODE_ENV: env.NODE_ENV,
+        SENTRY_DSN: env.SENTRY_DSN,
       },
       user,
       firebaseJwt,
@@ -86,7 +88,7 @@ const useIsomorphicLayoutEffect =
 
 export type RootLoaderData = SerializeFrom<typeof loader>;
 
-export default function App() {
+function App() {
   const { locale, env } = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
   const isHydrated = useHydrated();
@@ -133,3 +135,5 @@ export default function App() {
     </html>
   );
 }
+
+export default withSentry(App);

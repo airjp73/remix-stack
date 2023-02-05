@@ -10,6 +10,7 @@ const schema = z.object({
   FIREBASE_APP_ID: z.string(),
   FIREBASE_SERVICE_KEY: z.string(),
   FIREBASE_CLOUD_STORAGE_BUCKET: z.string(),
+  SENTRY_DSN: z.string(),
   FIREBASE_AUTH_EMULATOR_HOST: z.string().optional(),
 });
 
