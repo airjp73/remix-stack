@@ -6,10 +6,9 @@ import isbot from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 import { createInstance } from "i18next";
 import i18next from "./i18n.server";
-import { I18nextProvider, initReactI18next } from "react-i18next";
+import { initReactI18next } from "react-i18next";
 import I18NexFsBackend from "i18next-fs-backend";
 import i18n from "./i18n";
-import { resolve } from "path";
 import en_common from "~/../public/locales/en/common.json";
 
 const ABORT_DELAY = 5000;
