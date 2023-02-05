@@ -6,7 +6,7 @@ import isbot from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 import { createInstance } from "i18next";
 import i18next from "./i18n.server";
-import { initReactI18next } from "react-i18next";
+import { I18nextProvider, initReactI18next } from "react-i18next";
 import I18NexFsBackend from "i18next-fs-backend";
 import i18n from "./i18n";
 import { resolve } from "path";
@@ -47,7 +47,9 @@ export default async function handleRequest(
     let didError = false;
 
     const { pipe, abort } = renderToPipeableStream(
-      <RemixServer context={remixContext} url={request.url} />,
+      <I18nextProvider i18n={instance}>
+        <RemixServer context={remixContext} url={request.url} />
+      </I18nextProvider>,
       {
         [callbackName]: () => {
           const body = new PassThrough();
