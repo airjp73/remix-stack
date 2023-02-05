@@ -37,8 +37,8 @@ This is still a work in progress and not ready for use.
   - [ ] Deploy firebase rules 
 - [X] Test deployment with fly
 - [X] Enable github action in repo
-- [ ] Vercel
-- [ ] Planetscale
+- [X] Vercel
+- [X] Planetscale
 - [ ] Sentry error monitoring
 
 ## What's being removed
