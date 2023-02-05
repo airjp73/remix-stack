@@ -13,6 +13,10 @@ import { resolve } from "path";
 
 const ABORT_DELAY = 5000;
 
+if (process.env.MOCKED) {
+  require("./mocks.server");
+}
+
 export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
