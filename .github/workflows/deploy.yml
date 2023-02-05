@@ -108,25 +108,18 @@ jobs:
         with:
           node-version: 16
 
-      - name: 🔥 Install firebase tools
-        run: npm install -g firebase-tools
+      - name: 🔥 Set up firebase
+        run: |
+          npm install -g firebase-tools
+          touch .firebaserc
+          echo '{"projects": { "default": "${{ secrets.FIREBASE_PROJECT_ID }}" } }' > .firebaserc
 
       - name: 📥 Download deps
         uses: bahmutov/npm-install@v1
         with:
           useLockFile: false
 
-      # - name: 🐳 Docker compose
-      #   # the sleep is just there to give time for postgres to get started
-      #   run: docker-compose up -d && sleep 3
-
-      # - name: Setup MySQL
-      #   uses: mirromutth/mysql-action@v1.1
-      #   with:
-      #     mysql database: "test_db"
-      #     mysql user: "test_user"
-      #     mysql password: test_password
-      - name: Start MySql
+      - name: 🗃 Set up Mysql
         run: |
           sudo /etc/init.d/mysql start
           mysql -e 'CREATE DATABASE test_db;' -uroot -proot
