@@ -8,11 +8,9 @@ import { createInstance } from "i18next";
 import i18next from "./i18n.server";
 import { initReactI18next } from "react-i18next";
 import I18NexFsBackend from "i18next-fs-backend";
-import * as Sentry from "@sentry/remix";
 import i18n from "./i18n";
 import en_common from "~/../public/locales/en/common.json";
-import { db } from "./db.server";
-import { env } from "./env/env.server";
+import { initServerSentry } from "./sentry/sentry.server";
 
 const ABORT_DELAY = 5000;
 
@@ -20,11 +18,7 @@ if (process.env.MOCKED) {
   require("./mocks.server");
 }
 
-Sentry.init({
-  dsn: env.SENTRY_DSN,
-  tracesSampleRate: 1,
-  integrations: [new Sentry.Integrations.Prisma({ client: db })],
-});
+initServerSentry();
 
 export default async function handleRequest(
   request: Request,
