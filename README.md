@@ -39,7 +39,7 @@ This is still a work in progress and not ready for use.
 - [X] Enable github action in repo
 - [X] Vercel
 - [X] Planetscale
-- [ ] Sentry error monitoring
+- [X] Sentry error monitoring
 
 ## What's being removed
 
