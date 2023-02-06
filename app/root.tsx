@@ -114,7 +114,13 @@ function App() {
           dangerouslySetInnerHTML={{
             __html: `
               // Ensure dark mode is always correctly set without a flash of light mode 
-              if (localStorage.theme === 'dark') document.documentElement.dataset.theme = 'dark';
+              if (localStorage.theme) {
+                document.documentElement.dataset.theme = localStorage.theme;
+              } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.dataset.theme = 'dark';
+              } else {
+                document.documentElement.dataset.theme = 'light';
+              }
 
               // Provide global env variables to the window
               window.env = ${JSON.stringify(env)};
