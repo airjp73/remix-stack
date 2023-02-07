@@ -14,6 +14,7 @@ export interface Typegen0 {
       | "clear local storage"
       | "override to dark mode"
       | "override to light mode"
+      | "set display theme from system"
       | "show dark theme"
       | "show light theme"
       | "show system theme"
@@ -26,11 +27,16 @@ export interface Typegen0 {
     "clear local storage": "" | "choose auto" | "system theme changed";
     "override to dark mode": "" | "choose dark";
     "override to light mode": "" | "choose light";
+    "set display theme from system":
+      | ""
+      | "choose auto"
+      | "system theme changed";
     "show dark theme": "" | "choose dark";
     "show light theme": "" | "choose light";
     "show system theme": "system theme changed";
     "update theme in dom":
       | ""
+      | "choose auto"
       | "choose dark"
       | "choose light"
       | "system theme changed";

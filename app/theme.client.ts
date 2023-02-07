@@ -25,7 +25,7 @@ export const getInitiallyDisplayedTheme = (): Theme => {
 };
 
 const themeMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QBcAWYC2YB0sCesymAxAMaoD2FsYABBAIYBOA1gNoAMAuoqAA7UAlskEUAdrxAAPRAHYAjAE5sADhUAmFRwAsHefI0qArABoQeRNvWzsRowDZNRxYvsrZsgL6ezaTDnxCEnIqGloAG0EoVGROHiQQAVhhUQkEmQQFZTVNHT0DJzMLBABmdXtbBwNFMt0jHW9fdCxcAiIMYkD22j8sWnIGMRgIOMkklPFJDO1tCrKOdUVZcqN1eTcixHUODmwd-Y4jEp0VeRKvHxBenEZWMkpqOkjo2O4xoRFJ9MR9bWVZex2dQlZwqewKTYIbTGWzyWb6cH2DglJaNK7NG7MFj3UJ0BgAV2QFFGCXGnzSoAyWWwrg4NW0R3simhpnMiHONkOjlkh3WCyM8guTX82GeMRxj3oWJJ-A+qSmPzh-0BqxBijBELZCEZezh3PkDhUigNaOuoqi4pCkoJRJliTlX0pir+qm0ILU2nk5Tc6kh2yMqg49gMBpUJUcDNNGOwgjEwmIdrJ8u+CC9Ab+LkUmmNZxqikhdl2dnsxw0rk0sm0UZFsfjbHk8VlyXJCtT6nTmazRv0KJRkNOtgOshKf2R6pK1ZateQCfUjftzeTTrbHcz2Z7echI5swMUzj3ujpzO8lzEFAgcEk13ei8d0kQAFp7JCn5OAm1MDeJhT71CDTSjjOFFkR5eQt00bBdBLOlllkY17BmN9sFuFgvxbFMcmwYCjGWP5HAQsCtVmbQaRKM4FnbXRyhNS4zTFZA0KXX8gPUbBrBKEEPGZdRFlZYo3RUbA3HI9QrEBcMhXRGs4wY0kHR-aZfS1Ed0yNYNZDDexESrE8gA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QBcAWYC2YB0sCesymAxAMaoD2FsYABBAIYBOA1gNoAMAuoqAA7UAlskEUAdrxAAPRAHYOATmwAOZQCZlAFgBsHAKx7t85QBoQeRJr3LsswwEYFWx8vtqAzAF9PZtJhz4hCTkVDS0ADaCUKjInDxIIAKwwqISCTII8kqqGjr6hsZmFgjuerK2hmqKju5qstrK3r7oWLgERBjEgR20fli05AxiMBBxkkkp4pIZmjrYtRzu7soKDQocHKbmiI5KCvsKmvayCrL2em5qTSB9OIysZJTUdJHRsdzjQiJT6Tv27kp6oZFO4OPZFtoFEVEBdtLZ7FZNK5tB4rNdbth7ixHqE6AwAK7IChjBITb5pUAZLLYVaKXTKPQ6M6yaEITSbbBqSrubQo2SqZTaPTolo4V4xHHPejMdgfUlfVLTP4A2xC3QKUHgnlQ7YIAqchF6RQKRlqBrCnw3UXYcXISVhAlEkn8BU-SnK7KadyyNRHDaLWQs3UecobbSORl2U6bbQi-zYQRiYTEZ2JV0U6Q7LnYTQHWnHOqCvSs6z2CrhpGKQMXC3NeOJ5NsezxF3JclKhBuPQ5vO6Av8oWs1w9-Yoo1WcEKOOtBt2thqFtptuK36d7O5g59n0D4u6nmabBlDQAgGnIVea5iCgQOCSW6fZduzMIAC02lZb+w-v0dQ29nOigMtOATtJgD6TBmMznDSejuP8pa+vYKysrUNjsiixxaAoCLIsBmIyuB7arsoPrzOs2gbmamhqI4rK5nC-z-qUJquFosh4bahEru6na1GonKyO4sx6PscG1HRkIqK4-z6OaHC8rWVr1kmyBcU+MxqChKIqGoajrEJAL-FUsbeJ4QA */
   createMachine({
     id: "theme",
     tsTypes: {} as import("./theme.client.typegen").Typegen0,
@@ -47,7 +47,11 @@ const themeMachine =
           src: "listen for system changes",
         },
 
-        entry: ["clear local storage"],
+        entry: [
+          "clear local storage",
+          "set display theme from system",
+          "update theme in dom",
+        ],
 
         on: {
           "choose dark": "dark",
@@ -123,6 +127,12 @@ export const themeService = interpret(
         "show light theme": assign({ displayedTheme: (_) => "light" }),
         "show system theme": assign({
           displayedTheme: (_, e) => e.value,
+        }),
+        "set display theme from system": assign({
+          displayedTheme: (ctx) =>
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light",
         }),
         "update theme in dom": (ctx) => {
           document.documentElement.dataset.theme = ctx.displayedTheme;
