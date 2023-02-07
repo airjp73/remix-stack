@@ -1,5 +1,10 @@
 {
   "greeting": "Welcome!",
+  "theme": {
+    "dark": "Dark",
+    "light": "Light",
+    "auto": "Auto"
+  },
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Welcome, {{name}}!",

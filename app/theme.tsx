@@ -1,6 +1,6 @@
 import { useActor } from "@xstate/react";
-import { Moon, Snowflake, Sun } from "lucide-react";
-import { useEffect, useId, useState } from "react";
+import { Snowflake, Sun } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { ClientOnly } from "remix-utils";
 import invariant from "tiny-invariant";
 import { z } from "zod";
@@ -70,17 +70,13 @@ const AutoIcon = ({
 };
 
 const ThemeToggleInternal = () => {
+  const { t } = useTranslation();
   const [state, send] = useActor(themeService);
 
   const buttonText = () => {
-    // TODO: framer-motion tweak?
-    if (state.matches("dark")) return <span>Dark</span>;
-
-    if (state.matches("light")) {
-      return <span>Light</span>;
-    }
-
-    return <span>Auto</span>;
+    if (state.matches("dark")) return t("theme.dark");
+    if (state.matches("light")) return t("theme.light");
+    return t("theme.auto");
   };
 
   return (
@@ -97,21 +93,21 @@ const ThemeToggleInternal = () => {
                 : 0
             }
           />
-          {buttonText()}
+          <span>{buttonText()}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent className="w-12">
         <DropdownMenuItem onClick={() => send({ type: "choose light" })}>
           <Sun className="mr-2 h-5 w-5 text-amber-500" />
-          <span>Light</span>
+          <span>{t("theme.light")}</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => send({ type: "choose dark" })}>
           <Snowflake className="mr-2 h-5 w-5 text-cyan-500" />
-          <span>Dark</span>
+          <span>{t("theme.dark")}</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => send({ type: "choose auto" })}>
           <AutoIcon className="mr-2" percentLight={50} />
-          <span>Auto</span>
+          <span>{t("theme.auto")}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
