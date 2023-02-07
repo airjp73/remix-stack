@@ -1,10 +1,18 @@
 import { useActor } from "@xstate/react";
-import { useId } from "react";
+import { Moon, Snowflake, Sun } from "lucide-react";
+import { useEffect, useId, useState } from "react";
 import { ClientOnly } from "remix-utils";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { themeService } from "./theme.client";
-import { Switch } from "./ui/Switch";
+import { Button } from "./ui/Button";
+import { cn } from "./ui/cn";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/DropdownMenu";
 
 const storageSchema = z.object({
   theme: z.enum(["light", "dark"]),
@@ -34,26 +42,79 @@ export const getInitialThemeInfo = (): {
   }
 };
 
+const AutoIcon = ({
+  className,
+  percentLight,
+}: {
+  className: string;
+  percentLight: number;
+}) => {
+  return (
+    <div className={cn("relative h-5 w-5", className)}>
+      <Snowflake
+        className="absolute inset-0 h-5 w-5 text-cyan-500"
+        style={{
+          clipPath: `polygon(${percentLight}% 0, 100% 0, 100% 100%, ${percentLight}% 100%)`,
+          transition: "clip-path 1s ease-out",
+        }}
+      />
+      <Sun
+        className="absolute inset-0 h-5 w-5 text-amber-500"
+        style={{
+          clipPath: `polygon(0 0, ${percentLight}% 0, ${percentLight}% 100%, 0% 100%)`,
+          transition: "clip-path 1s ease-out",
+        }}
+      />
+    </div>
+  );
+};
+
 const ThemeToggleInternal = () => {
-  const descriptionId = useId();
   const [state, send] = useActor(themeService);
 
+  const buttonText = () => {
+    // TODO: framer-motion tweak?
+    if (state.matches("dark")) return <span>Dark</span>;
+
+    if (state.matches("light")) {
+      return <span>Light</span>;
+    }
+
+    return <span>Auto</span>;
+  };
+
   return (
-    <div className="flex items-center space-x-2">
-      <Switch
-        aria-label="Toggle theme"
-        aria-describedby={descriptionId}
-        onClick={() => {
-          const nextTheme =
-            state.context.displayedTheme === "light" ? "dark" : "light";
-          send({ type: nextTheme === "dark" ? "choose dark" : "choose light" });
-        }}
-        checked={state.context.displayedTheme === "dark"}
-      />
-      <p id={descriptionId} className="text-gray-900 dark:text-gray-100">
-        {state.context.displayedTheme === "dark" ? "Dark" : "Light"}
-      </p>
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <Button variant="outline">
+          <AutoIcon
+            className="mr-2"
+            percentLight={
+              state.context.displayedTheme === "light"
+                ? 100
+                : state.matches("system")
+                ? 50
+                : 0
+            }
+          />
+          {buttonText()}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem onClick={() => send({ type: "choose light" })}>
+          <Sun className="mr-2 h-5 w-5 text-amber-500" />
+          <span>Light</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => send({ type: "choose dark" })}>
+          <Snowflake className="mr-2 h-5 w-5 text-cyan-500" />
+          <span>Dark</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => send({ type: "choose auto" })}>
+          <AutoIcon className="mr-2" percentLight={50} />
+          <span>Auto</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 
