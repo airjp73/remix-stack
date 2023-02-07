@@ -153,7 +153,7 @@ jobs:
               - 'storage.rules'
 
   firebase-rules:
-    name: 🔥 Deploy Firebase rules
+    name: 🔥 Deploy Firebase storage rules
     needs: files-changed
     if: needs.files-changed.outputs.storage_rules == 'true'
     runs-on: ubuntu-latest
@@ -177,4 +177,4 @@ jobs:
           echo '{"projects": { "default": "${{ secrets.FIREBASE_PROJECT_ID }}" } }' > .firebaserc
 
       - name: "🚀 Deploy rules"
-        run: firebase deploy
+        run: firebase deploy --token ${{ secrets.FIREBASE_CI_TOKEN }} --only storage

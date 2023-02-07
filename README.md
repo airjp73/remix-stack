@@ -53,6 +53,11 @@ This is still a work in progress and not ready for use.
 - Setup firebase emulators
 - Add firebase service account to secrets
 - Add all env vars to fly.io secrets except DATABASE_URL. Keep current recommendation for SESSION_SCRET
+- on local machine
+  - firebase login:ci
+  - log in
+  - copy token printed in console
+  - Add token as FIREBASE_CI_TOKEN to github repo secrets
 
 ## What's kept from the orignal
 
