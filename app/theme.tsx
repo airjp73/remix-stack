@@ -96,17 +96,17 @@ const ThemeToggleInternal = () => {
           <span>{buttonText()}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-12">
+      <DropdownMenuContent>
         <DropdownMenuItem onClick={() => send({ type: "choose light" })}>
-          <Sun className="mr-2 h-5 w-5 text-amber-500" />
+          <Sun aria-hidden className="mr-2 h-5 w-5 text-amber-500" />
           <span>{t("theme.light")}</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => send({ type: "choose dark" })}>
-          <Snowflake className="mr-2 h-5 w-5 text-cyan-500" />
+          <Snowflake aria-hidden className="mr-2 h-5 w-5 text-cyan-500" />
           <span>{t("theme.dark")}</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => send({ type: "choose auto" })}>
-          <AutoIcon className="mr-2" percentLight={50} />
+          <AutoIcon aria-hidden className="mr-2" percentLight={50} />
           <span>{t("theme.auto")}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
