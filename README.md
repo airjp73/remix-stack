@@ -40,6 +40,7 @@ This is still a work in progress and not ready for use.
 - [X] Vercel
 - [X] Planetscale
 - [X] Sentry error monitoring
+- [ ] Retain file extension in image upload and check for valid image
 - [ ] Finish readme
 
 ## What's being removed
