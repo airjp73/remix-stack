@@ -1,15 +1,10 @@
 import { useFetcher } from "@remix-run/react";
-import {
-  ActionArgs,
-  json,
-  LoaderArgs,
-  unstable_parseMultipartFormData,
-} from "@remix-run/server-runtime";
+import { ActionArgs, json, LoaderArgs } from "@remix-run/server-runtime";
 import { useMachine } from "@xstate/react";
 import { FileRejection } from "react-dropzone";
 import { useTranslation } from "react-i18next";
 import { assign, createMachine } from "xstate";
-import { createFirebaseUploadHandler } from "~/firebase/firebase.server";
+import { FirebaseImageUpload as FirebaseImageUploader } from "~/firebase/firebase.server";
 import i18next from "~/i18n.server";
 import { update_user } from "~/models/user.server";
 import { redirectWithNotification } from "~/notifications";
@@ -17,20 +12,25 @@ import { requireAuthentication } from "~/session.server";
 import { ThemeToggle } from "~/theme";
 import { Alert } from "~/ui/Alert";
 import { FileUploadArea } from "~/ui/FileUploadArea";
-import { v4 as uuid } from "uuid";
+import { z } from "zod";
+import { zfd } from "zod-form-data";
+import { useEffect } from "react";
+import { MAX_IMAGE_BYTES, MAX_IMAGE_MB } from "~/firebase/firebase";
+
+const uploadSchema = zfd.formData({
+  picture: z.string().regex(/.+\.(jpg|jpeg|png|gif|webp)$/i),
+});
 
 export const action = async ({ request }: ActionArgs) => {
   const user = await requireAuthentication(request);
   try {
-    const filename = uuid();
-    const filePath = `${user.firebase_uid}/images/${filename}`;
-    // Can get formData from the request
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const formData = await unstable_parseMultipartFormData(
-      request,
-      createFirebaseUploadHandler({ filePath })
+    const uploader = new FirebaseImageUploader(`${user.firebase_uid}/images/`);
+    const { picture } = uploadSchema.parse(
+      await uploader.parseFormData(request)
     );
-    await update_user(user.id, { profile_photo: filePath });
+    await uploader.upload();
+
+    await update_user(user.id, { profile_photo: picture });
 
     const t = await i18next.getFixedT(request);
     return redirectWithNotification({
@@ -50,7 +50,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 const uploadMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QDMCWAbMBVADug9gIYQB0qEmAxGpgEpgBWYAxgC6QDaADALqKg58sVK1T4AdvxAAPRAEYATAFYSATnUa5AZi1KFCgGwAOADQgAnon0qFAFnX2A7I6WOFWgL4ezNbHiKk5FS+AILMzGA47BDcfEgggsKiElKyCIoqGpo6eoamFvJctiT26o62unLlBlye3iC+uATEJACu-sSo4lCUYABOffh99BGoAG6cvFKJImKS8WlKNSRaLlz6ckZGCo7qZpYIRnIkzlq2clwGukpaBo5GXvXi+BBwUo0dENNCsykLiABaAz7QEGEhKLiQrRcJRVVxHZReHwYPzNQIUMDfJJzVKIWwKEEIOwKEgw1RGRxkorbCpIhoopoBNqfLpQLG-eagNLXE6OM62ClyJTC-SEoxcNQaAyqAXEzYPeofNEkfqDPrs5KcmSIU6k1SrNzynZ7ApEriqEhGfVyVTlLTaIy6OpeIA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QDMCWAbMBVADug9gIYQB0qEmAxGpgEpgBWYAxgC6QDaADALqKg58sVK1T4AdvxAAPRAEYATAFYSSruq5KAbAoAsADjkBOOfoA0IAJ6Ijukia1b9AZhMB2OVs36Avj4s02HhEpORUgQCCzMxgOOwQ3HxIIILCohJSsgiKKmoa2nqGJuZWiApG+iRuXM5yugr6RgpOTbp+ARhBBMQkAK7BxKjiUJRgAE5j+GP0MagAbpy8UqkiYpLJWUrOziS6blpKbiZcjm6NFtYIhqoaCvu6jk5Kbf4ggbjdpOOTY9SdUTE4oskgIhKsMhtEFsdnsDkc5CctGcjBd5G43PYtnUjM4tM5lFo5M4-K9xPgIHApO8BhBlmD0utQFkALRaVEIZkqIzcnm83nE17Uz5kChgOlpNaZRD1dmKOz6LgVIxcBG6WoNOTtN6dD4hPo0oZQcXgxkyRBuB4kUxuJQKTSFJQVWWHXZY7ZGPFcfRnJRaoV675TY0MqUIZxKFTKM51BR2xV3Nzs2wkRr4m0e1xnZQknxAA */
   createMachine(
     {
       id: "fileUpload",
@@ -87,6 +87,10 @@ const uploadMachine =
 
         error: {
           exit: "clearError",
+
+          on: {
+            fileAccepted: "uploading",
+          },
         },
       },
 
@@ -117,10 +121,19 @@ export default function Upload() {
                 case "file-too-large":
                   return t("uploadProfilePicture.validation.fileTooLarge", {
                     fileName: event.rejection.file.name,
+                    maxMegabytes: MAX_IMAGE_MB,
+                  });
+                case "file-invalid-type":
+                  return t("uploadProfilePicture.validation.invalidFileType", {
+                    fileName: event.rejection.file.name,
                     maxMegabytes: 10,
                   });
-                default:
+                default: {
+                  reportError(
+                    new Error(`Unhandled file upload error: ${error.code}`)
+                  );
                   return undefined;
+                }
               }
             })
             .filter(Boolean)
@@ -138,6 +151,12 @@ export default function Upload() {
     },
   });
 
+  useEffect(() => {
+    if (fetcher.data?.error) {
+      send("errorReceived");
+    }
+  }, [fetcher.data?.error, send]);
+
   return (
     <div className="h-full">
       <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -148,7 +167,7 @@ export default function Upload() {
         </div>
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="space-y-6 bg-white py-8 px-4 shadow-lg dark:bg-gray-800 sm:rounded-lg sm:px-10">
-            {(state.matches("error") || fetcher.data?.error) && (
+            {state.matches("error") && (
               <Alert
                 variant="error"
                 title={state.context.error || t("uploadProfilePicture.error")}
@@ -159,7 +178,13 @@ export default function Upload() {
               isLoading={state.matches("uploading")}
               loadingLabel={t("uploadProfilePicture.uploading")}
               dropzoneOptions={{
-                maxSize: 1024 * 1024 * 10, // 10 MB
+                maxSize: MAX_IMAGE_BYTES,
+                accept: {
+                  "image/png": [".png"],
+                  "image/jpeg": [".jpeg", ".jpg"],
+                  "image/gif": [".gif"],
+                  "image/webp": [".webp"],
+                },
                 onDropAccepted: async (files) => {
                   send({ type: "fileAccepted", file: files[0] });
                 },

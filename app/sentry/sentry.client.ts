@@ -21,3 +21,12 @@ export const initClientSentry = () => {
     ],
   });
 };
+
+export const reportError = (error: Error) => {
+  if (!clientEnv.SENTRY_DSN) {
+    console.error(error);
+    return;
+  }
+
+  Sentry.captureException(error);
+};

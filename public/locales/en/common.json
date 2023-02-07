@@ -24,7 +24,8 @@
     "backToDashboard": "Back to dashboard",
     "uploading": "Uploading...",
     "validation": {
-      "fileTooLarge": "{{fileName}} is too large. Profile photos can't be larger than {{maxMegabytes}}MB."
+      "fileTooLarge": "{{fileName}} is too large. Profile photos can't be larger than {{maxMegabytes}}MB.",
+      "invalidFileType": "That type of file is not allowed. Profile photos must be PNG, JPG, or GIF."
     }
   },
   "login": {

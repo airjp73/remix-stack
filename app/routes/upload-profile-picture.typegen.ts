@@ -15,7 +15,7 @@ export interface Typegen0 {
   };
   eventsCausingActions: {
     beginUpload: "fileAccepted";
-    clearError: "xstate.stop";
+    clearError: "fileAccepted" | "xstate.stop";
     setErrorFromFileRejection: "fileRejected";
     setErrorFromResponse: "errorReceived";
   };
