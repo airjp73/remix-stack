@@ -93,7 +93,7 @@ const ThemeToggleInternal = () => {
                 : 0
             }
           />
-          <span>{buttonText()}</span>
+          <span className="w-12">{buttonText()}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>

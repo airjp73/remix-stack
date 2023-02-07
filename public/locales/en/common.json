@@ -3,7 +3,7 @@
   "theme": {
     "dark": "Dark",
     "light": "Light",
-    "auto": "Auto"
+    "auto": "System"
   },
   "dashboard": {
     "title": "Dashboard",
