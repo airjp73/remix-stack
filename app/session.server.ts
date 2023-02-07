@@ -43,7 +43,9 @@ export async function createUserSession({
   return redirect(redirectTo, {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session, {
-        expires: new Date(Date.now() + SESSION_EXPIRY_MILLIS),
+        expires: remember
+          ? new Date(Date.now() + SESSION_EXPIRY_MILLIS)
+          : undefined,
       }),
     },
   });
