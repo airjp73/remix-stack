@@ -84,18 +84,6 @@ jobs:
     name: ⚫️ Cypress
     runs-on: ubuntu-latest
 
-    # services:
-    #   mysql:
-    #     image: mysql:5.7
-    #     env:
-    #       MYSQL_DATABASE: test_db
-    #       MYSQL_USER: test_user
-    #       MYSQL_PASSWORD: test_password
-    #       MYSQL_ROOT_PASSWORD: example
-    #     ports:
-    #       - 33306:3306
-    #     options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
     steps:
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.11.0
@@ -147,3 +135,46 @@ jobs:
           FIREBASE_CLOUD_STORAGE_BUCKET: ${{ secrets.FIREBASE_CLOUD_STORAGE_BUCKET }}
           SESSION_SECRET: "cypresstestsecret"
           DATABASE_URL: "mysql://root:root@localhost:3306/test_db"
+
+  files-changed:
+    name: ☕️ Checking files changed
+    runs-on: ubuntu-latest
+    outputs:
+      storage_rules: ${{ steps.changes.outputs.storage_rules }}
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
+
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            storage_rules:
+              - 'storage.rules'
+
+  firebase-rules:
+    name: 🔥 Deploy Firebase rules
+    needs: files-changed
+    if: needs.files-changed.outputs.storage_rules == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.11.0
+
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: 🔥 Set up firebase
+        run: |
+          npm install -g firebase-tools
+          touch .firebaserc
+          echo '{"projects": { "default": "${{ secrets.FIREBASE_PROJECT_ID }}" } }' > .firebaserc
+
+      - name: "🚀 Deploy rules"
+        run: firebase deploy
