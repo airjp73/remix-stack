@@ -17,10 +17,12 @@ export interface Typegen0 {
       | "set display theme from system"
       | "show dark theme"
       | "show light theme"
-      | "show system theme"
-      | "update theme in dom";
+      | "show system theme";
     delays: never;
-    guards: "is overridden to dark mode" | "is overridden to light mode";
+    guards:
+      | "is overridden to dark mode"
+      | "is overridden to light mode"
+      | "is server";
     services: "listen for system changes";
   };
   eventsCausingActions: {
@@ -34,21 +36,16 @@ export interface Typegen0 {
     "show dark theme": "" | "choose dark";
     "show light theme": "" | "choose light";
     "show system theme": "system theme changed";
-    "update theme in dom":
-      | ""
-      | "choose auto"
-      | "choose dark"
-      | "choose light"
-      | "system theme changed";
   };
   eventsCausingDelays: {};
   eventsCausingGuards: {
     "is overridden to dark mode": "";
     "is overridden to light mode": "";
+    "is server": "";
   };
   eventsCausingServices: {
     "listen for system changes": "" | "choose auto" | "system theme changed";
   };
-  matchesStates: "dark" | "init" | "light" | "system";
+  matchesStates: "dark" | "init" | "light" | "ssr" | "system";
   tags: never;
 }

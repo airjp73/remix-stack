@@ -29,6 +29,8 @@ import {
 import { FirebaseClientOptions } from "./firebase/firebase.client";
 import { getNotification, Notification } from "./notifications";
 import { withSentry } from "@sentry/remix";
+import { ThemeProvider } from "./themeMachine";
+import { ThemedHtmlElement, ThemeScript } from "./theme";
 
 export const links: LinksFunction = () => {
   return [
@@ -106,39 +108,33 @@ function App() {
   }, []);
 
   return (
-    <html lang={locale} dir={i18n.dir()} className="h-full">
-      <head>
-        <Meta />
-        <Links />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              // Ensure dark mode is always correctly set without a flash of light mode 
-              if (localStorage.theme) {
-                document.documentElement.dataset.theme = localStorage.theme;
-              } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.dataset.theme = 'dark';
-              } else {
-                document.documentElement.dataset.theme = 'light';
-              }
-
+    <ThemeProvider>
+      <ThemedHtmlElement lang={locale} dir={i18n.dir()} className="h-full">
+        <head>
+          <Meta />
+          <Links />
+          <ThemeScript />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
               // Provide global env variables to the window
               window.env = ${JSON.stringify(env)};
             `,
-          }}
-        />
-      </head>
-      <body
-        className="h-full bg-gray-50 font-sans text-gray-900 antialiased dark:bg-gray-900 dark:text-gray-50"
-        data-hydrated={isHydrated}
-      >
-        <Notification className="absolute bottom-8 left-1/2 w-3/4 -translate-x-1/2 sm:bottom-auto sm:top-8 sm:w-96" />
-        <Outlet />
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
-    </html>
+            }}
+          />
+        </head>
+        <body
+          className="h-full bg-gray-50 font-sans text-gray-900 antialiased dark:bg-gray-900 dark:text-gray-50"
+          data-hydrated={isHydrated}
+        >
+          <Notification className="absolute bottom-8 left-1/2 w-3/4 -translate-x-1/2 sm:bottom-auto sm:top-8 sm:w-96" />
+          <Outlet />
+          <ScrollRestoration />
+          <Scripts />
+          <LiveReload />
+        </body>
+      </ThemedHtmlElement>
+    </ThemeProvider>
   );
 }
 

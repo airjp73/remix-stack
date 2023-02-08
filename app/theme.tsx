@@ -1,10 +1,9 @@
-import { useActor } from "@xstate/react";
 import { Snowflake, Sun } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ClientOnly } from "remix-utils";
 import invariant from "tiny-invariant";
 import { z } from "zod";
-import { themeService } from "./theme.client";
+import { useTheme, useThemeSelector } from "./themeMachine";
 import { Button } from "./ui/Button";
 import { cn } from "./ui/cn";
 import {
@@ -69,9 +68,9 @@ const AutoIcon = ({
   );
 };
 
-const ThemeToggleInternal = () => {
+const InternalThemeToggle = () => {
   const { t } = useTranslation();
-  const [state, send] = useActor(themeService);
+  const [state, send] = useTheme();
 
   const buttonText = () => {
     if (state.matches("dark")) return t("theme.dark");
@@ -115,5 +114,32 @@ const ThemeToggleInternal = () => {
 };
 
 export const ThemeToggle = () => (
-  <ClientOnly>{() => <ThemeToggleInternal />}</ClientOnly>
+  <ClientOnly>{() => <InternalThemeToggle />}</ClientOnly>
+);
+
+export const ThemedHtmlElement = (
+  props: React.ButtonHTMLAttributes<HTMLHtmlElement>
+) => {
+  const displayedTheme = useThemeSelector(
+    (state) => state.context.displayedTheme
+  );
+
+  return <html {...props} data-theme={displayedTheme} />;
+};
+
+export const ThemeScript = () => (
+  <script
+    dangerouslySetInnerHTML={{
+      __html: `
+        // Ensure dark mode is always correctly set without a flash of light mode 
+        if (localStorage.theme) {
+          document.documentElement.dataset.theme = localStorage.theme;
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.dataset.theme = 'dark';
+        } else {
+          document.documentElement.dataset.theme = 'light';
+        }
+      `,
+    }}
+  />
 );
