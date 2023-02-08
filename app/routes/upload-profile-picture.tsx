@@ -15,7 +15,7 @@ import { FileUploadArea } from "~/ui/FileUploadArea";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { useEffect } from "react";
-import { MAX_IMAGE_BYTES, MAX_IMAGE_MB } from "~/firebase/firebase";
+import { MAX_IMAGE_BYTES, MAX_IMAGE_MB } from "~/firebase/constants";
 
 const uploadSchema = zfd.formData({
   picture: z.string().regex(/.+\.(jpg|jpeg|png|gif|webp)$/i),

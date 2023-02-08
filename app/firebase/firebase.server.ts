@@ -10,7 +10,7 @@ import invariant from "tiny-invariant";
 import { env } from "~/env/env.server";
 import * as path from "path";
 import { v4 as uuid } from "uuid";
-import { MAX_IMAGE_BYTES } from "./firebase";
+import { MAX_IMAGE_BYTES } from "./constants";
 
 let app: App;
 
