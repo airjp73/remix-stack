@@ -20,12 +20,13 @@ test("visit page and take screenshot", async ({ page }) => {
   await login.waitFor();
   await login.click();
 
-  await page
-    .getByRole("textbox", { name: /email/i })
-    .type(process.env.TEST_EMAIL);
+  const email = page.getByRole("textbox", { name: /email/i });
+  await email.waitFor();
+  await email.type(process.env.TEST_EMAIL);
+
   await page.getByLabel(/password/i).type(process.env.TEST_PASSWORD);
 
   await page.getByRole("button", { name: /login/i }).click();
+  await page.getByText(/dashboard/i).waitFor();
   await page.screenshot({ path: "dashboard.jpg" });
-  expect(page.getByText(/dashboard/i)).toBeTruthy();
 });
