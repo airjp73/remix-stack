@@ -6,9 +6,9 @@ Customized version of the [Blues Stack](https://github.com/remix-run/blues-stack
 npx create-remix@latest --template airjp73/remix-stack
 ```
 
-# WIP
+# Needs documentation
 
-This is still a work in progress and not ready for use.
+This stack is more-or-less finished at this point, but still requires the readme to be rewritten.
 
 ## Changes intended
 
@@ -40,7 +40,7 @@ This is still a work in progress and not ready for use.
 - [X] Vercel
 - [X] Planetscale
 - [X] Sentry error monitoring
-- [ ] Retain file extension in image upload and check for valid image
+- [X] Retain file extension in image upload and check for valid image
 - [ ] Finish readme
 
 ## What's being removed
