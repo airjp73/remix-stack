@@ -16,7 +16,7 @@ it("should upload a file", () => {
   cy.location("pathname").should("contain", "/dashboard");
 });
 
-it("should reject files over 10MB", () => {
+it("should reject files over 3MB", () => {
   cy.visitAndCheck("/dashboard");
   cy.findByRole("link", { name: /upload profile picture/i }).click();
   cy.fixture("images/cat-picture-large.png", null).then((pic) => {
@@ -32,7 +32,7 @@ it("should reject files over 10MB", () => {
   });
   cy.findByRole("alert")
     .findByRole("heading", {
-      name: /cat-picture-large\.png is too large. profile photos can't be larger than 10mb/i,
+      name: /cat-picture-large\.png is too large. profile photos can't be larger than 3mb/i,
     })
     .should("exist");
 });
