@@ -10,7 +10,13 @@ it("should upload a file", () => {
   cy.fixture("images/cat-picture.jpg", null).then((pic) => {
     cy.findByLabelText(/upload a file/i)
       .parent() // get the upload area not the actual input
-      .selectFile(pic, { action: "drag-drop" });
+      .selectFile(
+        {
+          contents: pic,
+          fileName: "cat-picture.jpg",
+        },
+        { action: "drag-drop" }
+      );
   });
   cy.findByText(/profile picture uploaded!/i).should("exist");
   cy.location("pathname").should("contain", "/dashboard");
