@@ -28,7 +28,8 @@
     "/node_modules",
     "/build",
     "/public/build",
-    "/postgres-data"
+    "/postgres-data",
+    "/api"
   ],
   "dependencies": {
     "@playwright/test": "^1.30.0",

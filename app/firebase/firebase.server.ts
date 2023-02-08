@@ -26,7 +26,7 @@ if (getApps().length === 0) {
 export const serverAuth = getAuth(app);
 export const serverStorage = getStorage(app);
 
-export class FirebaseImageUpload<T> {
+export class FirebaseImageUpload {
   #uploads: (() => Promise<void>)[];
   #basePath: string;
   #maxBytes: number;
