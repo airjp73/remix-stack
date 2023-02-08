@@ -81,7 +81,7 @@ const ThemeToggleInternal = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
         <Button variant="outline">
           <AutoIcon
             className="mr-2"
