@@ -1,19 +1,22 @@
-import { DataFunctionArgs } from "@remix-run/server-runtime";
+import { ActionArgs, json } from "@remix-run/server-runtime";
 
 const sentryHost = "sentry.io";
 
-const handler = async ({ request }: DataFunctionArgs) => {
+export const action = async ({ request }: ActionArgs) => {
   const envelope = await request.text();
   const pieces = envelope.split("\n");
   const header = JSON.parse(pieces[0]);
-  const { pathname } = new URL(header.dsn);
+  const { host, pathname } = new URL(header.dsn);
 
   // remove leading slash
   const projectId = pathname.substring(1);
 
-  const ingestUrl = `https://${sentryHost}/api/${projectId}/envelope/`;
-  return await fetch(ingestUrl, { method: "POST", body: envelope });
-};
+  // if (host !== sentryHost) {
+  //   throw new Error(`Invalid Sentry host: ${host}`);
+  // }
 
-export const action = handler;
-export const loader = handler;
+  const ingestUrl = `https://${sentryHost}/api/${projectId}/envelope/`;
+  const response = await fetch(ingestUrl, { method: "POST", body: envelope });
+
+  return json({ status: response.status }, { status: response.status });
+};
