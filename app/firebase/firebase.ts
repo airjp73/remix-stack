@@ -35,9 +35,5 @@ export const useFirebase = () => {
       invariant(firebaseRef.current, "Firebase not initialized");
       return firebaseRef.current.auth;
     },
-    storage: () => {
-      invariant(firebaseRef.current, "Firebase not initialized");
-      return firebaseRef.current.storage;
-    },
   };
 };

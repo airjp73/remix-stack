@@ -7,7 +7,6 @@ import {
   inMemoryPersistence,
   connectAuthEmulator,
 } from "firebase/auth";
-import { getStorage, connectStorageEmulator } from "firebase/storage";
 
 export type FirebaseClientOptions = FirebaseOptions & {
   emulatorUrl?: string;
@@ -25,18 +24,14 @@ export const getFirebase = ({
     // Let Remix handle the persistence via session cookies
     setPersistence(auth, inMemoryPersistence);
 
-    const storage = getStorage(app);
-
     if (emulatorUrl) {
       connectAuthEmulator(auth, `http://${emulatorUrl}`);
-      connectStorageEmulator(getStorage(app), "localhost", 9199);
     }
 
-    return { auth, app, storage };
+    return { auth, app };
   } else {
     const app = getApp();
     const auth = getAuth(app);
-    const storage = getStorage(app);
-    return { auth, app, storage };
+    return { auth, app };
   }
 };
