@@ -204,11 +204,6 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
       path.join(rootDirectory, "remix.init", "gitignore"),
       path.join(rootDirectory, ".gitignore")
     ),
-    fs.rm(path.join(rootDirectory, ".github", "ISSUE_TEMPLATE"), {
-      recursive: true,
-    }),
-    fs.rm(path.join(rootDirectory, ".github", "dependabot.yml")),
-    fs.rm(path.join(rootDirectory, ".github", "PULL_REQUEST_TEMPLATE.md")),
   ];
 
   if (!isTypeScript) {
