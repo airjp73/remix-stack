@@ -3,7 +3,6 @@ const crypto = require("crypto");
 const fs = require("fs/promises");
 const path = require("path");
 
-const toml = require("@iarna/toml");
 const PackageJson = require("@npmcli/package-json");
 const semver = require("semver");
 const YAML = require("yaml");
@@ -119,7 +118,6 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
   const FILE_EXTENSION = isTypeScript ? "ts" : "js";
 
   const README_PATH = path.join(rootDirectory, "README.md");
-  const FLY_TOML_PATH = path.join(rootDirectory, "fly.toml");
   const EXAMPLE_ENV_PATH = path.join(rootDirectory, ".env.example");
   const ENV_PATH = path.join(rootDirectory, ".env");
   const DEPLOY_WORKFLOW_PATH = path.join(
@@ -156,10 +154,8 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
     .replace(/[^a-zA-Z0-9-_]/g, "-");
 
   const [
-    prodContent,
     readme,
     env,
-    dockerfile,
     cypressCommands,
     createUserCommand,
     deleteUserCommand,
@@ -167,7 +163,6 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
     vitestConfig,
     packageJson,
   ] = await Promise.all([
-    fs.readFile(FLY_TOML_PATH, "utf-8"),
     fs.readFile(README_PATH, "utf-8"),
     fs.readFile(EXAMPLE_ENV_PATH, "utf-8"),
     fs.readFile(CYPRESS_COMMANDS_PATH, "utf-8"),
@@ -185,9 +180,6 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
     `SESSION_SECRET="${getRandomString(16)}"`
   );
 
-  const prodToml = toml.parse(prodContent);
-  prodToml.app = prodToml.app.replace(REPLACER, APP_NAME);
-
   const newReadme = readme.replace(
     new RegExp(escapeRegExp(REPLACER), "g"),
     APP_NAME
@@ -196,7 +188,6 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
   updatePackageJson({ APP_NAME, isTypeScript, packageJson });
 
   const fileOperationPromises = [
-    fs.writeFile(FLY_TOML_PATH, toml.stringify(prodToml)),
     fs.writeFile(README_PATH, newReadme),
     fs.writeFile(ENV_PATH, newEnv),
     ...cleanupCypressFiles({
